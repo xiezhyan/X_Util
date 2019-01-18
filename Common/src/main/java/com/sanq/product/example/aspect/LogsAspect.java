@@ -160,4 +160,27 @@ public class LogsAspect {
 //		}
 //
 //	}
+
+//    /**
+//     * 设置请求参数
+//     *
+//     * @param paramMap
+//     */
+//    public void setMapToParams(Map<String, String[]> paramMap) {
+//        if (paramMap == null) {
+//            return;
+//        }
+//        StringBuilder params = new StringBuilder();
+//        for (Map.Entry<String, String[]> param : ((Map<String, String[]>) paramMap)
+//                .entrySet()) {
+//            params.append(("".equals(params.toString()) ? "" : "&")
+//                    + param.getKey() + "=");
+//            String paramValue = (param.getValue() != null
+//                    && param.getValue().length > 0 ? param.getValue()[0] : "");
+//            params.append(StringUtil.abbr(StringUtil.endsWithIgnoreCase(
+//                    param.getKey(), "password") ? "" : paramValue, 100));
+//        }
+//        setParams(params.toString());
+//    }
+
 }
