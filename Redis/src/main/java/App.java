@@ -11,14 +11,9 @@ public class App {
     public static  void main(String[] args) {
 
         ApplicationContext act = new ClassPathXmlApplicationContext("spring.xml");
-        JedisPoolService jedisPoolService = (JedisPoolService) act.getBean("jedisSingleService");
+        JedisPoolService jedisPoolService = (JedisPoolService) act.getBean("jedisPoolService");
 
-        boolean result = jedisPoolService.pfAdd("aaa111", "1111");
-
-        System.out.println(" result::" + result);
-//
-        long aaa111 = jedisPoolService.pfCount("aaa111");
-        System.out.println("aaa:" + aaa111);
+        jedisPoolService.set("aaa", "111");
 
 
     }

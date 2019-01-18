@@ -11,7 +11,7 @@ import java.util.Set;
 /**
  * Created by Xiezhyan on 2019/1/18.
  */
-@Service("jedisClusterService")
+@Service("jedisPoolService")
 public class JedisClusterServiceImpl implements JedisPoolService {
 
     @Resource

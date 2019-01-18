@@ -15,7 +15,7 @@ import java.util.UUID;
  * Created by Xiezhyan on 2019/1/18.
  */
 
-@Service("jedisSingleService")
+@Service("jedisPoolService")
 public class JedisSingleServiceImpl implements JedisPoolService {
 
     private static final String SET_IF_NOT_EXIST = "NX";
