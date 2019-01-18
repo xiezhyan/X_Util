@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sanq.product.generate.mappers.TableMapper">
+
+	<resultMap type="tables" id="tableEntityMap">
+		<result column="Name" property="name"/>
+		<result column="Comment" property="comment"/>
+	</resultMap>
+
+    <select id="findAllTables" resultMap="tableEntityMap" >
+      <!-- <![CDATA[
+           {call code_sql(
+              #{codeSql,mode=IN,jdbcType=VARCHAR}
+           )}    
+       ]]> -->
+		SHOW TABLE STATUS
+    </select>
+</mapper>

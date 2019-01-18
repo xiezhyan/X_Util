@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sanq.product.generate.mappers.FieldMapper">
+
+	<resultMap type="fields" id="fieldEntityMap">
+		<result column="table_name" property="tableName"/>
+		<result column="column_name" property="columnName"/>
+		<result column="data_type" property="jdbcType"/>
+		<result column="column_key" property="columnKey"/>
+		<result column="column_comment" property="columnComment"/>
+	</resultMap>
+	
+	
+    <select id="findFieldByTable" resultMap="fieldEntityMap" parameterType="java.util.Map">
+			<!--  <![CDATA[
+			      {call code_sql(
+			         #{codeSql,mode=IN,jdbcType=VARCHAR}
+			
+			  ]]>
+			SHOW FULL FIELDS FROM ${tableName}
+			-->
+		SELECT  * FROM information_schema.COLUMNS where TABLE_NAME = #{tableName} AND table_schema = #{tableSchema} order by column_key desc;
+    </select>
+    
+    <delete id=""></delete>
+    
+</mapper>
