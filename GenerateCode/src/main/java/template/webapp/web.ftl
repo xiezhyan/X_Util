@@ -16,10 +16,10 @@
     <!-- ajax 跨域 -->
     <filter>
         <filter-name>corsFilter</filter-name>
-        <filter-class>com.xiezhyan.utils.filter.CorsFilter</filter-class>
+        <filter-class>com.sanq.product.config.utils.filter.CorsFilter</filter-class>
         <init-param>
             <param-name>allowOrigin</param-name>
-            <param-value>http://127.0.0.1:8020</param-value>
+            <param-value>http://localhost:63343,http://localhost:8080</param-value>
         </init-param>
         <init-param>
             <param-name>allowMethods</param-name>
@@ -38,6 +38,24 @@
         <filter-name>corsFilter</filter-name>
         <url-pattern>/*</url-pattern>
     </filter-mapping>
+
+    <!-- xss -->
+    <filter>
+        <filter-name>defendXssFilter</filter-name>
+        <filter-class>com.sanq.product.config.utils.filter.XssFilter</filter-class>
+        <init-param>
+            <param-name>excludedPaths</param-name>
+            <param-value>
+                *.js,*.css,/css/*,/image/*,/js/*,/lib/*
+            </param-value>
+        </init-param>
+    </filter>
+
+    <filter-mapping>
+        <filter-name>defendXssFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+
 
 
     <context-param>
