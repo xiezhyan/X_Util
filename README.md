@@ -35,5 +35,5 @@ Java常用工具类
 3. GenerateCode
     1. 修改config.properties里的url， table_schema和packageName
     2. 运行App.java
-    3. 在当前目录下会看到生成的代码
+    3. 在当前目录下会看到生成的代码 
 
