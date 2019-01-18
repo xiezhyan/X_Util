@@ -194,3 +194,11 @@ Java常用工具类
         </plugins>
     </build>
     ```
+   
+### 反爬虫约定 robots.txt
+> 项目跟路径（webapp）下添加robots.txt文件
+```
+User-agent: *
+Disallow: /
+```
+
