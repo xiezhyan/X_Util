@@ -34,7 +34,7 @@ public interface JedisPoolService {
 
     long llen(String key);
 
-    //不标准去重统计  0.81%
+    //不标准去重统计  100000  -->  443
     boolean pfAdd(String key, String...value);
 
     long pfCount(String key);
