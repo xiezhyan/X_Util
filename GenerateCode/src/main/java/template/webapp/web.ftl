@@ -13,6 +13,35 @@
         <welcome-file>default.jsp</welcome-file>
     </welcome-file-list>
 
+	<servlet> 
+	     <servlet-name>DruidStatView</servlet-name> 
+	     <servlet-class>com.alibaba.druid.support.http.StatViewServlet</servlet-class> 
+	 </servlet> 
+	 <servlet-mapping> 
+	     <servlet-name>DruidStatView</servlet-name> 
+	     <url-pattern>/druid/*</url-pattern> 
+	 </servlet-mapping> 
+	 <filter> 
+	  <filter-name>druidWebStatFilter</filter-name> 
+	  <filter-class>com.alibaba.druid.support.http.WebStatFilter</filter-class> 
+	  <init-param> 
+	   <param-name>exclusions</param-name> 
+	   <param-value>/public/*,*.js,*.css,/druid*,*.jsp,*.swf</param-value> 
+	  </init-param> 
+	  <init-param> 
+	   <param-name>principalSessionName</param-name> 
+	   <param-value>sessionInfo</param-value> 
+	  </init-param> 
+	  <init-param> 
+	   <param-name>profileEnable</param-name> 
+	   <param-value>true</param-value> 
+	  </init-param> 
+	 </filter> 
+	 <filter-mapping> 
+	  <filter-name>druidWebStatFilter</filter-name> 
+	  <url-pattern>/*</url-pattern> 
+	 </filter-mapping>
+
     <!-- ajax 跨域 -->
     <filter>
         <filter-name>corsFilter</filter-name>
