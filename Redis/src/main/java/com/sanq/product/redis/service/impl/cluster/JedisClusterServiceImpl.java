@@ -96,7 +96,7 @@ public class JedisClusterServiceImpl implements JedisPoolService {
     }
 
     @Override
-    public boolean setBit(String key, long offset, String value) {
+    public boolean setBit(String key, long offset, boolean value) {
         return jedisCluster.setbit(key, offset, value);
     }
 

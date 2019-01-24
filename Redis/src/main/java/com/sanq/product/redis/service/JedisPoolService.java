@@ -40,7 +40,7 @@ public interface JedisPoolService {
     long pfCount(String key);
 
     //位图
-    boolean setBit(String key, long offset, String value);
+    boolean setBit(String key, long offset, boolean value);
 
     boolean getBit(String key, long offset);
 

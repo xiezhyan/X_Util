@@ -239,7 +239,7 @@ public class JedisSingleServiceImpl implements JedisPoolService {
     }
 
     @Override
-    public boolean setBit(String key, long offset, String value) {
+    public boolean setBit(String key, long offset, boolean value) {
         String lockValue = _lockValue();
 
         try (Jedis jedis = jedisPool.getResource()) {
