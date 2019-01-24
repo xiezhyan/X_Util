@@ -24,8 +24,19 @@
 		<property name="initialSize" value="1"></property>
 		<property name="maxActive" value="100"></property>
 		<property name="minIdle" value="1"></property>
-		<property name="maxIdle" value="20"></property>
 		<property name="maxWait" value="60000"></property>
+		<!-- 配置获取连接等待超时的时间 --> 
+		<property name="maxWait" value="10000" />
+		<!-- 配置间隔多久才进行一次检测，检测需要关闭的空闲连接，单位是毫秒 --> 
+		<property name="timeBetweenEvictionRunsMillis" value="60000" />
+		<!-- 配置一个连接在池中最小生存的时间，单位是毫秒 --> 
+		<property name="minEvictableIdleTimeMillis" value="300000" />
+		<!-- 这里建议配置为TRUE，防止取到的连接不可用 --> 
+	    <property name="testOnBorrow" value="true" /> 
+	    <property name="testOnReturn" value="false" />
+	    <!-- 打开PSCache，并且指定每个连接上PSCache的大小 --> 
+		<property name="poolPreparedStatements" value="true" /> 
+		<property name="maxPoolPreparedStatementPerConnectionSize" value="20" />
 	</bean>
 
     <!-- 2、配置sqlSessionFactory对象-->
