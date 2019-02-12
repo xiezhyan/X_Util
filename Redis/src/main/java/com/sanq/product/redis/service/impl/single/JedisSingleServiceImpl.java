@@ -322,7 +322,7 @@ public class JedisSingleServiceImpl implements JedisPoolService {
         try (Jedis jedis = jedisPool.getResource()) {
             boolean isLocked = _lock(jedis, key, lockValue);
             if (isLocked) {
-                boolean result = jedis.setbit(key, offset, value) != null;
+                boolean result = jedis.setbit(key, offset, value);
                 _unLock(jedis, key, lockValue);
 
                 return result;
