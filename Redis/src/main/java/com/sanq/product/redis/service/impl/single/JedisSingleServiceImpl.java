@@ -1,5 +1,6 @@
 package com.sanq.product.redis.service.impl.single;
 
+import com.sanq.product.config.utils.string.StringUtil;
 import com.sanq.product.redis.service.JedisPoolService;
 import org.springframework.stereotype.Service;
 import redis.clients.jedis.Jedis;
@@ -213,6 +214,82 @@ public class JedisSingleServiceImpl implements JedisPoolService {
         try (Jedis jedis = jedisPool.getResource()) {
             return jedis.llen(key);
         }
+    }
+
+    @Override
+    public boolean putSet(String key, double score, String value) {
+        String lockValue = _lockValue();
+
+        try (Jedis jedis = jedisPool.getResource()) {
+            boolean isLocked = _lock(jedis, key, lockValue);
+            if (isLocked) {
+                boolean result = jedis.zadd(key,score,  value) != null;
+                _unLock(jedis, key, lockValue);
+
+                return result;
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public Set<String> getSet(String key, long start, long end, String order) {
+        String lockValue = _lockValue();
+
+        if(StringUtil.isEmpty(order))
+            order = "ASC";
+
+        try (Jedis jedis = jedisPool.getResource()) {
+            boolean isLocked = _lock(jedis, key, lockValue);
+            if (isLocked) {
+                Set<String> set = null;
+                if("ASC".equals(order)) {
+                    set = jedis.zrange(key, start, end);
+                } else if("DESC".equals(order)) {
+                    set = jedis.zrevrange(key, start, end);
+                }
+                _unLock(jedis, key, lockValue);
+                return set;
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public long zcard(String key) {
+        try (Jedis jedis = jedisPool.getResource()) {
+            return jedis.zcard(key);
+        }
+    }
+
+    @Override
+    public boolean zrank(String key, String val) {
+        String lockValue = _lockValue();
+
+        try (Jedis jedis = jedisPool.getResource()) {
+            boolean isLocked = _lock(jedis, key, lockValue);
+            if (isLocked) {
+                boolean result = jedis.zrank(key, val) != null;
+                _unLock(jedis, key, lockValue);
+                return result;
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public long rmSet(String key, long start, long end) {
+        String lockValue = _lockValue();
+
+        try (Jedis jedis = jedisPool.getResource()) {
+            boolean isLocked = _lock(jedis, key, lockValue);
+            if (isLocked) {
+                long result = jedis.zremrangeByRank(key, start, end);
+                _unLock(jedis, key, lockValue);
+                return result;
+            }
+        }
+        return 0;
     }
 
     @Override

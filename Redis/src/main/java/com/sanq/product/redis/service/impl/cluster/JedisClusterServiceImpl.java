@@ -1,5 +1,6 @@
 package com.sanq.product.redis.service.impl.cluster;
 
+import com.sanq.product.config.utils.string.StringUtil;
 import com.sanq.product.redis.service.JedisPoolService;
 import org.springframework.stereotype.Service;
 import redis.clients.jedis.JedisCluster;
@@ -83,6 +84,39 @@ public class JedisClusterServiceImpl implements JedisPoolService {
     @Override
     public long llen(String key) {
         return jedisCluster.llen(key);
+    }
+
+    @Override
+    public boolean putSet(String key, double score, String value) {
+        return jedisCluster.zadd(key, score, value) != null;
+    }
+
+    @Override
+    public Set<String> getSet(String key, long start, long end, String order) {
+        if(StringUtil.isEmpty(order))
+            order = "ASC";
+
+        if("ASC".equals(order))
+            return jedisCluster.zrange(key, start, end);
+        else if("DESC".equals(order))
+            return jedisCluster.zrevrange(key, start, end);
+
+        return null;
+    }
+
+    @Override
+    public long zcard(String key) {
+        return jedisCluster.zcard(key);
+    }
+
+    @Override
+    public boolean zrank(String key, String val) {
+        return jedisCluster.zrank(key, val) != null;
+    }
+
+    @Override
+    public long rmSet(String key, long start, long end) {
+        return jedisCluster.zremrangeByRank(key, start, end);
     }
 
     @Override
