@@ -47,11 +47,11 @@
     <select id="findById" resultMap="${table.javaName}Map" parameterType="<#list table.fields as field><#if field.columnKey == "PRI">${field.javaType}</#if></#list>">
     	SELECT
     		<include refid="${table.name}_columns" />
-    	FROM ${table.name} 
+    	FROM ${table.name} ${table.name?substring(0,1)}
 		WHERE
 			<#list table.fields as field>
 			<#if field.columnKey == "PRI">
-			${field.columnName} = ${r"#{" + field.javaField + "}"}
+			${table.name?substring(0,1)}.${field.columnName} = ${r"#{" + field.javaField + "}"}
 			</#if>
 			</#list>
 		LIMIT 1
