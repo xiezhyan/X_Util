@@ -88,7 +88,7 @@ public class JedisClusterServiceImpl implements JedisPoolService {
 
     @Override
     public boolean putSet(String key, double score, String value) {
-        return jedisCluster.zadd(key, score, value) != null;
+        return jedisCluster.zadd(key, score, value) != 0;
     }
 
     @Override
@@ -121,7 +121,7 @@ public class JedisClusterServiceImpl implements JedisPoolService {
 
     @Override
     public boolean pfAdd(String key, String... value) {
-        return jedisCluster.pfadd(key, value) != null;
+        return jedisCluster.pfadd(key, value) != 0;
     }
 
     @Override

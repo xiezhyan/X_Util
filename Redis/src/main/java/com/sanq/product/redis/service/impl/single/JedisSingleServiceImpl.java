@@ -223,7 +223,7 @@ public class JedisSingleServiceImpl implements JedisPoolService {
         try (Jedis jedis = jedisPool.getResource()) {
             boolean isLocked = _lock(jedis, key, lockValue);
             if (isLocked) {
-                boolean result = jedis.zadd(key,score,  value) != null;
+                boolean result = jedis.zadd(key,score,  value) != 0;
                 _unLock(jedis, key, lockValue);
 
                 return result;
@@ -299,7 +299,7 @@ public class JedisSingleServiceImpl implements JedisPoolService {
         try (Jedis jedis = jedisPool.getResource()) {
             boolean isLocked = _lock(jedis, key, lockValue);
             if (isLocked) {
-                boolean result = jedis.pfadd(key, value) != null;
+                boolean result = jedis.pfadd(key, value) != 0;
                 _unLock(jedis, key, lockValue);
 
                 return result;
