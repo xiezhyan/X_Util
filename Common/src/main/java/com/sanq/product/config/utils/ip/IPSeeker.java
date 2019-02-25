@@ -10,9 +10,9 @@ import java.nio.ByteOrder;
 import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * 访问ip静态库
@@ -59,7 +59,7 @@ public class IPSeeker {
     private IPSeeker(String fileName,String dir)  {
         this.IP_FILE = fileName;
 
-        ipCache = new HashMap<String, IPLocation>();
+        ipCache = new ConcurrentHashMap<>();
         loc = new IPLocation();
         buf = new byte[100];
         b4 = new byte[4];
@@ -133,7 +133,7 @@ public class IPSeeker {
         return ret;
     }
 
-    public IPLocation getIPLocation(String ip){
+    public synchronized IPLocation getIPLocation(String ip){
         IPLocation location=new IPLocation();
         location.setArea(this.getArea(ip));
         location.setCountry(this.getCountry(ip));
