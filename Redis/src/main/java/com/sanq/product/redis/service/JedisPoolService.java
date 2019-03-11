@@ -61,12 +61,8 @@ public interface JedisPoolService {
      */
     boolean exists(String key);
 
-    /**
-     * 批量获取key
-     * @param pattern
-     * @return
-     */
-    Set<String> keys(String pattern);
+
+    List<String> keys(String pattern);
 
     /**
      * 设置过期时间

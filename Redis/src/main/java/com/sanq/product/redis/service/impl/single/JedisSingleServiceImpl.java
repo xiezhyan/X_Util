@@ -5,12 +5,11 @@ import com.sanq.product.redis.service.JedisPoolService;
 import org.springframework.stereotype.Service;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
+import redis.clients.jedis.ScanParams;
+import redis.clients.jedis.ScanResult;
 
 import javax.annotation.Resource;
-import java.util.Collections;
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * Created by Xiezhyan on 2019/1/18.
@@ -194,12 +193,37 @@ public class JedisSingleServiceImpl implements JedisPoolService {
     }
 
     @Override
-    public Set<String> keys(String pattern) {
+    public List<String> keys(String pattern) {
         try (Jedis jedis = jedisPool.getResource()) {
-            Set<String> result = jedis.keys(pattern);
 
-            return result;
+            List<String> keys = getKeysByScan(jedis, pattern);
+
+            return keys;
         }
+    }
+
+    private List<String> getKeysByScan(Jedis jedis, String pattern) {
+        ScanParams params = new ScanParams();
+        params.match(pattern);
+        params.count(100);
+
+        String cursor = "0";
+
+        List<String> keys = new ArrayList<>();
+
+        do {
+            ScanResult<String> scan = jedis.scan(cursor, params);
+
+            cursor = scan.getStringCursor();
+
+            List<String> result = scan.getResult();
+            if(result != null && result.size() > 0) {
+                keys.addAll(result);
+            }
+
+        } while ("0".equals(cursor));
+
+        return keys;
     }
 
     @Override
@@ -356,7 +380,7 @@ public class JedisSingleServiceImpl implements JedisPoolService {
 
     @Override
     public boolean deletes(String pattern) {
-        Set<String> keys = keys(pattern);
+        List<String> keys = keys(pattern);
         if(keys != null && keys.size() > 0) {
             for(String key: keys)
                 delete(key);

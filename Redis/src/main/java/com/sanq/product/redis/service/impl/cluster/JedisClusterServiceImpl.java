@@ -4,8 +4,11 @@ import com.sanq.product.config.utils.string.StringUtil;
 import com.sanq.product.redis.service.JedisPoolService;
 import org.springframework.stereotype.Service;
 import redis.clients.jedis.JedisCluster;
+import redis.clients.jedis.ScanParams;
+import redis.clients.jedis.ScanResult;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -72,8 +75,33 @@ public class JedisClusterServiceImpl implements JedisPoolService {
     }
 
     @Override
-    public Set<String> keys(String pattern) {
-        return jedisCluster.hkeys(pattern);
+    public List<String> keys(String pattern) {
+        List<String> keys = getKeysByScan(jedisCluster, pattern);
+
+        return keys;
+    }
+    private List<String> getKeysByScan(JedisCluster jedisCluster, String pattern) {
+        ScanParams params = new ScanParams();
+        params.match(pattern);
+        params.count(100);
+
+        String cursor = "0";
+
+        List<String> keys = new ArrayList<>();
+
+        do {
+            ScanResult<String> scan = jedisCluster.scan(cursor, params);
+
+            cursor = scan.getStringCursor();
+
+            List<String> result = scan.getResult();
+            if(result != null && result.size() > 0) {
+                keys.addAll(result);
+            }
+
+        } while ("0".equals(cursor));
+
+        return keys;
     }
 
     @Override
@@ -146,7 +174,7 @@ public class JedisClusterServiceImpl implements JedisPoolService {
 
     @Override
     public boolean deletes(String pattern) {
-        Set<String> keys = keys(pattern);
+        List<String> keys = keys(pattern);
         if(keys != null && keys.size() > 0) {
             for(String key : keys)
                 delete(key);
