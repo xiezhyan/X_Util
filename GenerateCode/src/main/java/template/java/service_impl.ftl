@@ -1,8 +1,8 @@
 package ${serviceImplPackage};
 
 import ${entityVoPackage}.${table.javaName?cap_first}Vo;
-import com.xiezhyan.utils.entity.Pager;
-import com.xiezhyan.utils.entity.Pagination;
+import com.sanq.product.config.utils.entity.Pager;
+import com.sanq.product.config.utils.entity.Pagination;
 import ${servicePackage}.${table.javaName?cap_first}Service;
 import ${mapperPackage}.${table.javaName?cap_first}Mapper;
 import java.util.List;

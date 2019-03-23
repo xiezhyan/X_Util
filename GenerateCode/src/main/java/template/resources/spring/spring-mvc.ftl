@@ -61,12 +61,31 @@
 		<property name="resolveLazily" value="true" />
 	</bean>
 
-	<bean
-		class="org.springframework.web.servlet.view.InternalResourceViewResolver">
-		<property name="prefix" value="/WEB-INF/views/" />
-		<property name="suffix" value=".jsp" />
-	</bean>
-
-    <import resource="classpath:thread/spring-thread.xml" />
+    <!--视图解析器-->
+    <!--配置试图解析器  -->
+    <bean class="org.springframework.web.servlet.view.freemarker.FreeMarkerViewResolver">
+        <property name="order" value="1"></property>
+        <property name="suffix" value=".ftl"></property>
+        <property name="contentType" value="text/html;charset=utf-8"></property>
+        <property name="viewClass">
+            <value>org.springframework.web.servlet.view.freemarker.FreeMarkerView</value>
+        </property>
+        <property name="requestContextAttribute" value="request"></property>
+    </bean>
+    <!--加载freemarker属性  -->
+    <bean id="propertySetting" class="org.springframework.beans.factory.config.PropertiesFactoryBean">
+        <property name="locations">
+            <list>
+                <value>classpath:config.properties</value>
+            </list>
+        </property>
+    </bean>
+    <!--freemarker配置  -->
+    <bean id="freemarkerConfig" class="org.springframework.web.servlet.view.freemarker.FreeMarkerConfigurer">
+        <property name="templateLoaderPath">
+            <value>/WEB-INF/ftl/</value>
+        </property>
+        <property name="freemarkerSettings" ref="propertySetting"></property>
+    </bean>
 
 </beans>

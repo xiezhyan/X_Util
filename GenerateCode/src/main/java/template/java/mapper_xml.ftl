@@ -18,15 +18,17 @@
 
     <sql id="${table.name}_where">
 	<#list table.fields as field>
-		<#if (field.javaType!"") == "String">
-		<if test="${table.javaName}.${field.javaField} !=null and ${table.javaName}.${field.javaField} != ''">
-			<#if field_index != 0>AND </#if>${table.name?substring(0,1)}.${field.columnName} LIKE CONCAT('%',${r"#{" + table.javaName + "." + field.javaField + "}"},'%')
-		</if>
-		<#else>
-		<if test="${table.javaName}.${field.javaField} !=null ">
-			<#if field_index != 0>AND </#if>${table.name?substring(0,1)}.${field.columnName} = ${r"#{" + table.javaName + "." + field.javaField + "}"}
-		</if>
-		</#if>
+		<if test="${table.name?substring(0,1)} != null">
+			<#if (field.javaType!"") == "String">
+			<if test="${table.javaName}.${field.javaField} !=null and ${table.javaName}.${field.javaField} != ''">
+				<#if field_index != 0>AND </#if>${table.name?substring(0,1)}.${field.columnName} LIKE CONCAT('%',${r"#{" + table.javaName + "." + field.javaField + "}"},'%')
+			</if>
+			<#else>
+			<if test="${table.javaName}.${field.javaField} !=null ">
+				<#if field_index != 0>AND </#if>${table.name?substring(0,1)}.${field.columnName} = ${r"#{" + table.javaName + "." + field.javaField + "}"}
+			</if>
+			</#if>
+        </if>
 	</#list>
     </sql>
 

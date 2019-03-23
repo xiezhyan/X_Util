@@ -10,10 +10,15 @@
 
     <dubbo:application name="" />
 
-    <dubbo:registry address="${r"${zookeeper.address}"}" />
+    <dubbo:registry protocol="zookeeper" address="${r"${zookeeper.address}"}" />
 
     <dubbo:protocol name="dubbo" port="${r"${zookeeper.port}"}" />
 
+    <!-- 监控中心配置，protocol="registry"，表示从注册中心发现监控中心地址 -->
+    <dubbo:monitor protocol="registry"/>
+
+    <!-- 当ProtocolConfig和ServiceConfig某属性没有配置时,采用此缺省值 -->
+    <dubbo:provider timeout="30000" threadpool="fixed" threads="100" accepts="1000"/>
 
     <#list tables as table>
     <bean id="${table.javaName}Service" class="${servicePackage}.impl.${table.javaName?cap_first}ServiceImpl"/>
