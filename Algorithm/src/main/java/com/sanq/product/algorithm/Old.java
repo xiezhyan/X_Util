@@ -3,7 +3,7 @@ package com.sanq.product.algorithm;
 /**
  * Created by Xiezhyan on 2019/3/23.
  *
- * 判断是否为基数
+ * 判断是否为奇数
  */
 public class Old {
 
