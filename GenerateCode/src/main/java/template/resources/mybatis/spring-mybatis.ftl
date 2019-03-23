@@ -24,6 +24,11 @@
 		<property name="initialSize" value="1"></property>
 		<property name="maxActive" value="100"></property>
 		<property name="minIdle" value="1"></property>
+		<!-- 配置间隔多久才进行一次检测，检测需要关闭的空闲连接，单位是毫秒 --> 
+		<property name="maxWait" value="60000"></property>
+		<!-- 配置获取连接等待超时的时间 --> 
+		<property name="maxWait" value="10000" />
+		<!-- 配置间隔多久才进行一次检测，检测需要关闭的空闲连接，单位是毫秒 --> 
 		<property name="maxWait" value="60000"></property>
 		<!-- 配置间隔多久才进行一次检测，检测需要关闭的空闲连接，单位是毫秒 -->
 		<property name="timeBetweenEvictionRunsMillis" value="60000" />
