@@ -73,8 +73,16 @@ public interface JedisPoolService {
     boolean expire(String key, int seconds);
 
     /**************************华丽丽的分割线**************************************/
+
     /**
-     * 保存到List
+     * rpush
+     *  将元素push在list的尾部  ==> rpop 删除尾部元素
+     *
+     * lpush
+     *  类似于压栈操作，将元素放入头部 ==> lpop 删除头部元素
+     *
+     * 这里使用到rpush
+     *
      * @param key
      * @param value
      * @return
