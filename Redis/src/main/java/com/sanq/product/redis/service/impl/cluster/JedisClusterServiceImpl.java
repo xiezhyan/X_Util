@@ -65,8 +65,8 @@ public class JedisClusterServiceImpl implements JedisPoolService {
     }
 
     @Override
-    public boolean rmList(String key, long start, long end) {
-        return jedisCluster.ltrim(key, start, end) != null;
+    public boolean rmList(String key, long count) {
+        return jedisCluster.ltrim(key, count, -1) != null;
     }
 
     @Override

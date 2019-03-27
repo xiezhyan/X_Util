@@ -84,11 +84,10 @@ public interface JedisPoolService {
     /**
      * 移除List
      * @param key
-     * @param start
-     * @param end
+     * @param count
      * @return
      */
-    boolean rmList(String key, long start, long end);
+    boolean rmList(String key, long count);
 
     /**
      * 获取List

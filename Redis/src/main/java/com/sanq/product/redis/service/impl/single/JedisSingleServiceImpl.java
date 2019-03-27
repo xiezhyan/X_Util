@@ -161,13 +161,13 @@ public class JedisSingleServiceImpl implements JedisPoolService {
 
 
     @Override
-    public boolean rmList(String key, long start, long end) {
+    public boolean rmList(String key, long count) {
         String lockValue = _lockValue();
 
         try (Jedis jedis = jedisPool.getResource()) {
             boolean isLocked = _lock(jedis, key, lockValue);
             if (isLocked) {
-                boolean ltrim = jedis.ltrim(key, start, end) != null;
+                boolean ltrim = jedis.ltrim(key, count, -1) != null;
                 _unLock(jedis, key, lockValue);
 
                 return ltrim;
