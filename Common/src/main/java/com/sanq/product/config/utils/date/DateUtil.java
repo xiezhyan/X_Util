@@ -108,7 +108,7 @@ public class DateUtil {
     public static int getWeek() {
         Calendar cal = Calendar.getInstance();
         cal.setTime(new Date());
-        int week = cal.get(Calendar.WEEK_OF_MONTH);
+        int week = cal.get(Calendar.DAY_OF_WEEK) - 1;
         if (week < 0) week = 0;
         return week;
     }
