@@ -221,7 +221,10 @@ public class JedisSingleServiceImpl implements JedisPoolService {
                 keys.addAll(result);
             }
 
-        } while ("0".equals(cursor));
+            if("0".equals(cursor))
+            	continue;
+
+        } while (!"0".equals(cursor));
 
         return keys;
     }
