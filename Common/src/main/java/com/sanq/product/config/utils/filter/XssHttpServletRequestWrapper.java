@@ -2,6 +2,9 @@ package com.sanq.product.config.utils.filter;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletRequestWrapper;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
 /**
  * xss过滤
@@ -26,6 +29,44 @@ public class XssHttpServletRequestWrapper extends HttpServletRequestWrapper {
             value = xssEncode(value);
         }
         return value;
+    }
+
+    @Override
+    public Map<String, String[]> getParameterMap() {
+        Map<String, String[]> map = super.getParameterMap();
+        if (map != null) {
+            for (Map.Entry<String, String[]> entry : map.entrySet()) {
+                String[] values = entry.getValue();
+                List<String> newValues = new LinkedList<String>();
+                if (values != null) {
+                    for (String s : values) {
+                        String afertEncode = xssEncode(s);
+                        newValues.add(afertEncode);
+                    }
+                    entry.setValue(newValues.toArray(new String[newValues.size()]));
+                }
+            }
+        }
+        return map;
+    }
+
+    @Override
+    public String[] getParameterValues(String name) {
+        String[] values = super.getParameterValues(name);
+        return xssEncode(values);
+    }
+
+    protected String[] xssEncode(String[] values) {
+        if (values != null && values.length > 0) {
+
+            int length = values.length;
+            String[] escapseValues = new String[length];
+            for (int i = 0; i < length; i++) {
+                escapseValues[i] = xssEncode(values[i]);
+            }
+            return escapseValues;
+        }
+        return values;
     }
 
     /**
