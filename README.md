@@ -202,3 +202,43 @@ User-agent: *
 Disallow: /
 ```
 
+### 针对跨域设置
+```
+<!-- ajax 跨域 -->
+<filter>
+    <filter-name>corsFilter</filter-name>
+    <filter-class>com.sanq.product.config.utils.filter.CorsFilter</filter-class>
+    <init-param>
+        <param-name>allowOrigin</param-name>
+        <param-value>地址设置</param-value>
+    </init-param>
+    <init-param>
+        <param-name>allowMethods</param-name>
+        <param-value>GET,POST,PUT,DELETE,OPTIONS</param-value>
+    </init-param>
+    <init-param>
+        <param-name>allowCredentials</param-name>
+        <param-value>true</param-value>
+    </init-param>
+    <init-param>
+        <param-name>allowHeaders</param-name>
+        <param-value>Content-Type,Token,X-Requested-With,accept,Origin,Access-Control-Request-Method,Access-Control-Request-Headers</param-value>
+    </init-param>
+</filter>
+<filter-mapping>
+    <filter-name>corsFilter</filter-name>
+    <url-pattern>/*</url-pattern>
+</filter-mapping>
+```
+
+### 针对xss设置
+```
+<filter>
+    <filter-name>xssFilter</filter-name>
+    <filter-class>com.sanq.product.config.utils.filter.XssFilter</filter-class>
+</filter>
+<filter-mapping>
+    <filter-name>xssFilter</filter-name>
+    <url-pattern>/*</url-pattern>
+</filter-mapping>
+  ```
