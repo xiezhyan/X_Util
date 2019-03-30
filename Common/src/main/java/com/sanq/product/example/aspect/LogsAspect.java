@@ -1,8 +1,6 @@
 package com.sanq.product.example.aspect;
 
-import org.springframework.stereotype.Component;
-
-@Component
+//@Component
 //@Aspect
 public class LogsAspect {
 

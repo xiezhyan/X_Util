@@ -1,13 +1,11 @@
 package com.sanq.product.example.aspect;
 
-import org.springframework.stereotype.Component;
-
 /**
  * Title:安全检查切面(是否登录检查) 
  * Description: 通过验证Token维持登录状态
  * 
  */
-@Component
+//@Component
 //@Aspect
 public class SecurityAspect {
 
