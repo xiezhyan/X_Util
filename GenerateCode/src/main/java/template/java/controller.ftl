@@ -4,7 +4,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 
 import ${entityVoPackage}.${table.javaName?cap_first}Vo;
 import ${servicePackage}.${table.javaName?cap_first}Service;
-import com.xiezhyan.utils.string.StringUtil;
 
 import com.sanq.product.config.utils.annotation.LogAnnotation;
 import com.sanq.product.config.utils.entity.Pager;
@@ -14,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -66,7 +66,7 @@ public class ${table.javaName?cap_first}Controller {
 
 	@LogAnnotation(description = "添加数据")
 	@RequestMapping(value="/save",method=RequestMethod.POST)
-	public Response add(HttpServletRequest request, @RequestBody(required = false) ${table.javaName?cap_first}Vo ${table.javaName}Vo) {
+	public Response add(HttpServletRequest request, @RequestBody ${table.javaName?cap_first}Vo ${table.javaName}Vo) {
 
 		int result = ${table.javaName}Service.save(${table.javaName}Vo);
 
