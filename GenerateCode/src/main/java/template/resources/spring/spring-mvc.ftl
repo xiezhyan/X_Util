@@ -68,24 +68,6 @@
 	<mvc:annotation-driven />
     <mvc:resources location="/static/" mapping="/static/**"/>
 
-	<bean id="mappingJackson2HttpMessageConverter"
-		class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter">
-		<property name="supportedMediaTypes">
-			<list>
-				<value>text/html;charset=UTF-8</value>
-			</list>
-		</property>
-	</bean>
-
-	<bean
-		class="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter">
-		<property name="messageConverters">
-			<list>
-				<ref bean="mappingJackson2HttpMessageConverter" />
-			</list>
-		</property>
-	</bean>
-
 	<bean id="multipartResolver"
 		class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
 		<property name="defaultEncoding" value="utf-8" />
