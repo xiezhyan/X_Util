@@ -3,6 +3,13 @@
 #### 介绍
 Java常用工具类
 
+#### 初始配置
+
+```
+-Dmaven.multiModuleProjectDirectory=$M2_HOME
+```
+
+
 #### 软件架构
 1. Common
 > 常用工具类封装
@@ -12,6 +19,7 @@ Java常用工具类
 > 自动生成代码工具， 包括entity, mapper, service, controller, resources， 通过简单修改， 生成项目
 
 #### 安装教程
+
 
 1. Common
 
