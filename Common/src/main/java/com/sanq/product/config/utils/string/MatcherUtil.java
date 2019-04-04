@@ -96,8 +96,12 @@ public class MatcherUtil {
      * @return 如果是符合格式的字符串,返回 <b>true </b>,否则为 <b>false </b>
      */
     public static boolean IsTelephone(String str) {
-        String regex = "^(13[0-9]{9})|(18[0-9]{9})|(14[0-9]{9})|(17[0-9]{9})|(15[0-9]{9})$";
+        String regex = "^[1](([3][0-9])|([4][5,7,9])|([5][^4,6,9])|([6][6])|([7][3,5,6,7,8])|([8][0-9])|([9][8,9]))[0-9]{8}$";
         return match(regex, str);
+    }
+
+    public static void main(String[] args) {
+        System.out.println(IsTelephone("15110148609"));
     }
 
     /**
