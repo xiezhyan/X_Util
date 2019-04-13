@@ -80,6 +80,48 @@ public class JedisClusterServiceImpl implements JedisPoolService {
 
         return keys;
     }
+
+    private List<String> getKeysByScan(JedisCluster jedisCluster, String pattern) {
+        Map<String, JedisPool> nodes = jedisCluster.getClusterNodes();
+
+        List<String> keys = new ArrayList<>();
+
+        for (Map.Entry<String, JedisPool> entry : nodes.entrySet()) {
+            keys.addAll(getJedisByScan(entry.getValue(), pattern));
+        }
+        return keys;
+    }
+
+    private List<String> getJedisByScan(JedisPool jedisPool, String pattern) {
+
+        List<String> keys = new ArrayList<>();
+
+        try (Jedis jedis = jedisPool.getResource()) {
+            ScanParams params = new ScanParams();
+            params.match(pattern);
+            params.count(100);
+
+            String cursor = "0";
+
+            do {
+                ScanResult<String> scan = jedis.scan(cursor, params);
+
+                cursor = scan.getStringCursor();
+
+                List<String> result = scan.getResult();
+                if (result != null && result.size() > 0) {
+                    keys.addAll(result);
+                }
+
+                if ("0".equals(cursor))
+                    continue;
+            } while (!"0".equals(cursor));
+        }
+
+        return keys;
+    }
+
+/**
     private List<String> getKeysByScan(JedisCluster jedisCluster, String pattern) {
         ScanParams params = new ScanParams();
         params.match(pattern);
@@ -106,6 +148,7 @@ public class JedisClusterServiceImpl implements JedisPoolService {
         return keys;
     }
 
+*/
     @Override
     public boolean expire(String key, int seconds) {
         return jedisCluster.expire(key, seconds) != null;
