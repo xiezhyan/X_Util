@@ -4,8 +4,9 @@ import java.io.Serializable;
 import java.util.*;
 import java.math.BigDecimal;
 import org.springframework.format.annotation.DateTimeFormat;
+import com.sanq.product.config.utils.entity.Pagination;
 
-public class ${table.javaName?cap_first!""} implements Serializable {
+public class ${table.javaName?cap_first!""} extends Pagination implements Serializable {
 
 	/**
 	 *	version: ${table.comment!""}

@@ -34,7 +34,7 @@ public class ${table.javaName?cap_first}Controller {
 		return ${table.javaName}Vo != null ? new Response().success(${table.javaName}Vo) : new Response().failure();
 	}
 
-	@LogAnnotation(description = "通过ID删除")
+	@LogAnnotation(description = "删除数据")
 	@RequestMapping(value="/delete",method=RequestMethod.DELETE)
 	public Response deleteById(HttpServletRequest request, @RequestBody ${table.javaName?cap_first}Vo ${table.javaName}Vo) {
 
@@ -44,21 +44,21 @@ public class ${table.javaName?cap_first}Controller {
 
 	@LogAnnotation(description = "分页查询数据")
 	@RequestMapping(value="/list",method=RequestMethod.GET)
-	public Response findList(HttpServletRequest request, @RequestBody(required = false) ${table.javaName?cap_first}Vo ${table.javaName}Vo,
-		Pagination pagination,
-		@RequestParam(value="page", required=false, defaultValue="0") int page,
-		@RequestParam(value="limit", required=false, defaultValue="20") int limit) {
+	public Response findListByPager(HttpServletRequest request, ${table.javaName?cap_first}Vo ${table.javaName}Vo) {
 
-		pagination.setPageSize(limit);
-		pagination.setCurrentIndex(page);
-
+		Pagination pagination = new Pagination();
+		if(null != ${table.javaName}Vo) {
+			pagination.setPageSize(${table.javaName}Vo.getPageSize());
+			pagination.setCurrentIndex(${table.javaName}Vo.getCurrentIndex());
+		}
 		Pager<${table.javaName?cap_first}Vo> pager = ${table.javaName}Service.findListByPage(${table.javaName}Vo, pagination);
+
 		return pager != null ? new Response().success(pager) : new Response().failure();
 	}
 
 	@LogAnnotation(description = "查询所有数据")
 	@RequestMapping(value="/all",method=RequestMethod.GET)
-	public Response findList(HttpServletRequest request, @RequestBody(required = false) ${table.javaName?cap_first}Vo ${table.javaName}Vo) {
+	public Response findList(HttpServletRequest request, ${table.javaName?cap_first}Vo ${table.javaName}Vo) {
 
 		List<${table.javaName?cap_first}Vo> list = ${table.javaName}Service.findList(${table.javaName}Vo);
 		return list != null ? new Response().success(list) : new Response().failure();
