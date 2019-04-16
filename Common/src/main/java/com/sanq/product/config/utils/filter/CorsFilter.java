@@ -32,12 +32,16 @@ public class CorsFilter implements Filter {
         HttpServletResponse response = (HttpServletResponse) res;
         String currentOrigin = request.getHeader("Origin");
         if (allowOrigin != null && !"".equals(allowOrigin)) {
-            List<String> allowOriginList = Arrays
-                    .asList(allowOrigin.split(","));
-            if (allowOriginList != null && allowOriginList.size() > 0) {
-                if (allowOriginList.contains(currentOrigin)) {
-                    response.setHeader("Access-Control-Allow-Origin",
-                            currentOrigin);
+            if("*".equals(allowOrigin)) {
+                response.setHeader("Access-Control-Allow-Origin", "*");
+            } else {
+                List<String> allowOriginList = Arrays
+                        .asList(allowOrigin.split(","));
+                if (allowOriginList != null && allowOriginList.size() > 0) {
+                    if (allowOriginList.contains(currentOrigin)) {
+                        response.setHeader("Access-Control-Allow-Origin",
+                                currentOrigin);
+                    }
                 }
             }
         }
