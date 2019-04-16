@@ -3,13 +3,12 @@ package com.sanq.product.redis.service.impl.cluster;
 import com.sanq.product.config.utils.string.StringUtil;
 import com.sanq.product.redis.service.JedisPoolService;
 import org.springframework.stereotype.Service;
-import redis.clients.jedis.JedisCluster;
-import redis.clients.jedis.ScanParams;
-import redis.clients.jedis.ScanResult;
+import redis.clients.jedis.*;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 /**
