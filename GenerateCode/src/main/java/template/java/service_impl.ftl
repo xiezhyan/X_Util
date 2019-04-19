@@ -32,7 +32,7 @@ public class ${table.javaName?cap_first}ServiceImpl implements ${table.javaName?
 	public int update(${table.javaName?cap_first}Vo ${table.javaName}Vo, <#list table.fields as field><#if field.columnKey == "PRI">${field.javaType} ${field.javaField}</#if></#list>) {
 		${table.javaName?cap_first}Vo old${table.javaName?cap_first}Vo = findById(<#list table.fields as field><#if field.columnKey == "PRI">${field.javaField}</#if></#list>);
 		
-		if(null != ${table.javaName}Vo) {
+		if(null != old${table.javaName?cap_first}Vo && null != ${table.javaName}Vo) {
 			<#list table.fields as field>
 			if(null != ${table.javaName}Vo.get${field.javaField?cap_first!""}()) {
 				old${table.javaName?cap_first}Vo.set${field.javaField?cap_first!""}(${table.javaName}Vo.get${field.javaField?cap_first!""}());
