@@ -1,8 +1,6 @@
 package com.sanq.product.config.utils.web;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.util.Properties;
 
 /**
@@ -66,15 +64,6 @@ public class PropUtil {
         }
         return properties.getProperty(key);
     }
-
-    @Deprecated
-    public static String getProperty(String key, String defaultValue) {
-        if(null == properties) {
-            loadProp();
-        }
-        return properties.getProperty(key, defaultValue);
-    }
-
 
     public static String getProperty(String path, String key){
         if(null == properties) {
