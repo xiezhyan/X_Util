@@ -44,13 +44,8 @@ public class ${table.javaName?cap_first}Controller {
 
 	@LogAnnotation(description = "分页查询数据")
 	@RequestMapping(value="/list",method=RequestMethod.GET)
-	public Response findListByPager(HttpServletRequest request, ${table.javaName?cap_first}Vo ${table.javaName}Vo) {
+	public Response findListByPager(HttpServletRequest request, ${table.javaName?cap_first}Vo ${table.javaName}Vo, Pagination pagination) {
 
-		Pagination pagination = new Pagination();
-		if(null != ${table.javaName}Vo) {
-			pagination.setPageSize(${table.javaName}Vo.getPageSize());
-			pagination.setCurrentIndex(${table.javaName}Vo.getCurrentIndex());
-		}
 		Pager<${table.javaName?cap_first}Vo> pager = ${table.javaName}Service.findListByPage(${table.javaName}Vo, pagination);
 
 		return pager != null ? new Response().success(pager) : new Response().failure();
