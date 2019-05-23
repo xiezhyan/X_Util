@@ -35,16 +35,6 @@ public class ExceptionAspect {
     }
 
     /**
-     * 400 - Bad Request
-     */
-//    @ResponseStatus(HttpStatus.BAD_REQUEST)
-//    @ExceptionHandler({MethodArgumentNotValidException.class})
-//    public Response handleValidationException(MethodArgumentNotValidException e) {
-//    	e.printStackTrace();
-//        return new Response().failure("parameter_validation_exception", ResultCode.PARAM_ERROR);
-//    }
-
-    /**
      * 405 - Method Not Allowed。HttpRequestMethodNotSupportedException
      * 是ServletException的子类,需要Servlet API支持
      */

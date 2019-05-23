@@ -17,6 +17,7 @@ public class Response{
 	
 	public Response success() {
 		this.meta = new Meta(true, OK, ResultCode.RESULT_OK);
+		this.data = true;
 		return this;
 	}
 	
