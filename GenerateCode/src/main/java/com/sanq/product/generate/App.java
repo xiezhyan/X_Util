@@ -67,9 +67,31 @@ public class App
 
 		genymationResources(tables, packageName);
 
+		genymationViews(tables, packageName);
+
 		//FileUtil.getInstance().compressExe(FreemarkerUtil.getInstance().getParentPath(packageName), FreemarkerUtil.getInstance().getParentPath(packageName) + ".zip");
 		LogUtil.getInstance(App.class).i("全部完成");
     }
+
+	private static void genymationViews(List<Tables> tables, String packageName) {
+
+		String base = packageName.substring(packageName.lastIndexOf("\\") + 1, packageName.length()) + File.separator + "views";
+
+		String tableJavaName = "";
+		for(Tables table : tables) {
+
+			tableJavaName = mStringInstance.firstUpperCase(table.getJavaName());
+
+			mRoot.put("table", table);
+
+			try {
+				//entity
+				write("views/api/Api.ftl",base + File.separator + "api",tableJavaName + "Api.js");
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+	}
 
 	private static void genymationResources(List<Tables> tables, String packageName) {
 
