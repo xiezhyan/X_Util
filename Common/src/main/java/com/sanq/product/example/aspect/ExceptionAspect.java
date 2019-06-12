@@ -67,6 +67,17 @@ public class ExceptionAspect {
         return new Response().failure(e.getMsg(), ResultCode.NO_TOKEN);
     }
 
+    /***
+     * 参数有误
+     */
+	@ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    @ExceptionHandler(NoParamsException.class)
+    public Response handleTokenException(NoParamsException e) {
+        e.printStackTrace();
+        return new Response().failure(e.getMsg(), ResultCode.PARAM_ERROR);
+    }
+
+
     /**
      * 500 - Internal Server Error
      */

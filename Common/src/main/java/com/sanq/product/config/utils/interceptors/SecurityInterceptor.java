@@ -24,26 +24,33 @@ public class SecurityInterceptor implements HandlerInterceptor {
             return true;
 
         Map<String, Object> objectMap;
-        if(request.getMethod().equalsIgnoreCase("get")) {
+        if(request.getMethod().equalsIgnoreCase("get"))
             objectMap = PostParams.getInstance().getParam2Get(request);
-        } else {
+        else
             objectMap = PostParams.getInstance().json2Map(PostParams.getInstance().get());
-        }
+        
 
         if(objectMap != null && !objectMap.isEmpty()) {
-            Long timestamp = (long) objectMap.get("timestamp");
-            if(timestamp == null)
-                return false;
+        	Object o = objectMap.get("timestamp");
+        	if(o == null)
+        		throw new NoParamsException("参数timestamp有误");
 
-            if(LocalDateUtils.nowTime().getTime() - timestamp >= 30*1000) {
-                return false;
-            }
+            Long timestamp = (Long) o;
 
-            String sign = (String) objectMap.get("sign");
+            if(LocalDateUtils.nowTime().getTime() - timestamp >= 30*1000)
+                throw new NoParamsException("timestamp已过期");
+           
+
+            o = objectMap.get("sign");
+            if(o == null)
+            	throw new NoParamsException("参数sign有误");	
+
+            String sign = (String) o;
+
             String paramsSign = PostParams.getInstance().getSign(objectMap);
-            if(!sign.equals(paramsSign)) {
-                return false;
-            }
+            if(!sign.equals(paramsSign))
+                throw new NoParamsException("sign验证不正确");	
+           	
 
             return true;
         }
