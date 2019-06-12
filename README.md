@@ -250,7 +250,7 @@ Disallow: /
     <filter-name>securityFilter</filter-name>
     <url-pattern>/*</url-pattern>
 </filter-mapping>
-  ```
+```
 ##### springmvc.xml 配置拦截器
 
 ```
