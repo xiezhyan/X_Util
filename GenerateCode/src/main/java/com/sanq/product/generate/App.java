@@ -80,7 +80,7 @@ public class App
 		String tableJavaName = "";
 		for(Tables table : tables) {
 
-			tableJavaName = mStringInstance.firstUpperCase(table.getJavaName());
+			tableJavaName = StringUtil.firstUpperCase(table.getJavaName());
 
 			mRoot.put("table", table);
 
