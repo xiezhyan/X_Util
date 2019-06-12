@@ -1,5 +1,7 @@
 package com.sanq.product.config.utils.entity;
 
+import java.io.Serializable;
+
 /**
  * 
  * version: 统一json返回格式
@@ -7,7 +9,7 @@ package com.sanq.product.config.utils.entity;
  * date: 2018年3月28日
  *
  */
-public class Response{
+public class Response implements Serializable {
 
 	private static final String OK = "ok";
 	private static final String ERROR = "error";
@@ -71,7 +73,7 @@ public class Response{
 
 
 
-	public class Meta {
+	public class Meta implements Serializable{
 		private Boolean success;
 		private String message;
 		private Integer code;
