@@ -251,3 +251,15 @@ Disallow: /
     <url-pattern>/*</url-pattern>
 </filter-mapping>
   ```
+##### springmvc.xml 配置拦截器
+
+```
+<!-- 拦截器 -->
+<mvc:interceptors>
+    <mvc:interceptor>
+	<!-- 允许所有的请求通过 -->
+	<mvc:mapping path="/**"/>
+	<bean class="com.sanq.product.config.utils.interceptors.SecurityInterceptor"></bean>
+    </mvc:interceptor>
+</mvc:interceptors>
+```
