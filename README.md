@@ -239,14 +239,15 @@ Disallow: /
 </filter-mapping>
 ```
 
-### 针对xss设置
+### 验证签名安全
+##### web.xml
 ```
 <filter>
-    <filter-name>xssFilter</filter-name>
-    <filter-class>com.sanq.product.config.utils.filter.XssFilter</filter-class>
+    <filter-name>securityFilter</filter-name>
+    <filter-class>com.sanq.product.config.utils.filter.security.SecurityFilter</filter-class>
 </filter>
 <filter-mapping>
-    <filter-name>xssFilter</filter-name>
+    <filter-name>securityFilter</filter-name>
     <url-pattern>/*</url-pattern>
 </filter-mapping>
   ```
