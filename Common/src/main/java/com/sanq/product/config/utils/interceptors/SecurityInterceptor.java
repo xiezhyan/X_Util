@@ -1,6 +1,7 @@
 package com.sanq.product.config.utils.interceptors;
 
 import com.sanq.product.config.utils.annotation.IgnoreSecurity;
+import com.sanq.product.config.utils.auth.exception.NoParamsException;
 import com.sanq.product.config.utils.date.LocalDateUtils;
 import com.sanq.product.config.utils.filter.security.PostParams;
 import org.springframework.web.method.HandlerMethod;
