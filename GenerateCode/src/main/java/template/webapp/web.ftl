@@ -68,25 +68,6 @@
         <url-pattern>/*</url-pattern>
     </filter-mapping>
 
-    <!-- xss -->
-    <filter>
-        <filter-name>defendXssFilter</filter-name>
-        <filter-class>com.sanq.product.config.utils.filter.XssFilter</filter-class>
-        <init-param>
-            <param-name>excludedPaths</param-name>
-            <param-value>
-                *.js,*.css,/css/*,/image/*,/js/*,/lib/*
-            </param-value>
-        </init-param>
-    </filter>
-
-    <filter-mapping>
-        <filter-name>defendXssFilter</filter-name>
-        <url-pattern>/*</url-pattern>
-    </filter-mapping>
-
-
-
     <context-param>
         <param-name>contextConfigLocation</param-name>
         <param-value>classpath:spring/spring-application.xml</param-value>
