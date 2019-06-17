@@ -24,8 +24,6 @@ public abstract class SecurityInterceptor implements HandlerInterceptor {
 
         HandlerMethod hm = (HandlerMethod)handler;
         IgnoreSecurity s = hm.getMethodAnnotation(IgnoreSecurity.class);
-        if(s != null)
-            return true;
 
         Map<String, Object> objectMap;
         if(request.getMethod().equalsIgnoreCase("get"))
@@ -35,13 +33,17 @@ public abstract class SecurityInterceptor implements HandlerInterceptor {
         
 
         if(objectMap != null && !objectMap.isEmpty()) {
-            Object o = objectMap.get("token");
-            if(o == null)
-                throw new NoParamsException("参数token不存在");
+            Object o = null;
+			
+			if(s == null) {
+				o = objectMap.get("token");
+				if(o == null)
+					throw new NoParamsException("参数token不存在");
 
-            if(!validateToken(request, (String) o)) {
-                throw new TokenException("token已过期，请重新登录");
-            }
+				if(!validateToken(request, (String) o)) {
+					throw new TokenException("token已过期，请重新登录");
+				}
+			}
 
         	o = objectMap.get("timestamp");
         	if(o == null)
