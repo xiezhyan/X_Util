@@ -1,5 +1,6 @@
 package com.sanq.product.example.aspect;
 
+import com.sanq.product.config.utils.auth.exception.NoParamsException;
 import com.sanq.product.config.utils.auth.exception.TokenException;
 import com.sanq.product.config.utils.entity.Response;
 import com.sanq.product.config.utils.entity.ResultCode;
