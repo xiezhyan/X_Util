@@ -6,7 +6,7 @@ public class Pagination implements Serializable{
 
 	private static final long serialVersionUID = 1L;
 
-	//当前显示的条数,默认显示10条
+	//当前显示的条数,默认显示20条
 	private int pageSize = 20;
 	
 	//当前显示的页数
