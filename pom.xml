@@ -51,7 +51,8 @@
         <jsp-api.version>2.0</jsp-api.version>
 
         <!-- spring -->
-        <spring.version>4.1.7.RELEASE</spring.version>
+        <spring.version>4.3.18.RELEASE</spring.version>
+        <!--<spring.version>4.1.7.RELEASE</spring.version>-->
 
         <!-- fileupload -->
         <fileupload.version>1.3.1</fileupload.version>
@@ -94,19 +95,35 @@
 
         <jsoup.version>1.11.3</jsoup.version>
 
+        <!--kafka-->
         <kafka.version>2.1.0</kafka.version>
         <integration.verion>3.1.0.RELEASE</integration.verion>
         <spring-kafka.verion>2.2.2.RELEASE</spring-kafka.verion>
+
+        <!--rabbit-mq-->
+        <amqp-client.verison>3.4.1</amqp-client.verison>
+        <spring-rabbit.version>1.4.0.RELEASE</spring-rabbit.version>
     </properties>
 
     <dependencyManagement>
         <dependencies>
+
+            <dependency>
+                <groupId>com.rabbitmq</groupId>
+                <artifactId>amqp-client</artifactId>
+                <version>${amqp-client.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.amqp</groupId>
+                <artifactId>spring-rabbit</artifactId>
+                <version>${spring-rabbit.version}</version>
+            </dependency>
+
             <dependency>
                 <groupId>org.jsoup</groupId>
                 <artifactId>jsoup</artifactId>
                 <version>${jsoup.version}</version>
             </dependency>
-
 
             <dependency>
                 <groupId>org.hibernate</groupId>
