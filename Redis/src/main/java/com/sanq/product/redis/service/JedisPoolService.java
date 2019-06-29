@@ -4,7 +4,11 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * Created by Xiezhyan on 2019/1/18.
+ * version: redis
+ * ---------------------
+ * @author sanq.Yan
+ * @date 2019/6/29
+ * @param
  */
 public interface JedisPoolService {
 
@@ -62,6 +66,11 @@ public interface JedisPoolService {
     boolean exists(String key);
 
 
+    /**
+     * 根据条件查询出key
+     * @param pattern
+     * @return
+     */
     List<String> keys(String pattern);
 
     /**
