@@ -77,16 +77,11 @@
     </listener>
 
     <filter>
-        <filter-name>encodingFilter</filter-name>
-        <filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>
-        <async-supported>true</async-supported>
-        <init-param>
-            <param-name>encoding</param-name>
-            <param-value>UTF-8</param-value>
-        </init-param>
+        <filter-name>securityFilter</filter-name>
+        <filter-class>com.sanq.product.config.utils.filter.security.SecurityFilter</filter-class>
     </filter>
     <filter-mapping>
-        <filter-name>encodingFilter</filter-name>
+        <filter-name>securityFilter</filter-name>
         <url-pattern>/*</url-pattern>
     </filter-mapping>
 

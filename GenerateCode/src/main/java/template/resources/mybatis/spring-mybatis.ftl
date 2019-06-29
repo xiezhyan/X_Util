@@ -70,7 +70,7 @@
 			<tx:method name="delete*" propagation="REQUIRED" />
 			<tx:method name="update*" propagation="REQUIRED" />
 			<tx:method name="find*" propagation="SUPPORTS" read-only="true" />
-			<tx:method name="find*" propagation="SUPPORTS" read-only="true" />
+			<tx:method name="get*" propagation="SUPPORTS" read-only="true" />
 		</tx:attributes>
 	</tx:advice>
 	<!-- 切面 -->

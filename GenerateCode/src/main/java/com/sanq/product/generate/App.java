@@ -130,8 +130,6 @@ public class App
 		try {
 			write("resources/spring/spring-application.ftl", springPackage, "spring-application.xml");
 			write("resources/spring/spring-mvc.ftl", springPackage, "spring-mvc.xml");
-			write("resources/thread/spring-thread.ftl", threadPackage, "spring-thread.xml");
-//			write("resources/redis/spring-redis.ftl", redisPackage, "spring-redis.xml");
 			write("resources/mybatis/spring-mybatis.ftl", mybatisPackage, "spring-mybatis.xml");
 			write("resources/mybatis/mybatis-config.ftl", mybatisPackage, "mybatis-config.xml");
 			write("resources/dubbo/dubbo-provide.ftl", dubboPackage, "dubbo-provide.xml");

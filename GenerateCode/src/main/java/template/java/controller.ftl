@@ -27,7 +27,7 @@ public class ${table.javaName?cap_first}Controller {
 	private ${table.javaName?cap_first}Service ${table.javaName}Service;
 
 	@LogAnnotation(description = "通过ID得到详情")
-	@RequestMapping(value="/get/{id}",method=RequestMethod.GET)
+	@GetMapping(value="/get/{id}")
 	public Response getById(HttpServletRequest request, @PathVariable("id") <#list table.fields as field><#if field.columnKey == "PRI">${field.javaType} ${field.javaField}</#if></#list>) {
 		${table.javaName?cap_first}Vo ${table.javaName}Vo = ${table.javaName}Service.findById(<#list table.fields as field><#if field.columnKey == "PRI">${field.javaField}</#if></#list>);
 
@@ -35,7 +35,7 @@ public class ${table.javaName?cap_first}Controller {
 	}
 
 	@LogAnnotation(description = "删除数据")
-	@RequestMapping(value="/delete",method=RequestMethod.DELETE)
+	@DeleteMapping(value="/delete")
 	public Response deleteById(HttpServletRequest request, @RequestBody ${table.javaName?cap_first}Vo ${table.javaName}Vo) {
 
 		int result = ${table.javaName}Service.delete(${table.javaName}Vo);
@@ -43,7 +43,7 @@ public class ${table.javaName?cap_first}Controller {
 	}
 
 	@LogAnnotation(description = "分页查询数据")
-	@RequestMapping(value="/list",method=RequestMethod.GET)
+	@GetMapping(value="/list",method=RequestMethod.GET)
 	public Response findListByPager(HttpServletRequest request, ${table.javaName?cap_first}Vo ${table.javaName}Vo, Pagination pagination) {
 
 		Pager<${table.javaName?cap_first}Vo> pager = ${table.javaName}Service.findListByPage(${table.javaName}Vo, pagination);
@@ -52,7 +52,7 @@ public class ${table.javaName?cap_first}Controller {
 	}
 
 	@LogAnnotation(description = "查询所有数据")
-	@RequestMapping(value="/all",method=RequestMethod.GET)
+	@GetMapping(value="/all",method=RequestMethod.GET)
 	public Response findList(HttpServletRequest request, ${table.javaName?cap_first}Vo ${table.javaName}Vo) {
 
 		List<${table.javaName?cap_first}Vo> list = ${table.javaName}Service.findList(${table.javaName}Vo);
@@ -60,7 +60,7 @@ public class ${table.javaName?cap_first}Controller {
 	}
 
 	@LogAnnotation(description = "添加数据")
-	@RequestMapping(value="/save",method=RequestMethod.POST)
+	@PostMapping(value="/save",method=RequestMethod.POST)
 	public Response add(HttpServletRequest request, @RequestBody ${table.javaName?cap_first}Vo ${table.javaName}Vo) {
 
 		int result = ${table.javaName}Service.save(${table.javaName}Vo);
@@ -69,7 +69,7 @@ public class ${table.javaName?cap_first}Controller {
 	}
 
 	@LogAnnotation(description = "通过ID修改数据")
-	@RequestMapping(value="/update/{id}",method=RequestMethod.PUT)
+	@PutMapping(value="/update/{id}",method=RequestMethod.PUT)
 	public Response updateByKey(HttpServletRequest request,
         @RequestBody ${table.javaName?cap_first}Vo ${table.javaName}Vo,
         @PathVariable("id") <#list table.fields as field><#if field.columnKey == "PRI">${field.javaType} ${field.javaField}</#if></#list>) {

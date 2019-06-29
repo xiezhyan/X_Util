@@ -91,7 +91,7 @@
     <bean id="propertySetting" class="org.springframework.beans.factory.config.PropertiesFactoryBean">
         <property name="locations">
             <list>
-                <value>classpath:config.properties</value>
+                <value>classpath:freemarker.properties</value>
             </list>
         </property>
     </bean>

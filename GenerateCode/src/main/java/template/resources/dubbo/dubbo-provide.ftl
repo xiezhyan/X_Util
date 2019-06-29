@@ -21,7 +21,6 @@
     <dubbo:provider timeout="30000" threadpool="fixed" threads="100" accepts="1000"/>
 
     <#list tables as table>
-    <bean id="${table.javaName}Service" class="${servicePackage}.impl.${table.javaName?cap_first}ServiceImpl"/>
     <dubbo:service interface="${servicePackage}.${table.javaName?cap_first}Service" version="1.0.0" timeout=""
                    ref="${table.javaName}Service" />
     </#list>
