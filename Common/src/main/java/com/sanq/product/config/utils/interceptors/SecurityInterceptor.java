@@ -1,6 +1,7 @@
 package com.sanq.product.config.utils.interceptors;
 
 import com.sanq.product.config.utils.annotation.IgnoreSecurity;
+import com.sanq.product.config.utils.annotation.Security;
 import com.sanq.product.config.utils.auth.exception.NoParamsException;
 import com.sanq.product.config.utils.auth.exception.TokenException;
 import com.sanq.product.config.utils.date.LocalDateUtils;
@@ -23,6 +24,12 @@ public abstract class SecurityInterceptor implements HandlerInterceptor {
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
 
         HandlerMethod hm = (HandlerMethod)handler;
+        Security security = hm.getMethodAnnotation(Security.class);
+
+        if(security != null) {
+            return true;
+        }
+
         IgnoreSecurity s = hm.getMethodAnnotation(IgnoreSecurity.class);
 
         Map<String, Object> objectMap;

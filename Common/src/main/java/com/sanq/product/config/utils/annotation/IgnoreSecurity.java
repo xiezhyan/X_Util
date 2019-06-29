@@ -5,7 +5,7 @@ import java.lang.annotation.*;
 
 /**        
  * Title:自定义注解     
- * Description: 标识是否忽略REST安全性检查
+ * Description: 忽略Token检查
  */      
 @Target(ElementType.METHOD) 
 @Retention(RetentionPolicy.RUNTIME) 

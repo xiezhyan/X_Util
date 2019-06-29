@@ -10,13 +10,23 @@ import java.io.IOException;
  */
 public class UserAgentUtil {
 
-    public static UASparser uasParser = null;
-
-    static {
-        try {
-            uasParser = new UASparser(OnlineUpdater.getVendoredInputStream());
-        } catch (IOException e) {
-            e.printStackTrace();
+    public static final ThreadLocal<UASparser> LOCAL = new ThreadLocal<UASparser>() {
+        @Override
+        protected UASparser initialValue() {
+            try {
+                return new UASparser(OnlineUpdater.getVendoredInputStream());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return null;
         }
+    };
+
+    public static String getOs (String useragent) throws IOException {
+        UASparser sparser = LOCAL.get();
+        if (sparser == null)
+            return "";
+
+        return LOCAL.get().parse(useragent).getOsFamily().toLowerCase();
     }
 }
