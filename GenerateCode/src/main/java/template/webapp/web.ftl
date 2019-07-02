@@ -48,7 +48,7 @@
         <filter-class>com.sanq.product.config.utils.filter.CorsFilter</filter-class>
         <init-param>
             <param-name>allowOrigin</param-name>
-            <param-value>http://localhost:63343,http://localhost:8080</param-value>
+            <param-value>*</param-value>
         </init-param>
         <init-param>
             <param-name>allowMethods</param-name>
@@ -75,6 +75,20 @@
     <listener>
         <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
     </listener>
+
+    <filter>
+        <filter-name>encodingFilter</filter-name>
+        <filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>
+        <async-supported>true</async-supported>
+        <init-param>
+            <param-name>encoding</param-name>
+            <param-value>UTF-8</param-value>
+        </init-param>
+    </filter>
+    <filter-mapping>
+        <filter-name>encodingFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
 
     <filter>
         <filter-name>securityFilter</filter-name>
