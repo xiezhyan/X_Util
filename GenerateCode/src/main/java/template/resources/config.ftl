@@ -10,7 +10,7 @@ redis.port=6379
 
 
 # zookeeper
-zookeeper.address=zookeeper://ip:2181
+zookeeper.address=ip:2181
 zookeeper.port=20880
 
 # kafka
