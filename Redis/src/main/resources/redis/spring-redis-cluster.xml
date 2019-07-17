@@ -18,9 +18,9 @@
                         http://www.springframework.org/schema/cache/spring-cache-4.2.xsd">
 
     <bean id="jedisPoolConfig" class="redis.clients.jedis.JedisPoolConfig">
-        <property name="maxTotal" value="100"/>
-        <property name="maxIdle" value="20"/>
-        <property name="minIdle" value="10"/>
+        <property name="maxTotal" value="300"/>
+        <property name="maxIdle" value="110"/>
+        <property name="minIdle" value="8"/>
         <property name="blockWhenExhausted" value="true"></property>
         <property name="maxWaitMillis" value="3000"/>
         <property name="testOnBorrow" value="false"/>

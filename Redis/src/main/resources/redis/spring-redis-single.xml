@@ -19,7 +19,7 @@
 
     <bean id="jedisPoolConfig" class="redis.clients.jedis.JedisPoolConfig">
         <property name="maxTotal" value="300" />
-        <property name="maxIdle" value="10" />
+        <property name="maxIdle" value="110" />
         <property name="minIdle" value="8" />
         <property name="maxWaitMillis" value="1000" />
         <property name="lifo" value="false" />
