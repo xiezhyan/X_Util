@@ -14,6 +14,8 @@
 
 	<context:component-scan base-package="${controllerPackage}" />
 
+    <!--<context:property-placeholder location="classpath:config.properties"/> -->
+
 	<!-- 启用 @AspectJ	-->
 	<aop:aspectj-autoproxy />
 
@@ -57,7 +59,6 @@
                 <!--设置null值也要输出，fastjson默认是关闭的-->
                 <value>WriteMapNullValue</value>
                 <value>WriteNullStringAsEmpty</value>
-                <value>WriteNullListAsEmpty</value>
                 <value>DisableCircularReferenceDetect</value>
             </list>
         </property>

@@ -10,7 +10,7 @@
 
     <dubbo:application name="" />
 
-    <dubbo:registry address="${r"${zookeeper.address}"}" />
+    <dubbo:registry protocol="zookeeper"  address="${r"${zookeeper.address}"}" />
 
     <dubbo:protocol name="dubbo" port="${r"${zookeeper.port}"}" />
 
