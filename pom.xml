@@ -71,8 +71,8 @@
         <quartz.version>2.2.1</quartz.version>
 
         <!-- freemarker -->
-        <freemarker.version>2.3.20</freemarker.version>
-        <spring-context-support.version>3.2.4.RELEASE</spring-context-support.version>
+        <freemarker.version>2.3.23</freemarker.version>
+        <spring-context-support.version>4.3.18.RELEASE</spring-context-support.version>
 
         <!-- dubbo -->
         <dubbo.version>2.5.3</dubbo.version>
