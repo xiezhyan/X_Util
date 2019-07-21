@@ -78,7 +78,7 @@ public abstract class SecurityInterceptor implements HandlerInterceptor {
                 return true;
             }
         }
-        return true;
+        return false;
     }
 
     public abstract boolean validateToken(HttpServletRequest request, String token);
