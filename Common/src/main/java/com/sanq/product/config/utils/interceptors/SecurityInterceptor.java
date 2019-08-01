@@ -72,8 +72,10 @@ public abstract class SecurityInterceptor implements HandlerInterceptor {
                     String sign = (String) o;
 
                     String paramsSign = PostParams.getInstance().getSign(objectMap);
-                    if (!sign.equals(paramsSign))
+                    if (!sign.equals(paramsSign)) {
                         throw new NoParamsException(SecurityEnum.SIGN.getName() + "验证不正确");
+                    }
+
                 }
                 return true;
             }
