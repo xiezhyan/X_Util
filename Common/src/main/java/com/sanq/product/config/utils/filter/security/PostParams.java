@@ -69,7 +69,7 @@ public class PostParams {
 
         for(String key:list) {
             Object value = map.get(key);
-            if(!key.equalsIgnoreCase("sign") && value != null && !StringUtil.isEmpty(value.toString()))
+            if(!key.equalsIgnoreCase("sign"))
                 sb.append(key).append("=").append(map.get(key)).append("&");
         }
         sb.deleteCharAt(sb.length() - 1);
