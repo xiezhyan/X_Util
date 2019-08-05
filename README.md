@@ -17,6 +17,8 @@ Java常用工具类
 > Redis的封装， 可以在单机和集群之间随意切换
 3. GenerateCode
 > 自动生成代码工具， 包括entity, mapper, service, controller, resources， 通过简单修改， 生成项目
+4. Security
+> 接口安全限制
 
 #### 安装教程
 
@@ -202,7 +204,7 @@ Java常用工具类
         </plugins>
     </build>
     ```
-   
+
 ### 反爬虫约定 robots.txt
 > 项目跟路径（webapp）下添加robots.txt文件
 ```
@@ -215,7 +217,7 @@ Disallow: /
 <!-- ajax 跨域 -->
 <filter>
     <filter-name>corsFilter</filter-name>
-    <filter-class>com.sanq.product.config.utils.filter.CorsFilter</filter-class>
+    <filter-class>com.sanq.product.security.filters.CorsFilter</filter-class>
     <init-param>
         <param-name>allowOrigin</param-name>
         <param-value>地址设置</param-value>
@@ -240,26 +242,23 @@ Disallow: /
 ```
 
 ### 验证签名安全
-##### web.xml
+
 ```
+//maven
+<dependency>
+    <groupId>com.sanq.product.x_utils</groupId>
+    <artifactId>util_security</artifactId>
+    <version>1.0-SNAPSHOT</version>
+</dependency>
+
+//web.xml
 <filter>
     <filter-name>securityFilter</filter-name>
-    <filter-class>com.sanq.product.config.utils.filter.security.SecurityFilter</filter-class>
+    <filter-class>com.sanq.product.security.filters.SecurityFilter</filter-class>
 </filter>
 <filter-mapping>
     <filter-name>securityFilter</filter-name>
     <url-pattern>/*</url-pattern>
 </filter-mapping>
-```
-##### springmvc.xml 配置拦截器
 
-```
-<!-- 拦截器 -->
-<mvc:interceptors>
-    <mvc:interceptor>
-	<!-- 允许所有的请求通过 -->
-	<mvc:mapping path="/**"/>
-	<bean class="com.sanq.product.config.utils.interceptors.SecurityInterceptor"></bean>
-    </mvc:interceptor>
-</mvc:interceptors>
 ```
