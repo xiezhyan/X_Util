@@ -13,6 +13,7 @@
         <module>Redis</module>
         <module>Common</module>
         <module>GenerateCode</module>
+        <module>Security</module>
     </modules>
 
     <distributionManagement>
