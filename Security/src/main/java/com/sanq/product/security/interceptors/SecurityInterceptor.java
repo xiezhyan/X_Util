@@ -73,20 +73,15 @@ public abstract class SecurityInterceptor implements HandlerInterceptor {
                 if (LocalDateUtils.nowTime().getTime() - timestamp >= 60 * 1000)
                     throw new NoParamsException(String.format("参数%s已过期", SecurityFieldEnum.TIMESTAMP.getName()));
 
+                o = objectMap.get(SecurityFieldEnum.SIGN.getName());
+                if (o == null)
+                    throw new NoParamsException(String.format("参数%s不存在", SecurityFieldEnum.SIGN.getName()));
 
-                o = objectMap.get(SecurityFieldEnum.CLIENT.getName());
-                if (o == null || SecurityFieldEnum.APP.getName().equals((String) o)) {  //这里获取CLIENT是为了防止有些项目无法进行sign验证
-                    o = objectMap.get(SecurityFieldEnum.SIGN.getName());
-                    if (o == null)
-                        throw new NoParamsException(String.format("参数%s不存在", SecurityFieldEnum.SIGN.getName()));
+                String sign = (String) o;
 
-                    String sign = (String) o;
-
-                    String paramsSign = ParamUtils.getInstance().getSign(objectMap);
-                    if (!sign.equals(paramsSign)) {
-                        throw new NoParamsException(String.format("参数%s验证不正确", SecurityFieldEnum.SIGN.getName()));
-                    }
-
+                String paramsSign = ParamUtils.getInstance().getSign(objectMap);
+                if (!sign.equals(paramsSign)) {
+                    throw new NoParamsException(String.format("参数%s验证不正确", SecurityFieldEnum.SIGN.getName()));
                 }
                 return true;
             }
