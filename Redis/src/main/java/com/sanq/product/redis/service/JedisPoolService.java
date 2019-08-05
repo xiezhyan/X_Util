@@ -50,6 +50,8 @@ public interface JedisPoolService {
      */
     long incr(String key);
 
+    long incrAtTime(String key, int second);
+
     /**
      * 自增
      * @param key

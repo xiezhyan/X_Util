@@ -122,6 +122,23 @@ public class JedisSingleServiceImpl implements JedisPoolService {
     }
 
     @Override
+    public long incrAtTime(String key, int second) {
+        String lockValue = _lockValue();
+
+        try (Jedis jedis = jedisPool.getResource()) {
+            boolean isLocked = _lock(jedis, key, lockValue);
+            if (isLocked) {
+                Long incr = jedis.incr(key);
+                expire(key, second);
+                _unLock(jedis, key, lockValue);
+
+                return incr;
+            }
+        }
+        return 0;
+    }
+
+    @Override
     public long incr(String key, int max) {
         if (!exists(key)) {
             set(key, max + "");

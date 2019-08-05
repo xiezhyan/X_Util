@@ -46,6 +46,13 @@ public class JedisClusterServiceImpl implements JedisPoolService {
     }
 
     @Override
+    public long incrAtTime(String key, int second) {
+        long incr = incr(key);
+        expire(key, second);
+        return incr;
+    }
+
+    @Override
     public long incr(String key, int max) {
         if(!exists(key)) {
             set(key, max + "");
