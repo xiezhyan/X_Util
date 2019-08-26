@@ -392,6 +392,13 @@ public class JedisSingleServiceImpl implements JedisPoolService {
     }
 
     @Override
+    public Long bitCount(String key) {
+        try (Jedis jedis = jedisPool.getResource()) {
+            return jedis.bitcount(key);
+        }
+    }
+
+    @Override
     public boolean eval(String script, List<String> keys, List<String> args) {
         try (Jedis jedis = jedisPool.getResource()) {
             return jedis.eval(script, keys, args) != null;

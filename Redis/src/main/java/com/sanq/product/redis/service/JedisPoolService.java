@@ -204,6 +204,8 @@ public interface JedisPoolService {
      */
     boolean getBit(String key, long offset);
 
+    Long bitCount(String key);
+
     /**
      * 执行lua脚本
      * @param script

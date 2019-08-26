@@ -127,34 +127,6 @@ public class JedisClusterServiceImpl implements JedisPoolService {
         return keys;
     }
 
-/**
-    private List<String> getKeysByScan(JedisCluster jedisCluster, String pattern) {
-        ScanParams params = new ScanParams();
-        params.match(pattern);
-        params.count(100);
-
-        String cursor = "0";
-
-        List<String> keys = new ArrayList<>();
-
-        do {
-            ScanResult<String> scan = jedisCluster.scan(cursor, params);
-
-            cursor = scan.getStringCursor();
-
-            List<String> result = scan.getResult();
-            if(result != null && result.size() > 0) {
-                keys.addAll(result);
-            }
-
-            if("0".equals(cursor))
-            	continue;
-        } while (!"0".equals(cursor));
-
-        return keys;
-    }
-
-*/
     @Override
     public boolean expire(String key, int seconds) {
         return jedisCluster.expire(key, seconds) != null;
@@ -216,6 +188,11 @@ public class JedisClusterServiceImpl implements JedisPoolService {
     @Override
     public boolean getBit(String key, long offset) {
         return jedisCluster.getbit(key, offset);
+    }
+
+    @Override
+    public Long bitCount(String key) {
+        return jedisCluster.bitcount(key);
     }
 
     @Override
