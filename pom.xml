@@ -101,9 +101,7 @@
         <integration.verion>3.1.0.RELEASE</integration.verion>
         <spring-kafka.verion>2.2.2.RELEASE</spring-kafka.verion>
 
-        <!--rabbit-mq-->
-        <amqp-client.verison>3.4.1</amqp-client.verison>
-        <spring-rabbit.version>1.4.0.RELEASE</spring-rabbit.version>
+        <es.version>6.8.2</es.version>
     </properties>
 
     <dependencyManagement>
@@ -444,6 +442,14 @@
                 <version>${spring-kafka.verion}</version>
             </dependency>
             <!--kafka end-->
+
+            <!--es start-->
+            <dependency>
+                <groupId>org.elasticsearch.client</groupId>
+                <artifactId>elasticsearch-rest-high-level-client</artifactId>
+                <version>${es.version}</version>
+            </dependency>
+            <!--es end-->
         </dependencies>
     </dependencyManagement>
 
