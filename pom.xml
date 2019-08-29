@@ -12,6 +12,7 @@
     <modules>
         <module>Redis</module>
         <module>Common</module>
+        <module>Config</module>
         <module>GenerateCode</module>
         <module>Security</module>
     </modules>
