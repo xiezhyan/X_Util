@@ -32,6 +32,7 @@ import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.xcontent.XContentType;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
+import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.junit.Assert;
 import org.springframework.stereotype.Component;
@@ -40,8 +41,7 @@ import javax.annotation.Resource;
 import java.io.IOException;
 import java.io.Serializable;
 import java.lang.reflect.ParameterizedType;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Component
 public class BaseSearchSupportImpl<T extends Serializable> implements BaseSearchSupport<T> {
@@ -165,7 +165,7 @@ public class BaseSearchSupportImpl<T extends Serializable> implements BaseSearch
      * @return
      */
     @Override
-    public boolean update(String index, String type, T entity){
+    public boolean update(String index, String type, T entity) {
         Map<String, Object> map = GlobalUtil.bean2Map(entity);
 
         UpdateRequest request = new UpdateRequest(index, type, map.get("id").toString());
@@ -244,5 +244,90 @@ public class BaseSearchSupportImpl<T extends Serializable> implements BaseSearch
             e.printStackTrace();
         }
         return false;
+    }
+
+    /**
+     * 查询数据 分页
+     *
+     * @param index
+     * @param type
+     * @param entity
+     * @param pagination
+     * @return
+     */
+    @Override
+    public Pager<T> findListByPager(String index, String type, T entity, Pagination pagination) {
+        Map<String, Object> map = GlobalUtil.bean2Map(entity);
+
+        pagination.setTotalCount(findListCount(index, type, map));
+
+        SearchRequest searchRequest = new SearchRequest(index).types(type);
+
+        SearchSourceBuilder sourceBuilder = getSearchRequest(map);
+
+        sourceBuilder.from(pagination.getStartPage());
+        sourceBuilder.size(pagination.getPageSize());
+        searchRequest.source(sourceBuilder);
+
+        try {
+            SearchResponse searchResponse = restClient.search(searchRequest, RequestOptions.DEFAULT);
+
+            List<T> data = new ArrayList<>(pagination.getPageSize());
+
+            for (SearchHit hits : searchResponse.getHits().getHits()) {
+                data.add(JsonUtil.json2Obj(hits.getSourceAsString(), getGenericClass()));
+            }
+            return new Pager<T>(pagination, data);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
+    /**
+     * 获取到总条数
+     * @param index
+     * @param type
+     * @param map
+     * @return
+     */
+    private int findListCount(String index, String type, Map<String, Object> map) {
+
+        SearchRequest searchRequest = new SearchRequest(index).types(type);
+
+        SearchSourceBuilder sourceBuilder = getSearchRequest(map);
+        searchRequest.source(sourceBuilder);
+
+        try {
+            SearchResponse searchResponse = restClient.search(searchRequest, RequestOptions.DEFAULT);
+            return StringUtil.toInteger(searchResponse.getHits().getTotalHits());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+
+    private SearchSourceBuilder getSearchRequest(Map<String, Object> map) {
+        SearchSourceBuilder sourceBuilder = new SearchSourceBuilder();
+
+        BoolQueryBuilder boolQueryBuilder = new BoolQueryBuilder();
+
+        map.entrySet().stream().forEach(entry -> {
+            Object value = entry.getValue();
+            if (value instanceof Integer ||
+                    value instanceof Long ||
+                    value instanceof Float ||
+                    value instanceof Double ||
+                    value instanceof Boolean
+            ) {
+                boolQueryBuilder.must().add(QueryBuilders.termQuery(entry.getKey(), value));
+            } else
+                boolQueryBuilder.must().add(QueryBuilders.matchQuery(entry.getKey(), value));
+        });
+
+        sourceBuilder.query(boolQueryBuilder);
+
+        return sourceBuilder;
     }
 }

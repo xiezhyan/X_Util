@@ -87,4 +87,14 @@ public interface BaseSearchSupport<T extends Serializable> {
      * @return
      */
     boolean deleteIndex(String index);
+
+    /**
+     * 查询数据 分页
+     * @param index
+     * @param type
+     * @param entity
+     * @param pagination
+     * @return
+     */
+    Pager<T> findListByPager(String index, String type, T entity, Pagination pagination);
 }
