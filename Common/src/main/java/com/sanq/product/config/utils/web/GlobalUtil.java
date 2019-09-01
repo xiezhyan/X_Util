@@ -1,13 +1,7 @@
 package com.sanq.product.config.utils.web;
 
-import org.apache.kafka.common.protocol.types.Field;
-
 import javax.servlet.http.HttpServletRequest;
-import java.beans.BeanInfo;
-import java.beans.IntrospectionException;
-import java.beans.Introspector;
-import java.beans.PropertyDescriptor;
-import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -44,24 +38,20 @@ public class GlobalUtil {
 
     public static Map<String, Object> bean2Map(Object entity) {
         Map<String, Object> map = new HashMap<>();
-        BeanInfo info = null;
-        try {
-            info = Introspector.getBeanInfo(entity.getClass(), Object.class);
-        } catch (IntrospectionException e) {
-            e.printStackTrace();
+        if (entity == null) {
+            return map;
         }
-        PropertyDescriptor[] pds = info.getPropertyDescriptors();
-        for (PropertyDescriptor pd : pds) {
-            String key = pd.getName();
-            Object value = null;
-            try {
-                value = pd.getReadMethod().invoke(entity);
-            } catch (IllegalAccessException e) {
-                e.printStackTrace();
-            } catch (InvocationTargetException e) {
-                e.printStackTrace();
+        Class clazz = entity.getClass();
+        Field[] fields = clazz.getDeclaredFields();
+        try {
+            for (Field field : fields) {
+                field.setAccessible(true);
+                if (field.get(entity) != null) {
+                    map.put(field.getName(), field.get(entity));
+                }
             }
-            map.put(key, value);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
         return map;
     }

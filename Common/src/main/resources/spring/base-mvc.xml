@@ -1,21 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
-	xmlns:mvc="http://www.springframework.org/schema/mvc" 
-	xmlns:aop="http://www.springframework.org/schema/aop"
-	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
 		http://www.springframework.org/schema/beans/spring-beans.xsd
-        http://www.springframework.org/schema/context 
-        http://www.springframework.org/schema/context/spring-context-3.1.xsd
-        http://www.springframework.org/schema/mvc 
+        http://www.springframework.org/schema/mvc
         http://www.springframework.org/schema/mvc/spring-mvc-3.1.xsd
 		http://www.springframework.org/schema/aop
 		http://www.springframework.org/schema/aop/spring-aop-3.1.xsd">
 
-	<!-- 启用 @AspectJ	-->
-	<aop:aspectj-autoproxy />
+    <!-- 启用 @AspectJ	-->
+    <aop:aspectj-autoproxy/>
 
-	<!--fastjson支持配置开始 -->
+    <!--fastjson支持配置开始 -->
     <mvc:annotation-driven>
         <!--不使用默认消息转换器 -->
         <mvc:message-converters register-defaults="false">
@@ -60,16 +58,16 @@
     </bean>
     <!--fastjson支持配置结束 -->
 
-	<mvc:annotation-driven />
+    <mvc:annotation-driven/>
     <mvc:resources location="/static/" mapping="/static/**"/>
 
-	<bean id="multipartResolver"
-		class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
-		<property name="defaultEncoding" value="utf-8" />
-		<property name="maxUploadSize" value="10485760000" />
-		<property name="maxInMemorySize" value="40960" />
-		<property name="resolveLazily" value="true" />
-	</bean>
+    <bean id="multipartResolver"
+          class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+        <property name="defaultEncoding" value="utf-8"/>
+        <property name="maxUploadSize" value="10485760000"/>
+        <property name="maxInMemorySize" value="40960"/>
+        <property name="resolveLazily" value="true"/>
+    </bean>
 
     <!--视图解析器-->
     <!--配置试图解析器  -->
@@ -97,4 +95,6 @@
         </property>
         <property name="freemarkerSettings" ref="propertySetting"></property>
     </bean>
+
+    <import resource="classpath:thread/spring-thread.xml"/>
 </beans>
