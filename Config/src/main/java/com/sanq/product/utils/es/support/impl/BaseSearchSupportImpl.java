@@ -6,12 +6,9 @@ import com.sanq.product.config.utils.string.StringUtil;
 import com.sanq.product.config.utils.web.GlobalUtil;
 import com.sanq.product.config.utils.web.JsonUtil;
 import com.sanq.product.utils.es.support.BaseSearchSupport;
-import com.sun.corba.se.spi.ior.ObjectKey;
-import com.sun.deploy.cache.InMemoryLocalApplicationProperties;
 import org.elasticsearch.action.DocWriteRequest;
 import org.elasticsearch.action.admin.indices.delete.DeleteIndexRequest;
 import org.elasticsearch.action.bulk.BulkRequest;
-import org.elasticsearch.action.bulk.BulkResponse;
 import org.elasticsearch.action.delete.DeleteRequest;
 import org.elasticsearch.action.delete.DeleteResponse;
 import org.elasticsearch.action.get.GetRequest;
@@ -22,7 +19,6 @@ import org.elasticsearch.action.search.SearchRequest;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.action.support.master.AcknowledgedResponse;
 import org.elasticsearch.action.update.UpdateRequest;
-import org.elasticsearch.action.update.UpdateResponse;
 import org.elasticsearch.client.RequestOptions;
 import org.elasticsearch.client.RestHighLevelClient;
 import org.elasticsearch.client.indices.CreateIndexRequest;
@@ -34,14 +30,15 @@ import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
-import org.junit.Assert;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
 import java.io.IOException;
 import java.io.Serializable;
 import java.lang.reflect.ParameterizedType;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 @Component
 public class BaseSearchSupportImpl<T extends Serializable> implements BaseSearchSupport<T> {
@@ -143,14 +140,24 @@ public class BaseSearchSupportImpl<T extends Serializable> implements BaseSearch
         BulkRequest bulkRequest = new BulkRequest();
 
         entityList.stream().forEach(entity -> {
-            Map<String, Object> map = GlobalUtil.bean2Map(entity);
-            bulkRequest.add(new IndexRequest(index, type, map.get("id").toString()).source(map).opType(DocWriteRequest.OpType.CREATE));
+            try {
+                Map<String, Object> map = GlobalUtil.bean2Map(entity);
+                try {
+                    String id = String.valueOf(map.get("id"));
+
+                    bulkRequest.add(new IndexRequest(index, type, id).source(JsonUtil.obj2Json(map), XContentType.JSON));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         });
 
         try {
             restClient.bulk(bulkRequest, RequestOptions.DEFAULT);
             return true;
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return false;
@@ -246,6 +253,36 @@ public class BaseSearchSupportImpl<T extends Serializable> implements BaseSearch
         return false;
     }
 
+    @Override
+    public T findById(String id) {
+        return findById(getGenericClass().getSimpleName(), getGenericClass().getSimpleName(), id);
+    }
+
+    @Override
+    public String save(T entity) {
+        return save(getGenericClass().getSimpleName(), getGenericClass().getSimpleName(), entity);
+    }
+
+    @Override
+    public boolean saveList(List<T> entityList) {
+        return saveList(getGenericClass().getSimpleName(), getGenericClass().getSimpleName(), entityList);
+    }
+
+    @Override
+    public boolean update(T entity) {
+        return update(getGenericClass().getSimpleName(), getGenericClass().getSimpleName(), entity);
+    }
+
+    @Override
+    public boolean delete(String id) {
+        return delete(getGenericClass().getSimpleName(), getGenericClass().getSimpleName(), id);
+    }
+
+    @Override
+    public boolean deleteList(List<String> ids) {
+        return deleteList(getGenericClass().getSimpleName(), getGenericClass().getSimpleName(), ids);
+    }
+
     /**
      * 查询数据 分页
      *
@@ -285,8 +322,14 @@ public class BaseSearchSupportImpl<T extends Serializable> implements BaseSearch
         return null;
     }
 
+    @Override
+    public Pager<T> findListByPager(T entity, Pagination pagination) {
+        return findListByPager(getGenericClass().getSimpleName(), getGenericClass().getSimpleName(), entity, pagination);
+    }
+
     /**
      * 获取到总条数
+     *
      * @param index
      * @param type
      * @param map
