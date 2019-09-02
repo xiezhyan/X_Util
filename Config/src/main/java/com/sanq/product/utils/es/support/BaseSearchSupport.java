@@ -97,4 +97,13 @@ public interface BaseSearchSupport<T> {
      * @return
      */
     Pager<T> findListByPager(String index, String type, T entity, Pagination pagination);
+
+    /**
+     * 查询总条数
+     * @param index
+     * @param type
+     * @param entity
+     * @return
+     */
+    int findListCount(String index, String type, T entity);
 }

@@ -40,6 +40,7 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.lang.reflect.ParameterizedType;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -136,7 +137,7 @@ public class BaseSearchSupportImpl<T> implements BaseSearchSupport<T> {
     }
 
     private Map<String, Object> bean2Map(T entity) {
-        return entity instanceof Map ? (Map<String, Object>) entity : GlobalUtil.bean2Map(entity);
+        return entity == null ? Collections.EMPTY_MAP : entity instanceof Map ? (Map<String, Object>) entity : GlobalUtil.bean2Map(entity);
     }
 
     /**
@@ -299,6 +300,20 @@ public class BaseSearchSupportImpl<T> implements BaseSearchSupport<T> {
         }
 
         return null;
+    }
+
+    /**
+     * 查询总条数
+     *
+     * @param index
+     * @param type
+     * @param entity
+     * @return
+     */
+    @Override
+    public int findListCount(String index, String type, T entity) {
+        Map<String, Object> map = bean2Map(entity);
+        return findListCount(index, type, map);
     }
 
     /**
