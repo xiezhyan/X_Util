@@ -6,7 +6,7 @@ import com.sanq.product.config.utils.entity.Pagination;
 import java.io.Serializable;
 import java.util.List;
 
-public interface BaseSearchSupport<T extends Serializable> {
+public interface BaseSearchSupport<T> {
 
     /**
      * 验证当前 index 是否存在

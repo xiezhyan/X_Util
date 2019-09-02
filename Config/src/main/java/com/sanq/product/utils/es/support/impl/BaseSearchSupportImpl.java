@@ -1,5 +1,6 @@
 package com.sanq.product.utils.es.support.impl;
 
+import com.alibaba.fastjson.parser.JSONToken;
 import com.sanq.product.config.utils.entity.Pager;
 import com.sanq.product.config.utils.entity.Pagination;
 import com.sanq.product.config.utils.string.StringUtil;
@@ -34,6 +35,7 @@ import org.elasticsearch.rest.RestStatus;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
 
 import javax.annotation.Resource;
 import java.io.IOException;
@@ -43,15 +45,19 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-@Component
-public class BaseSearchSupportImpl<T extends Serializable> implements BaseSearchSupport<T> {
+@Repository("baseSearchSupport")
+public class BaseSearchSupportImpl<T> implements BaseSearchSupport<T> {
 
     @Resource
     private RestHighLevelClient restClient;
 
     private Class<T> getGenericClass() {
-        ParameterizedType parameterizedType = (ParameterizedType) getClass().getGenericSuperclass();
-        return (Class<T>) parameterizedType.getActualTypeArguments()[0];
+        try {
+            ParameterizedType parameterizedType = (ParameterizedType) getClass().getGenericSuperclass();
+            return (Class<T>) parameterizedType.getActualTypeArguments()[0];
+        } catch (Exception e) {
+            return null;
+        }
     }
 
     @Override
@@ -118,7 +124,7 @@ public class BaseSearchSupportImpl<T extends Serializable> implements BaseSearch
     @Override
     public String save(String index, String type, T entity) {
 
-        Map<String, Object> map = GlobalUtil.bean2Map(entity);
+        Map<String, Object> map = bean2Map(entity);
 
         IndexRequest indexRequest = new IndexRequest(index, type, map.get("id").toString()).source(map).opType(DocWriteRequest.OpType.CREATE);
         try {
@@ -129,6 +135,10 @@ public class BaseSearchSupportImpl<T extends Serializable> implements BaseSearch
             e.printStackTrace();
         }
         return "";
+    }
+
+    private Map<String, Object> bean2Map(T entity) {
+        return entity instanceof Map ? (Map<String, Object>) entity : GlobalUtil.bean2Map(entity);
     }
 
     /**
@@ -144,14 +154,11 @@ public class BaseSearchSupportImpl<T extends Serializable> implements BaseSearch
 
         entityList.stream().forEach(entity -> {
             try {
-                Map<String, Object> map = GlobalUtil.bean2Map(entity);
-                try {
-                    String id = String.valueOf(map.get("id"));
+                Map<String, Object> map = bean2Map(entity);
 
-                    bulkRequest.add(new IndexRequest(index, type, id).source(JsonUtil.obj2Json(map), XContentType.JSON));
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+                String id = String.valueOf(map.get("id"));
+
+                bulkRequest.add(new IndexRequest(index, type, id).source(JsonUtil.obj2Json(map), XContentType.JSON));
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -176,7 +183,7 @@ public class BaseSearchSupportImpl<T extends Serializable> implements BaseSearch
      */
     @Override
     public boolean update(String index, String type, T entity) {
-        Map<String, Object> map = GlobalUtil.bean2Map(entity);
+        Map<String, Object> map = bean2Map(entity);
 
         UpdateRequest request = new UpdateRequest(index, type, map.get("id").toString());
         request.doc(map);
@@ -297,7 +304,7 @@ public class BaseSearchSupportImpl<T extends Serializable> implements BaseSearch
      */
     @Override
     public Pager<T> findListByPager(String index, String type, T entity, Pagination pagination) {
-        Map<String, Object> map = GlobalUtil.bean2Map(entity);
+        Map<String, Object> map = bean2Map(entity);
 
         pagination.setTotalCount(findListCount(index, type, map));
 
@@ -315,7 +322,8 @@ public class BaseSearchSupportImpl<T extends Serializable> implements BaseSearch
             List<T> data = new ArrayList<>(pagination.getPageSize());
 
             for (SearchHit hits : searchResponse.getHits().getHits()) {
-                data.add(JsonUtil.json2Obj(hits.getSourceAsString(), getGenericClass()));
+                if (getGenericClass() == null) data.add((T) hits.getSourceAsMap());
+                else data.add(JsonUtil.json2Obj(hits.getSourceAsString(), getGenericClass()));
             }
             return new Pager<T>(pagination, data);
         } catch (IOException e) {
