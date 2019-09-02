@@ -34,7 +34,6 @@ import org.elasticsearch.rest.RestStatus;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Repository;
 
 import javax.annotation.Resource;
 import java.io.IOException;
@@ -44,7 +43,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-@Repository("baseSearchSupport")
+@Component
 public class BaseSearchSupportImpl<T> implements BaseSearchSupport<T> {
 
     @Resource
