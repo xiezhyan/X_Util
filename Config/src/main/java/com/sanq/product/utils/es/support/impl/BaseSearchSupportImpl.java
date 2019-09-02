@@ -9,6 +9,7 @@ import com.sanq.product.utils.es.support.BaseSearchSupport;
 import org.elasticsearch.action.DocWriteRequest;
 import org.elasticsearch.action.admin.indices.delete.DeleteIndexRequest;
 import org.elasticsearch.action.bulk.BulkRequest;
+import org.elasticsearch.action.bulk.BulkResponse;
 import org.elasticsearch.action.delete.DeleteRequest;
 import org.elasticsearch.action.delete.DeleteResponse;
 import org.elasticsearch.action.get.GetRequest;
@@ -19,6 +20,7 @@ import org.elasticsearch.action.search.SearchRequest;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.action.support.master.AcknowledgedResponse;
 import org.elasticsearch.action.update.UpdateRequest;
+import org.elasticsearch.action.update.UpdateResponse;
 import org.elasticsearch.client.RequestOptions;
 import org.elasticsearch.client.RestHighLevelClient;
 import org.elasticsearch.client.indices.CreateIndexRequest;
@@ -28,6 +30,7 @@ import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.xcontent.XContentType;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
+import org.elasticsearch.rest.RestStatus;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.springframework.stereotype.Component;
@@ -155,8 +158,8 @@ public class BaseSearchSupportImpl<T extends Serializable> implements BaseSearch
         });
 
         try {
-            restClient.bulk(bulkRequest, RequestOptions.DEFAULT);
-            return true;
+            BulkResponse bulk = restClient.bulk(bulkRequest, RequestOptions.DEFAULT);
+            return bulk.status().getStatus() == RestStatus.OK.getStatus();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -179,8 +182,8 @@ public class BaseSearchSupportImpl<T extends Serializable> implements BaseSearch
         request.doc(map);
 
         try {
-            restClient.update(request, RequestOptions.DEFAULT);
-            return true;
+            UpdateResponse update = restClient.update(request, RequestOptions.DEFAULT);
+            return update.status().getStatus() == RestStatus.OK.getStatus();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -201,7 +204,7 @@ public class BaseSearchSupportImpl<T extends Serializable> implements BaseSearch
 
         try {
             DeleteResponse delete = restClient.delete(deleteRequest, RequestOptions.DEFAULT);
-            return true;
+            return delete.status().getStatus() == RestStatus.OK.getStatus();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -226,8 +229,8 @@ public class BaseSearchSupportImpl<T extends Serializable> implements BaseSearch
         });
 
         try {
-            restClient.bulk(bulkRequest, RequestOptions.DEFAULT);
-            return true;
+            BulkResponse bulk = restClient.bulk(bulkRequest, RequestOptions.DEFAULT);
+            return bulk.status().getStatus() == RestStatus.OK.getStatus();
         } catch (IOException e) {
             e.printStackTrace();
         }
