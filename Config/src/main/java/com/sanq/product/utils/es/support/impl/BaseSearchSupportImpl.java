@@ -1,6 +1,5 @@
 package com.sanq.product.utils.es.support.impl;
 
-import com.alibaba.fastjson.parser.JSONToken;
 import com.sanq.product.config.utils.entity.Pager;
 import com.sanq.product.config.utils.entity.Pagination;
 import com.sanq.product.config.utils.string.StringUtil;
@@ -263,36 +262,6 @@ public class BaseSearchSupportImpl<T> implements BaseSearchSupport<T> {
         return false;
     }
 
-    @Override
-    public T findById(String id) {
-        return findById(getGenericClass().getSimpleName(), getGenericClass().getSimpleName(), id);
-    }
-
-    @Override
-    public String save(T entity) {
-        return save(getGenericClass().getSimpleName(), getGenericClass().getSimpleName(), entity);
-    }
-
-    @Override
-    public boolean saveList(List<T> entityList) {
-        return saveList(getGenericClass().getSimpleName(), getGenericClass().getSimpleName(), entityList);
-    }
-
-    @Override
-    public boolean update(T entity) {
-        return update(getGenericClass().getSimpleName(), getGenericClass().getSimpleName(), entity);
-    }
-
-    @Override
-    public boolean delete(String id) {
-        return delete(getGenericClass().getSimpleName(), getGenericClass().getSimpleName(), id);
-    }
-
-    @Override
-    public boolean deleteList(List<String> ids) {
-        return deleteList(getGenericClass().getSimpleName(), getGenericClass().getSimpleName(), ids);
-    }
-
     /**
      * 查询数据 分页
      *
@@ -331,11 +300,6 @@ public class BaseSearchSupportImpl<T> implements BaseSearchSupport<T> {
         }
 
         return null;
-    }
-
-    @Override
-    public Pager<T> findListByPager(T entity, Pagination pagination) {
-        return findListByPager(getGenericClass().getSimpleName(), getGenericClass().getSimpleName(), entity, pagination);
     }
 
     /**

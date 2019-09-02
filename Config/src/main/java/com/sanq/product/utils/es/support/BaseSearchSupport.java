@@ -35,8 +35,6 @@ public interface BaseSearchSupport<T> {
      */
     T findById(String index, String type, String id);
 
-    T findById(String id);
-
     /**
      * 保存
      *
@@ -45,7 +43,6 @@ public interface BaseSearchSupport<T> {
      * @param entity
      */
     String save(String index, String type, T entity);
-    String save( T entity);
 
     /**
      * 批量保存
@@ -55,7 +52,6 @@ public interface BaseSearchSupport<T> {
      * @param entityList
      */
     boolean saveList(String index, String type, List<T> entityList);
-    boolean saveList(List<T> entityList);
 
     /**
      * 修改
@@ -66,7 +62,6 @@ public interface BaseSearchSupport<T> {
      * @return
      */
     boolean update(String index, String type, T entity);
-    boolean update(T entity);
 
     /**
      * 删除
@@ -76,7 +71,6 @@ public interface BaseSearchSupport<T> {
      * @return
      */
     boolean delete(String index, String type, String id);
-    boolean delete( String id);
 
     /**
      * 批量删除
@@ -86,7 +80,6 @@ public interface BaseSearchSupport<T> {
      * @return
      */
     boolean deleteList(String index, String type, List<String> ids);
-    boolean deleteList(List<String> ids);
 
     /**
      * 删除 索引
@@ -104,5 +97,4 @@ public interface BaseSearchSupport<T> {
      * @return
      */
     Pager<T> findListByPager(String index, String type, T entity, Pagination pagination);
-    Pager<T> findListByPager(T entity, Pagination pagination);
 }
