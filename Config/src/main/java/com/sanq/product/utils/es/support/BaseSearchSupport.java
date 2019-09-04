@@ -3,7 +3,6 @@ package com.sanq.product.utils.es.support;
 import com.sanq.product.config.utils.entity.Pager;
 import com.sanq.product.config.utils.entity.Pagination;
 
-import java.io.Serializable;
 import java.util.List;
 
 public interface BaseSearchSupport<T> {
@@ -14,7 +13,7 @@ public interface BaseSearchSupport<T> {
      * @param index
      * @return
      */
-    boolean check(String index);
+    boolean check(String index) throws Exception;
 
     /**
      * 创建索引
@@ -23,7 +22,7 @@ public interface BaseSearchSupport<T> {
      * @param type
      * @return
      */
-    boolean createIndex(String index, String type);
+    boolean createIndex(String index, String type) throws Exception;
 
     /**
      * 通过ID获取详情
@@ -33,7 +32,7 @@ public interface BaseSearchSupport<T> {
      * @param id
      * @return
      */
-    T findById(String index, String type, String id);
+    T findById(String index, String type, String id) throws Exception;
 
     /**
      * 保存
@@ -42,7 +41,7 @@ public interface BaseSearchSupport<T> {
      * @param type
      * @param entity
      */
-    String save(String index, String type, T entity);
+    String save(String index, String type, T entity) throws Exception;
 
     /**
      * 批量保存
@@ -51,7 +50,7 @@ public interface BaseSearchSupport<T> {
      * @param type
      * @param entityList
      */
-    boolean saveList(String index, String type, List<T> entityList);
+    boolean saveList(String index, String type, List<T> entityList) throws Exception;
 
     /**
      * 修改
@@ -61,7 +60,7 @@ public interface BaseSearchSupport<T> {
      * @param entity
      * @return
      */
-    boolean update(String index, String type, T entity);
+    boolean update(String index, String type, T entity) throws Exception;
 
     /**
      * 删除
@@ -70,7 +69,7 @@ public interface BaseSearchSupport<T> {
      * @param id
      * @return
      */
-    boolean delete(String index, String type, String id);
+    boolean delete(String index, String type, String id) throws Exception;
 
     /**
      * 批量删除
@@ -79,14 +78,14 @@ public interface BaseSearchSupport<T> {
      * @param ids
      * @return
      */
-    boolean deleteList(String index, String type, List<String> ids);
+    boolean deleteList(String index, String type, List<String> ids) throws Exception;
 
     /**
      * 删除 索引
      * @param index
      * @return
      */
-    boolean deleteIndex(String index);
+    boolean deleteIndex(String index) throws Exception, Exception;
 
     /**
      * 查询数据 分页
@@ -96,7 +95,7 @@ public interface BaseSearchSupport<T> {
      * @param pagination
      * @return
      */
-    Pager<T> findListByPager(String index, String type, T entity, Pagination pagination);
+    Pager<T> findListByPager(String index, String type, T entity, Pagination pagination) throws Exception;
 
     /**
      * 查询总条数
@@ -105,5 +104,5 @@ public interface BaseSearchSupport<T> {
      * @param entity
      * @return
      */
-    int findListCount(String index, String type, T entity);
+    int findListCount(String index, String type, T entity) throws Exception;
 }

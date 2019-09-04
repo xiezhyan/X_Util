@@ -36,8 +36,6 @@ import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
-import java.io.IOException;
-import java.io.Serializable;
 import java.lang.reflect.ParameterizedType;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -60,14 +58,9 @@ public class BaseSearchSupportImpl<T> implements BaseSearchSupport<T> {
     }
 
     @Override
-    public boolean check(String index) {
+    public boolean check(String index) throws Exception {
         GetIndexRequest getIndexRequest = new GetIndexRequest(index);
-        try {
-            return restClient.indices().exists(getIndexRequest, RequestOptions.DEFAULT);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return false;
+        return restClient.indices().exists(getIndexRequest, RequestOptions.DEFAULT);
     }
 
     /**
@@ -78,19 +71,13 @@ public class BaseSearchSupportImpl<T> implements BaseSearchSupport<T> {
      * @return
      */
     @Override
-    public boolean createIndex(String index, String type) {
+    public boolean createIndex(String index, String type) throws Exception {
         CreateIndexRequest createIndexRequest = new CreateIndexRequest(index)
                 .settings(Settings.builder().put("index.number_of_shards", 5).put("index.number_of_replicas", 1))
                 .mapping(type, XContentType.JSON);
 
-        try {
-            CreateIndexResponse createIndexResponse = restClient.indices().create(createIndexRequest, RequestOptions.DEFAULT);
-            return createIndexResponse.isAcknowledged() && createIndexResponse.isShardsAcknowledged();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        return false;
+        CreateIndexResponse createIndexResponse = restClient.indices().create(createIndexRequest, RequestOptions.DEFAULT);
+        return createIndexResponse.isAcknowledged() && createIndexResponse.isShardsAcknowledged();
     }
 
     /**
@@ -102,15 +89,10 @@ public class BaseSearchSupportImpl<T> implements BaseSearchSupport<T> {
      * @return
      */
     @Override
-    public T findById(String index, String type, String id) {
+    public T findById(String index, String type, String id) throws Exception {
         GetRequest getRequest = new GetRequest(index, type, id);
-        try {
-            GetResponse getResponse = restClient.get(getRequest, RequestOptions.DEFAULT);
-            return JsonUtil.json2Obj(getResponse.getSourceAsString(), getGenericClass());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return null;
+        GetResponse getResponse = restClient.get(getRequest, RequestOptions.DEFAULT);
+        return JsonUtil.json2Obj(getResponse.getSourceAsString(), getGenericClass());
     }
 
     /**
@@ -121,19 +103,14 @@ public class BaseSearchSupportImpl<T> implements BaseSearchSupport<T> {
      * @param entity
      */
     @Override
-    public String save(String index, String type, T entity) {
+    public String save(String index, String type, T entity) throws Exception {
 
         Map<String, Object> map = bean2Map(entity);
 
         IndexRequest indexRequest = new IndexRequest(index, type, map.get("id").toString()).source(map).opType(DocWriteRequest.OpType.CREATE);
-        try {
-            IndexResponse indexResponse = restClient.index(indexRequest, RequestOptions.DEFAULT);
+        IndexResponse indexResponse = restClient.index(indexRequest, RequestOptions.DEFAULT);
 
-            return indexResponse.getId();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return "";
+        return indexResponse.getId();
     }
 
     private Map<String, Object> bean2Map(T entity) {
@@ -148,7 +125,7 @@ public class BaseSearchSupportImpl<T> implements BaseSearchSupport<T> {
      * @param entityList
      */
     @Override
-    public boolean saveList(String index, String type, List<T> entityList) {
+    public boolean saveList(String index, String type, List<T> entityList) throws Exception {
         BulkRequest bulkRequest = new BulkRequest();
 
         entityList.stream().forEach(entity -> {
@@ -163,13 +140,8 @@ public class BaseSearchSupportImpl<T> implements BaseSearchSupport<T> {
             }
         });
 
-        try {
-            BulkResponse bulk = restClient.bulk(bulkRequest, RequestOptions.DEFAULT);
-            return bulk.status().getStatus() == RestStatus.OK.getStatus();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return false;
+        BulkResponse bulk = restClient.bulk(bulkRequest, RequestOptions.DEFAULT);
+        return bulk.status().getStatus() == RestStatus.OK.getStatus();
     }
 
     /**
@@ -181,19 +153,14 @@ public class BaseSearchSupportImpl<T> implements BaseSearchSupport<T> {
      * @return
      */
     @Override
-    public boolean update(String index, String type, T entity) {
+    public boolean update(String index, String type, T entity) throws Exception {
         Map<String, Object> map = bean2Map(entity);
 
         UpdateRequest request = new UpdateRequest(index, type, map.get("id").toString());
         request.doc(map);
 
-        try {
-            UpdateResponse update = restClient.update(request, RequestOptions.DEFAULT);
-            return update.status().getStatus() == RestStatus.OK.getStatus();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return false;
+        UpdateResponse update = restClient.update(request, RequestOptions.DEFAULT);
+        return update.status().getStatus() == RestStatus.OK.getStatus();
     }
 
     /**
@@ -205,17 +172,11 @@ public class BaseSearchSupportImpl<T> implements BaseSearchSupport<T> {
      * @return
      */
     @Override
-    public boolean delete(String index, String type, String id) {
+    public boolean delete(String index, String type, String id) throws Exception {
         DeleteRequest deleteRequest = new DeleteRequest(index, type, id);
 
-        try {
-            DeleteResponse delete = restClient.delete(deleteRequest, RequestOptions.DEFAULT);
-            return delete.status().getStatus() == RestStatus.OK.getStatus();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        return false;
+        DeleteResponse delete = restClient.delete(deleteRequest, RequestOptions.DEFAULT);
+        return delete.status().getStatus() == RestStatus.OK.getStatus();
     }
 
     /**
@@ -227,21 +188,15 @@ public class BaseSearchSupportImpl<T> implements BaseSearchSupport<T> {
      * @return
      */
     @Override
-    public boolean deleteList(String index, String type, List<String> ids) {
+    public boolean deleteList(String index, String type, List<String> ids) throws Exception {
         BulkRequest bulkRequest = new BulkRequest();
 
         ids.stream().forEach(id -> {
             bulkRequest.add(new DeleteRequest(index, type, id));
         });
 
-        try {
-            BulkResponse bulk = restClient.bulk(bulkRequest, RequestOptions.DEFAULT);
-            return bulk.status().getStatus() == RestStatus.OK.getStatus();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        return false;
+        BulkResponse bulk = restClient.bulk(bulkRequest, RequestOptions.DEFAULT);
+        return bulk.status().getStatus() == RestStatus.OK.getStatus();
     }
 
     /**
@@ -251,15 +206,10 @@ public class BaseSearchSupportImpl<T> implements BaseSearchSupport<T> {
      * @return
      */
     @Override
-    public boolean deleteIndex(String index) {
-        try {
-            AcknowledgedResponse delete = restClient.indices().delete(new DeleteIndexRequest(index), RequestOptions.DEFAULT);
+    public boolean deleteIndex(String index) throws Exception {
+        AcknowledgedResponse delete = restClient.indices().delete(new DeleteIndexRequest(index), RequestOptions.DEFAULT);
 
-            return delete.isAcknowledged();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return false;
+        return delete.isAcknowledged();
     }
 
     /**
@@ -272,7 +222,7 @@ public class BaseSearchSupportImpl<T> implements BaseSearchSupport<T> {
      * @return
      */
     @Override
-    public Pager<T> findListByPager(String index, String type, T entity, Pagination pagination) {
+    public Pager<T> findListByPager(String index, String type, T entity, Pagination pagination) throws Exception {
         Map<String, Object> map = bean2Map(entity);
 
         pagination.setTotalCount(findListCount(index, type, map));
@@ -285,21 +235,15 @@ public class BaseSearchSupportImpl<T> implements BaseSearchSupport<T> {
         sourceBuilder.size(pagination.getPageSize());
         searchRequest.source(sourceBuilder);
 
-        try {
-            SearchResponse searchResponse = restClient.search(searchRequest, RequestOptions.DEFAULT);
+        SearchResponse searchResponse = restClient.search(searchRequest, RequestOptions.DEFAULT);
 
-            List<T> data = new ArrayList<>(pagination.getPageSize());
+        List<T> data = new ArrayList<>(pagination.getPageSize());
 
-            for (SearchHit hits : searchResponse.getHits().getHits()) {
-                if (getGenericClass() == null) data.add((T) hits.getSourceAsMap());
-                else data.add(JsonUtil.json2Obj(hits.getSourceAsString(), getGenericClass()));
-            }
-            return new Pager<T>(pagination, data);
-        } catch (IOException e) {
-            e.printStackTrace();
+        for (SearchHit hits : searchResponse.getHits().getHits()) {
+            if (getGenericClass() == null) data.add((T) hits.getSourceAsMap());
+            else data.add(JsonUtil.json2Obj(hits.getSourceAsString(), getGenericClass()));
         }
-
-        return null;
+        return new Pager<T>(pagination, data);
     }
 
     /**
@@ -311,7 +255,7 @@ public class BaseSearchSupportImpl<T> implements BaseSearchSupport<T> {
      * @return
      */
     @Override
-    public int findListCount(String index, String type, T entity) {
+    public int findListCount(String index, String type, T entity) throws Exception {
         Map<String, Object> map = bean2Map(entity);
         return findListCount(index, type, map);
     }
@@ -324,20 +268,16 @@ public class BaseSearchSupportImpl<T> implements BaseSearchSupport<T> {
      * @param map
      * @return
      */
-    private int findListCount(String index, String type, Map<String, Object> map) {
+    private int findListCount(String index, String type, Map<String, Object> map) throws Exception {
 
         SearchRequest searchRequest = new SearchRequest(index).types(type);
 
         SearchSourceBuilder sourceBuilder = getSearchRequest(map);
         searchRequest.source(sourceBuilder);
 
-        try {
-            SearchResponse searchResponse = restClient.search(searchRequest, RequestOptions.DEFAULT);
-            return StringUtil.toInteger(searchResponse.getHits().getTotalHits());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return 0;
+        SearchResponse searchResponse = restClient.search(searchRequest, RequestOptions.DEFAULT);
+
+        return StringUtil.toInteger(searchResponse.getHits().getTotalHits());
     }
 
     private SearchSourceBuilder getSearchRequest(Map<String, Object> map) {
