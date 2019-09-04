@@ -1,10 +1,11 @@
 package com.sanq.product.utils.es.support.impl;
 
-import com.sanq.product.config.utils.entity.Pager;
 import com.sanq.product.config.utils.entity.Pagination;
 import com.sanq.product.config.utils.string.StringUtil;
 import com.sanq.product.config.utils.web.GlobalUtil;
 import com.sanq.product.config.utils.web.JsonUtil;
+import com.sanq.product.utils.es.entity.SearchPager;
+import com.sanq.product.utils.es.entity.SearchPagination;
 import com.sanq.product.utils.es.support.BaseSearchSupport;
 import org.elasticsearch.action.DocWriteRequest;
 import org.elasticsearch.action.admin.indices.delete.DeleteIndexRequest;
@@ -16,8 +17,10 @@ import org.elasticsearch.action.get.GetRequest;
 import org.elasticsearch.action.get.GetResponse;
 import org.elasticsearch.action.index.IndexRequest;
 import org.elasticsearch.action.index.IndexResponse;
+import org.elasticsearch.action.search.ClearScrollRequest;
 import org.elasticsearch.action.search.SearchRequest;
 import org.elasticsearch.action.search.SearchResponse;
+import org.elasticsearch.action.search.SearchScrollRequest;
 import org.elasticsearch.action.support.master.AcknowledgedResponse;
 import org.elasticsearch.action.update.UpdateRequest;
 import org.elasticsearch.action.update.UpdateResponse;
@@ -27,15 +30,19 @@ import org.elasticsearch.client.indices.CreateIndexRequest;
 import org.elasticsearch.client.indices.CreateIndexResponse;
 import org.elasticsearch.client.indices.GetIndexRequest;
 import org.elasticsearch.common.settings.Settings;
+import org.elasticsearch.common.unit.TimeValue;
 import org.elasticsearch.common.xcontent.XContentType;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.rest.RestStatus;
 import org.elasticsearch.search.SearchHit;
+import org.elasticsearch.search.SearchHits;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
+import org.elasticsearch.search.sort.SortOrder;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
+import java.io.IOException;
 import java.lang.reflect.ParameterizedType;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -73,7 +80,9 @@ public class BaseSearchSupportImpl<T> implements BaseSearchSupport<T> {
     @Override
     public boolean createIndex(String index, String type) throws Exception {
         CreateIndexRequest createIndexRequest = new CreateIndexRequest(index)
-                .settings(Settings.builder().put("index.number_of_shards", 5).put("index.number_of_replicas", 1))
+                .settings(Settings.builder()
+                        .put("index.number_of_shards", 3)
+                        .put("index.number_of_replicas", 2))
                 .mapping(type, XContentType.JSON);
 
         CreateIndexResponse createIndexResponse = restClient.indices().create(createIndexRequest, RequestOptions.DEFAULT);
@@ -222,28 +231,64 @@ public class BaseSearchSupportImpl<T> implements BaseSearchSupport<T> {
      * @return
      */
     @Override
-    public Pager<T> findListByPager(String index, String type, T entity, Pagination pagination) throws Exception {
-        Map<String, Object> map = bean2Map(entity);
+    public SearchPager<T> findListByPager(String index, String type, T entity, SearchPagination pagination) throws Exception {
+        if (!StringUtil.isEmpty(pagination.getScrollId())) {
+            return getScrollPager(pagination);
+        }
 
-        pagination.setTotalCount(findListCount(index, type, map));
+        Map<String, Object> map = bean2Map(entity);
 
         SearchRequest searchRequest = new SearchRequest(index).types(type);
 
         SearchSourceBuilder sourceBuilder = getSearchRequest(map);
 
-        sourceBuilder.from(pagination.getStartPage());
         sourceBuilder.size(pagination.getPageSize());
+        sourceBuilder.sort("id", SortOrder.ASC);
+
         searchRequest.source(sourceBuilder);
 
+        searchRequest.scroll(TimeValue.timeValueMillis(5L));
+
         SearchResponse searchResponse = restClient.search(searchRequest, RequestOptions.DEFAULT);
+        pagination.setScrollId(searchResponse.getScrollId());
 
-        List<T> data = new ArrayList<>(pagination.getPageSize());
+        List<T> data = getListData(searchResponse.getHits());
 
-        for (SearchHit hits : searchResponse.getHits().getHits()) {
-            if (getGenericClass() == null) data.add((T) hits.getSourceAsMap());
-            else data.add(JsonUtil.json2Obj(hits.getSourceAsString(), getGenericClass()));
+        return new SearchPager<T>(pagination, data);
+    }
+
+    private List<T> getListData(SearchHits hits) {
+        List<T> data = new ArrayList<>();
+        for (SearchHit hit : hits.getHits()) {
+            if (getGenericClass() == null) data.add((T) hit.getSourceAsMap());
+            else data.add(JsonUtil.json2Obj(hit.getSourceAsString(), getGenericClass()));
         }
-        return new Pager<T>(pagination, data);
+        return data;
+    }
+
+    private SearchPager<T> getScrollPager(SearchPagination pagination) throws Exception {
+        SearchScrollRequest scrollRequest = new SearchScrollRequest(pagination.getScrollId());
+        scrollRequest.scroll(TimeValue.timeValueMillis(5L));
+        SearchResponse searchScrollResponse = restClient.scroll(scrollRequest, RequestOptions.DEFAULT);
+
+        clearScrollId(pagination.getScrollId());
+
+        //设置新的scrollId
+        pagination.setScrollId(searchScrollResponse.getScrollId());
+
+        List<T> data = getListData(searchScrollResponse.getHits());
+
+        return new SearchPager<T>(pagination, data);
+    }
+
+    /**
+     * 清除之前的scrollId
+     * @param scrollId
+     */
+    private void clearScrollId(String scrollId) throws Exception {
+        ClearScrollRequest request = new ClearScrollRequest();
+        request.addScrollId(scrollId);
+        restClient.clearScroll(request, RequestOptions.DEFAULT);
     }
 
     /**

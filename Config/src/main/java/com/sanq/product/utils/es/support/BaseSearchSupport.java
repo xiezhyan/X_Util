@@ -2,6 +2,8 @@ package com.sanq.product.utils.es.support;
 
 import com.sanq.product.config.utils.entity.Pager;
 import com.sanq.product.config.utils.entity.Pagination;
+import com.sanq.product.utils.es.entity.SearchPager;
+import com.sanq.product.utils.es.entity.SearchPagination;
 
 import java.util.List;
 
@@ -95,7 +97,7 @@ public interface BaseSearchSupport<T> {
      * @param pagination
      * @return
      */
-    Pager<T> findListByPager(String index, String type, T entity, Pagination pagination) throws Exception;
+    SearchPager<T> findListByPager(String index, String type, T entity, SearchPagination pagination) throws Exception;
 
     /**
      * 查询总条数
