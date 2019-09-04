@@ -10,9 +10,11 @@
         <!-- 允许的空闲时间 -->
         <property name="keepAliveSeconds" value="200"/>
         <!-- 线程池维护线程的最大数量 -->
-        <property name="maxPoolSize" value="1000"/>
+        <property name="maxPoolSize" value="60"/>
         <!-- 缓存队列 -->
-        <property name="queueCapacity" value="500"/>
+        <property name="queueCapacity" value="400"/>
+        <!--默认情况下核心线程不会退出，可通过将该参数设置为true，让核心线程也退出-->
+        <property name="allowCoreThreadTimeOut" value="true"/>
 
         <property name="waitForTasksToCompleteOnShutdown" value="true"/>
         <!-- 对拒绝task的处理策略 -->
