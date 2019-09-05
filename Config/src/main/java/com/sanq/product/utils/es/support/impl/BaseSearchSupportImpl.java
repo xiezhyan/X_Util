@@ -1,6 +1,5 @@
 package com.sanq.product.utils.es.support.impl;
 
-import com.sanq.product.config.utils.entity.Pagination;
 import com.sanq.product.config.utils.string.StringUtil;
 import com.sanq.product.config.utils.web.GlobalUtil;
 import com.sanq.product.config.utils.web.JsonUtil;
@@ -54,6 +53,16 @@ public class BaseSearchSupportImpl<T> implements BaseSearchSupport<T> {
 
     @Resource
     private RestHighLevelClient restClient;
+
+    /**
+     * 返回当前客户端
+     *
+     * @return
+     */
+    @Override
+    public RestHighLevelClient getClient() {
+        return this.restClient;
+    }
 
     private Class<T> getGenericClass() {
         try {

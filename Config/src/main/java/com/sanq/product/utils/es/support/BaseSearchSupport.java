@@ -4,11 +4,17 @@ import com.sanq.product.config.utils.entity.Pager;
 import com.sanq.product.config.utils.entity.Pagination;
 import com.sanq.product.utils.es.entity.SearchPager;
 import com.sanq.product.utils.es.entity.SearchPagination;
+import org.elasticsearch.client.RestHighLevelClient;
 
 import java.util.List;
 
 public interface BaseSearchSupport<T> {
 
+    /**
+     * 返回当前客户端
+     * @return
+     */
+    RestHighLevelClient getClient();
     /**
      * 验证当前 index 是否存在
      *
