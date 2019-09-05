@@ -1,6 +1,10 @@
 package com.sanq.product.config.utils.web;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.serializer.SerializeConfig;
+import com.alibaba.fastjson.serializer.SerializeFilter;
+import com.alibaba.fastjson.serializer.SerializerFeature;
+import com.sanq.product.config.utils.entity.Base;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Map;

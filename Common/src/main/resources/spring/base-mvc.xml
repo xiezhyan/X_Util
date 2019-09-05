@@ -46,11 +46,11 @@
 
         <property name="serializerFeatures">
             <list>
-                <value>WriteNullListAsEmpty</value>
+<!--                <value>WriteNullListAsEmpty</value>-->
                 <value>WriteDateUseDateFormat</value>
                 <value>PrettyFormat</value>
-                <value>WriteMapNullValue</value>
-                <value>WriteNullStringAsEmpty</value>
+<!--                <value>WriteMapNullValue</value>-->
+<!--                <value>WriteNullStringAsEmpty</value>-->
                 <value>DisableCircularReferenceDetect</value>
             </list>
         </property>
