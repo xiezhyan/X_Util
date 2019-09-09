@@ -80,7 +80,7 @@ public class ExceptionAspect {
 
 
     /**
-     * 500 - Internal Server Error
+     * 500 - 出现异常
      */
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(Exception.class)
@@ -90,7 +90,7 @@ public class ExceptionAspect {
     }
 
     /**
-     * 500 - Bad Request
+     * 500 - 验证出现错误
      */
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(BindException.class)
