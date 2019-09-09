@@ -4,6 +4,7 @@
          xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
          version="3.0">
     <display-name></display-name>
+
     <welcome-file-list>
         <welcome-file>index.html</welcome-file>
         <welcome-file>index.htm</welcome-file>
@@ -13,36 +14,38 @@
         <welcome-file>default.jsp</welcome-file>
     </welcome-file-list>
 
-	<servlet> 
-	     <servlet-name>DruidStatView</servlet-name> 
-	     <servlet-class>com.alibaba.druid.support.http.StatViewServlet</servlet-class> 
-	 </servlet> 
-	 <servlet-mapping> 
-	     <servlet-name>DruidStatView</servlet-name> 
-	     <url-pattern>/druid/*</url-pattern> 
-	 </servlet-mapping> 
-	 <filter> 
-	  <filter-name>druidWebStatFilter</filter-name> 
-	  <filter-class>com.alibaba.druid.support.http.WebStatFilter</filter-class> 
-	  <init-param> 
-	   <param-name>exclusions</param-name> 
-	   <param-value>/public/*,*.js,*.css,/druid*,*.jsp,*.swf</param-value> 
-	  </init-param> 
-	  <init-param> 
-	   <param-name>principalSessionName</param-name> 
-	   <param-value>sessionInfo</param-value> 
-	  </init-param> 
-	  <init-param> 
-	   <param-name>profileEnable</param-name> 
-	   <param-value>true</param-value> 
-	  </init-param> 
-	 </filter> 
-	 <filter-mapping> 
-	  <filter-name>druidWebStatFilter</filter-name> 
-	  <url-pattern>/*</url-pattern> 
-	 </filter-mapping>
+    <!--druid 监控 start-->
+    <servlet>
+        <servlet-name>DruidStatView</servlet-name>
+        <servlet-class>com.alibaba.druid.support.http.StatViewServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>DruidStatView</servlet-name>
+        <url-pattern>/druid/*</url-pattern>
+    </servlet-mapping>
+    <filter>
+        <filter-name>druidWebStatFilter</filter-name>
+        <filter-class>com.alibaba.druid.support.http.WebStatFilter</filter-class>
+        <init-param>
+            <param-name>exclusions</param-name>
+            <param-value>/public/*,*.js,*.css,/druid*,*.jsp,*.swf</param-value>
+        </init-param>
+        <init-param>
+            <param-name>principalSessionName</param-name>
+            <param-value>sessionInfo</param-value>
+        </init-param>
+        <init-param>
+            <param-name>profileEnable</param-name>
+            <param-value>true</param-value>
+        </init-param>
+    </filter>
+    <filter-mapping>
+        <filter-name>druidWebStatFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+    <!--druid 监控 end-->
 
-    <!-- ajax 跨域 -->
+    <!-- ajax 跨域 start-->
     <filter>
         <filter-name>corsFilter</filter-name>
         <filter-class>com.sanq.product.config.utils.filter.CorsFilter</filter-class>
@@ -67,7 +70,9 @@
         <filter-name>corsFilter</filter-name>
         <url-pattern>/*</url-pattern>
     </filter-mapping>
+    <!-- ajax 跨域 end-->
 
+    <!--spring 配置 start-->
     <context-param>
         <param-name>contextConfigLocation</param-name>
         <param-value>classpath:spring/spring-application.xml</param-value>
@@ -75,7 +80,9 @@
     <listener>
         <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
     </listener>
+    <!--spring 配置 end-->
 
+    <!--spring mvc 配置 start-->
     <filter>
         <filter-name>encodingFilter</filter-name>
         <filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>
@@ -113,5 +120,6 @@
         <servlet-name>SpringMVC</servlet-name>
         <url-pattern>/</url-pattern>
     </servlet-mapping>
+    <!--spring mvc 配置 end-->
 
 </web-app>

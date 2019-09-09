@@ -38,7 +38,8 @@
         <#list table.fields as field>
             <#if (field.javaType!"") == "String">
                 <if test="${field.javaField} !=null and ${field.javaField} != ''">
-                    <#if field_index != 0>AND </#if>${field.columnName} LIKE CONCAT('%',${r"#{" + field.javaField + "}"},'%')
+                    <#if field_index != 0>AND </#if>${field.columnName} LIKE CONCAT('%',${r"#{" + field.javaField + "}"}
+                    ,'%')
                 </if>
             <#else>
                 <if test="${field.javaField} !=null ">

@@ -29,6 +29,7 @@ public class ${table.javaName?cap_first}Controller {
 	@LogAnnotation(description = "通过ID得到详情")
 	@GetMapping(value="/get/{id}")
 	public Response getById(HttpServletRequest request, @PathVariable("id") <#list table.fields as field><#if field.columnKey == "PRI">${field.javaType} ${field.javaField}</#if></#list>) {
+
 		${table.javaName?cap_first}Vo ${table.javaName}Vo = ${table.javaName}Service.findById(<#list table.fields as field><#if field.columnKey == "PRI">${field.javaField}</#if></#list>);
 
 		return ${table.javaName}Vo != null ? new Response().success(${table.javaName}Vo) : new Response().failure();
@@ -39,7 +40,8 @@ public class ${table.javaName?cap_first}Controller {
 	public Response deleteById(HttpServletRequest request, @RequestBody ${table.javaName?cap_first}Vo ${table.javaName}Vo) {
 
 		int result = ${table.javaName}Service.delete(${table.javaName}Vo);
-		return result == 1 ? new Response().success() : new Response().failure();
+
+		return result != 0 ? new Response().success() : new Response().failure();
 	}
 
 	@LogAnnotation(description = "分页查询数据")
@@ -48,7 +50,7 @@ public class ${table.javaName?cap_first}Controller {
 
 		Pager<${table.javaName?cap_first}Vo> pager = ${table.javaName}Service.findListByPage(${table.javaName}Vo, pagination);
 
-		return pager != null ? new Response().success(pager) : new Response().failure();
+		return new Response().success(pager);
 	}
 
 	@LogAnnotation(description = "查询所有数据")
@@ -56,6 +58,7 @@ public class ${table.javaName?cap_first}Controller {
 	public Response findList(HttpServletRequest request, ${table.javaName?cap_first}Vo ${table.javaName}Vo) {
 
 		List<${table.javaName?cap_first}Vo> list = ${table.javaName}Service.findList(${table.javaName}Vo);
+
 		return list != null ? new Response().success(list) : new Response().failure();
 	}
 
@@ -65,17 +68,15 @@ public class ${table.javaName?cap_first}Controller {
 
 		int result = ${table.javaName}Service.save(${table.javaName}Vo);
 
-		return result == 1 ? new Response().success() : new Response().failure();
+		return result != 0 ? new Response().success() : new Response().failure();
 	}
 
 	@LogAnnotation(description = "通过ID修改数据")
-	@PutMapping(value="/update/{id}")
-	public Response updateByKey(HttpServletRequest request,
-        @RequestBody ${table.javaName?cap_first}Vo ${table.javaName}Vo,
-        @PathVariable("id") <#list table.fields as field><#if field.columnKey == "PRI">${field.javaType} ${field.javaField}</#if></#list>) {
+	@PutMapping(value = "/update")
+	public Response updateByKey(HttpServletRequest request, @RequestBody ${table.javaName?cap_first}Vo ${table.javaName}Vo) {
 
-		int result = ${table.javaName}Service.update(${table.javaName}Vo, <#list table.fields as field><#if field.columnKey == "PRI">${field.javaField}</#if></#list>);
+		int result = ${table.javaName}Service.update(${table.javaName}Vo, ${table.javaName}Vo.get<#list table.fields as field><#if field.columnKey == "PRI">${field.javaField?cap_first!""}</#if></#list>);
 
-		return result == 1 ? new Response().success() : new Response().failure();
+		return result != 0 ? new Response().success() : new Response().failure();
 	}
 }

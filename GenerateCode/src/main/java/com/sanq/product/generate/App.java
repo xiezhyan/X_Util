@@ -87,6 +87,7 @@ public class App
 			try {
 				//entity
 				write("views/api/Api.ftl",base + File.separator + "api",tableJavaName + "Api.js");
+				write("views/vue/List.ftl",base + File.separator + "views",tableJavaName + "List.vue");
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -100,10 +101,6 @@ public class App
 		String springPackage = base + File.separator + "spring";
 
 		String mybatisPackage = base + File.separator + "mybatis";
-
-		String threadPackage = base + File.separator + "thread";
-
-//		String redisPackage = base + File.separator + "redis";
 
 		String dubboPackage = base + File.separator + "dubbo";
 		String configPackage = base;

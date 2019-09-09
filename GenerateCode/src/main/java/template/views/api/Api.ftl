@@ -39,7 +39,7 @@ export const delete${table.javaName?cap_first} = data => {
 //修改数据
 export const update${table.javaName?cap_first}ById = data => {
     return $axios({
-        url: '/api/${table.name}/update/' + data.id,
+        url: '/api/${table.name}/update',
         method: 'put',
         data
     });
