@@ -72,10 +72,10 @@ public class ${table.javaName?cap_first}Controller {
 	}
 
 	@LogAnnotation(description = "通过ID修改数据")
-	@PutMapping(value = "/update")
-	public Response updateByKey(HttpServletRequest request, @RequestBody ${table.javaName?cap_first}Vo ${table.javaName}Vo) {
+	@PutMapping(value = "/update/{id}")
+	public Response updateByKey(HttpServletRequest request, @RequestBody ${table.javaName?cap_first}Vo ${table.javaName}Vo, @PathVariable("id") <#list table.fields as field><#if field.columnKey == "PRI">${field.javaType} ${field.javaField}</#if></#list>) {
 
-		int result = ${table.javaName}Service.update(${table.javaName}Vo, ${table.javaName}Vo.get<#list table.fields as field><#if field.columnKey == "PRI">${field.javaField?cap_first!""}</#if></#list>);
+		int result = ${table.javaName}Service.update(${table.javaName}Vo, <#list table.fields as field><#if field.columnKey == "PRI">${field.javaField}</#if></#list>);
 
 		return result != 0 ? new Response().success() : new Response().failure();
 	}
