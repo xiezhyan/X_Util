@@ -90,7 +90,10 @@
         <!-- xstream -->
         <xstream.version>1.0.2</xstream.version>
         <commons-lang3.version>3.4</commons-lang3.version>
+
+        <!--校验-->
         <validatorVersion>4.3.1.Final</validatorVersion>
+        <validatorApi.version>1.0.0.GA</validatorApi.version>
 
         <!-- httpclient -->
         <httpclient.version>4.5.2</httpclient.version>
@@ -105,21 +108,12 @@
         <es.version>6.8.2</es.version>
 
         <shiro.version>1.4.0</shiro.version>
+
+        <guava.version>27.1-jre</guava.version>
     </properties>
 
     <dependencyManagement>
         <dependencies>
-
-            <dependency>
-                <groupId>com.rabbitmq</groupId>
-                <artifactId>amqp-client</artifactId>
-                <version>${amqp-client.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.springframework.amqp</groupId>
-                <artifactId>spring-rabbit</artifactId>
-                <version>${spring-rabbit.version}</version>
-            </dependency>
 
             <dependency>
                 <groupId>org.jsoup</groupId>
@@ -131,6 +125,17 @@
                 <groupId>org.hibernate</groupId>
                 <artifactId>hibernate-validator</artifactId>
                 <version>${validatorVersion}</version>
+            </dependency>
+            <dependency>
+                <groupId>javax.validation</groupId>
+                <artifactId>validation-api</artifactId>
+                <version>${validatorApi.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.google.guava</groupId>
+                <artifactId>guava</artifactId>
+                <version>${guava.version}</version>
             </dependency>
 
             <dependency>
