@@ -107,8 +107,6 @@
 
         <es.version>6.8.2</es.version>
 
-        <shiro.version>1.4.0</shiro.version>
-
         <guava.version>27.1-jre</guava.version>
     </properties>
 
@@ -463,35 +461,6 @@
                 <version>${es.version}</version>
             </dependency>
             <!--es end-->
-
-
-            <!--shiro start-->
-            <dependency>
-                <groupId>org.apache.shiro</groupId>
-                <artifactId>shiro-core</artifactId>
-                <version>${shiro.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.shiro</groupId>
-                <artifactId>shiro-spring</artifactId>
-                <version>${shiro.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.shiro</groupId>
-                <artifactId>shiro-web</artifactId>
-                <version>${shiro.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.shiro</groupId>
-                <artifactId>shiro-ehcache</artifactId>
-                <version>${shiro.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.shiro</groupId>
-                <artifactId>shiro-cas</artifactId>
-                <version>${shiro.version}</version>
-            </dependency>
-            <!--shiro ende-->
         </dependencies>
     </dependencyManagement>
 
