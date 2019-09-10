@@ -1,8 +1,10 @@
 package com.sanq.product.security.interceptors;
 
+import com.sanq.product.config.utils.auth.exception.AuthException;
 import com.sanq.product.config.utils.auth.exception.TokenException;
 import com.sanq.product.security.annotation.Security;
 import com.sanq.product.security.enums.SecurityFieldEnum;
+import org.apache.zookeeper.KeeperException;
 import org.springframework.web.method.HandlerMethod;
 
 import javax.servlet.http.HttpServletRequest;
@@ -33,7 +35,7 @@ public abstract class CheckHasPermissionInterceptor extends BaseInterceptor {
             String uri = request.getRequestURI().replace(request.getContextPath(), "");
 
             if (!checkHasThisUrl(request, uri, (String) objectMap.get(SecurityFieldEnum.TOKEN.getName()))) {
-                throw new TokenException("暂无当前权限");
+                throw new AuthException("无权限");
             }
             return true;
         }

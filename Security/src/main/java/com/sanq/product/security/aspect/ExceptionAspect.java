@@ -1,5 +1,6 @@
 package com.sanq.product.security.aspect;
 
+import com.sanq.product.config.utils.auth.exception.AuthException;
 import com.sanq.product.config.utils.auth.exception.NoParamsException;
 import com.sanq.product.config.utils.auth.exception.TokenException;
 import com.sanq.product.config.utils.entity.Response;
@@ -12,6 +13,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.HttpMediaTypeNotSupportedException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -78,6 +80,18 @@ public class ExceptionAspect {
         return new Response().failure(e.getMsg(), ResultCode.PARAM_ERROR);
     }
 
+    /**
+     * 授权
+     * @param e
+     * @return
+     */
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    @ExceptionHandler(AuthException.class)
+    public Response handleAuthException(AuthException e) {
+        e.printStackTrace();
+        return new Response().failure(e.getMessage(), ResultCode.PARAM_ERROR);
+    }
+
 
     /**
      * 500 - 出现异常
@@ -86,15 +100,15 @@ public class ExceptionAspect {
     @ExceptionHandler(Exception.class)
     public Response handleException(Exception e) {
         e.printStackTrace();
-        return new Response().failure("Internal Server Error");
+        return new Response().failure(e.getMessage());
     }
 
     /**
      * 500 - 验证出现错误
      */
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    @ExceptionHandler(BindException.class)
-    public Response handleValidationException(BindException e) {
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public Response handleValidationException(MethodArgumentNotValidException e) {
         BindingResult result = e.getBindingResult();
         List<String> resultList = new ArrayList<String>();
         for (ObjectError error : result.getAllErrors()) {
