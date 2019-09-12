@@ -108,10 +108,23 @@
         <es.version>6.8.2</es.version>
 
         <guava.version>27.1-jre</guava.version>
+        <oshi.version>4.0.0</oshi.version>
+        <javaee.version>7.0</javaee.version>
     </properties>
 
     <dependencyManagement>
         <dependencies>
+            <dependency>
+                <groupId>javax</groupId>
+                <artifactId>javaee-api</artifactId>
+                <version>${javaee.version}</version>
+                <scope>provided</scope>
+            </dependency>
+            <dependency>
+                <groupId>com.github.oshi</groupId>
+                <artifactId>oshi-core</artifactId>
+                <version>${oshi.version}</version>
+            </dependency>
 
             <dependency>
                 <groupId>org.jsoup</groupId>

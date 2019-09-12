@@ -48,7 +48,7 @@
     <!-- ajax 跨域 start-->
     <filter>
         <filter-name>corsFilter</filter-name>
-        <filter-class>com.sanq.product.config.utils.filter.CorsFilter</filter-class>
+        <filter-class>com.sanq.product.security.filters.CorsFilter</filter-class>
         <init-param>
             <param-name>allowOrigin</param-name>
             <param-value>*</param-value>
@@ -99,7 +99,7 @@
 
     <filter>
         <filter-name>securityFilter</filter-name>
-        <filter-class>com.sanq.product.config.utils.filter.security.SecurityFilter</filter-class>
+        <filter-class>com.sanq.product.security.filters.SecurityFilter</filter-class>
     </filter>
     <filter-mapping>
         <filter-name>securityFilter</filter-name>
@@ -122,4 +122,9 @@
     </servlet-mapping>
     <!--spring mvc 配置 end-->
 
+
+    <context-param>
+        <param-name>spring.profiles.active</param-name>
+        <param-value>dev</param-value>
+    </context-param>
 </web-app>
