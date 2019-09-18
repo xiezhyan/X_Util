@@ -1,9 +1,6 @@
 .idea
-books-*/target
-kafka-*/target
+*/target
 
-books-*/*.iml
-kafka-*/*.iml
 */*.log
 *.log
 */*/*.log
