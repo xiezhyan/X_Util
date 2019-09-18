@@ -1,0 +1,11 @@
+.idea
+books-*/target
+kafka-*/target
+
+books-*/*.iml
+kafka-*/*.iml
+*/*.log
+*.log
+*/*/*.log
+*.log
+*/*.iml

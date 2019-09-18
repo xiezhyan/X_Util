@@ -339,18 +339,24 @@ public class BaseSearchSupportImpl<T> implements BaseSearchSupport<T> {
 
         BoolQueryBuilder boolQueryBuilder = new BoolQueryBuilder();
 
-        map.entrySet().stream().forEach(entry -> {
-            Object value = entry.getValue();
-            if (value instanceof Integer ||
-                    value instanceof Long ||
-                    value instanceof Float ||
-                    value instanceof Double ||
-                    value instanceof Boolean
-            ) {
-                boolQueryBuilder.must().add(QueryBuilders.termQuery(entry.getKey(), value));
-            } else
-                boolQueryBuilder.must().add(QueryBuilders.matchQuery(entry.getKey(), value));
-        });
+        if (map == null || map.isEmpty()) {
+            boolQueryBuilder.must().add(QueryBuilders.matchAllQuery());
+        } else {
+            map.entrySet().stream().forEach(entry -> {
+                Object value = entry.getValue();
+                if (value != null) {
+                    if (value instanceof Integer ||
+                            value instanceof Long ||
+                            value instanceof Float ||
+                            value instanceof Double ||
+                            value instanceof Boolean
+                    ) {
+                        boolQueryBuilder.must().add(QueryBuilders.termQuery(entry.getKey(), value));
+                    } else
+                        boolQueryBuilder.must().add(QueryBuilders.matchQuery(entry.getKey(), value));
+                }
+            });
+        }
 
         sourceBuilder.query(boolQueryBuilder);
 

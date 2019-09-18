@@ -3,6 +3,7 @@ package com.sanq.product.security.interceptors;
 import com.sanq.product.config.utils.auth.exception.NoParamsException;
 import com.sanq.product.config.utils.date.LocalDateUtils;
 import com.sanq.product.config.utils.string.StringUtil;
+import com.sanq.product.security.annotation.Security;
 import com.sanq.product.security.enums.SecurityFieldEnum;
 import com.sanq.product.security.utils.ParamUtils;
 import org.springframework.web.method.HandlerMethod;
@@ -22,17 +23,18 @@ public abstract class SecurityInterceptor extends BaseInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
 
-        if(handler instanceof HandlerMethod) {
+        if (handler instanceof HandlerMethod) {
 
             if (!super.preHandle(request, response, handler)) {
                 return false;
             }
 
-//            Map<String, Object> objectMap;
-//            if (request.getMethod().equalsIgnoreCase("get"))
-//                objectMap = ParamUtils.getInstance().getParam2Get(request);
-//            else
-//                objectMap = ParamUtils.getInstance().json2Map(ParamUtils.getInstance().get());
+            HandlerMethod hm = (HandlerMethod) handler;
+            Security security = hm.getMethodAnnotation(Security.class);
+
+            if (security != null) {
+                return true;
+            }
 
 
             if (objectMap != null && !objectMap.isEmpty()) {

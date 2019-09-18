@@ -115,6 +115,17 @@ public class MatcherUtil {
         System.out.println(isTelephone("15110148609"));
     }
 
+    /**
+     * 替换特殊字符
+     * @param str
+     * @return
+     */
+    public static String replaceMark(String str) {
+        String reg = "[`~!@#$%^&*()+=|{}':;',\\[\\].<>/?~！@#￥%……&*（）——+|{}【】‘；：”“’。，、？]";
+        Pattern p = Pattern.compile(reg);
+        Matcher m = p.matcher(str);
+        return m.replaceAll("").trim();
+    }
 
     /**
      * 验证数字输入
