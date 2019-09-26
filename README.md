@@ -1,5 +1,24 @@
 # X_Util
 
+#### 使用
+> 添加maven仓库
+```xml
+<repositories>
+    <repository>
+        <id>jitpack.io</id>
+        <url>https://www.jitpack.io</url>
+    </repository>
+</repositories>
+```
+> 添加pom
+```xml
+<dependency>
+    <groupId>com.github.xiezhyan</groupId>
+    <artifactId>X_Util</artifactId>
+    <version>V1.0</version>
+</dependency>
+```
+
 #### 介绍
 Java常用工具类
 
@@ -98,6 +117,25 @@ Java常用工具类
     ```
     2. 基于server打包
     ```
+    <!--动态配置文件-->
+    <profiles>
+        <profile>
+            <id>dev</id>
+            <properties>
+                <env>dev</env>
+            </properties>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+        </profile>
+        <profile>
+            <id>prod</id>
+            <properties>
+                <env>prod</env>
+            </properties>
+        </profile>
+    </profiles>
+    
     <packaging>jar</packaging>
     <build>
         <resources>
@@ -122,10 +160,10 @@ Java常用工具类
             <!-- 结合com.alibaba.dubbo.container.Main -->
             <resource>
                 <targetPath>${project.build.directory}/classes/META-INF/spring</targetPath>
-                <directory>src/main/resources/spring</directory>
+                <directory>src/main/resources/spring/profile</directory>
                 <filtering>true</filtering>
                 <includes>
-                    <include>spring-application.xml</include>
+                    <include>spring-${env}-application.xml</include>
                 </includes>
             </resource>
         </resources>
