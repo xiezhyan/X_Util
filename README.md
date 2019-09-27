@@ -30,6 +30,7 @@
 
 ```
 > 添加pom
+[![](https://jitpack.io/v/xiezhyan/X_Util.svg)](https://jitpack.io/#xiezhyan/X_Util)
 ```xml
 <parent>
     <groupId>com.github.xiezhyan.X_Util</groupId>
@@ -40,7 +41,7 @@
 <dependency>
     <groupId>com.github.xiezhyan</groupId>
     <artifactId>X_Util</artifactId>
-    <version>V1.0</version>
+    <version>1.1</version>
 </dependency>
 ```
 
