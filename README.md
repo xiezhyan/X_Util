@@ -31,6 +31,12 @@
 ```
 > 添加pom
 ```xml
+<parent>
+    <groupId>com.github.xiezhyan.X_Util</groupId>
+    <artifactId>x_utils</artifactId>
+    <version>1.1</version>
+</parent>
+
 <dependency>
     <groupId>com.github.xiezhyan</groupId>
     <artifactId>X_Util</artifactId>
