@@ -3,12 +3,31 @@
 #### 使用
 > 添加maven仓库
 ```xml
-<repositories>
-    <repository>
+<profile>
+    <id>jitpack.io</id>
+    <activation>
+        <activeByDefault>false</activeByDefault>
+        <jdk>1.8</jdk>
+    </activation>
+    <repositories>
+        <!-- jitpack.io地址-->
+        <repository>
         <id>jitpack.io</id>
         <url>https://www.jitpack.io</url>
-    </repository>
-</repositories>
+        <releases>
+            <enabled>true</enabled>
+        </releases>
+        <snapshots>
+            <enabled>true</enabled>
+        </snapshots>
+        </repository>
+    </repositories>   
+</profile>
+
+<activeProfiles>
+    <activeProfile>jitpack.io</activeProfile>
+</activeProfiles>
+
 ```
 > 添加pom
 ```xml
