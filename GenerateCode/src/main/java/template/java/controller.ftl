@@ -26,7 +26,7 @@ public class ${table.javaName?cap_first}Controller {
 	@Resource
 	private ${table.javaName?cap_first}Service ${table.javaName}Service;
 
-	@LogAnnotation(description = "通过ID得到详情")
+	@LogAnnotation(description = "通过ID获取详情-${table.comment!""}")
 	@GetMapping(value="/get/{id}")
 	public Response getById(HttpServletRequest request, @PathVariable("id") <#list table.fields as field><#if field.columnKey == "PRI">${field.javaType} ${field.javaField}</#if></#list>) {
 
@@ -35,7 +35,7 @@ public class ${table.javaName?cap_first}Controller {
 		return ${table.javaName}Vo != null ? new Response().success(${table.javaName}Vo) : new Response().failure();
 	}
 
-	@LogAnnotation(description = "删除数据")
+	@LogAnnotation(description = "删除数据-${table.comment!""}")
 	@DeleteMapping(value="/delete")
 	public Response deleteById(HttpServletRequest request, @RequestBody ${table.javaName?cap_first}Vo ${table.javaName}Vo) {
 
@@ -44,7 +44,7 @@ public class ${table.javaName?cap_first}Controller {
 		return result != 0 ? new Response().success() : new Response().failure();
 	}
 
-	@LogAnnotation(description = "分页查询数据")
+	@LogAnnotation(description = "列表展示-${table.comment!""}")
 	@GetMapping(value="/list")
 	public Response findListByPager(HttpServletRequest request, ${table.javaName?cap_first}Vo ${table.javaName}Vo, Pagination pagination) {
 
@@ -53,7 +53,7 @@ public class ${table.javaName?cap_first}Controller {
 		return new Response().success(pager);
 	}
 
-	@LogAnnotation(description = "查询所有数据")
+	@LogAnnotation(description = "全部数据-${table.comment!""}")
 	@GetMapping(value="/all")
 	public Response findList(HttpServletRequest request, ${table.javaName?cap_first}Vo ${table.javaName}Vo) {
 
@@ -62,7 +62,7 @@ public class ${table.javaName?cap_first}Controller {
 		return list != null ? new Response().success(list) : new Response().failure();
 	}
 
-	@LogAnnotation(description = "添加数据")
+	@LogAnnotation(description = "保存-${table.comment!""}")
 	@PostMapping(value="/save")
 	public Response add(HttpServletRequest request, @RequestBody ${table.javaName?cap_first}Vo ${table.javaName}Vo) {
 
@@ -71,7 +71,7 @@ public class ${table.javaName?cap_first}Controller {
 		return result != 0 ? new Response().success() : new Response().failure();
 	}
 
-	@LogAnnotation(description = "通过ID修改数据")
+	@LogAnnotation(description = "修改-${table.comment!""}")
 	@PutMapping(value = "/update/{id}")
 	public Response updateByKey(HttpServletRequest request, @RequestBody ${table.javaName?cap_first}Vo ${table.javaName}Vo, @PathVariable("id") <#list table.fields as field><#if field.columnKey == "PRI">${field.javaType} ${field.javaField}</#if></#list>) {
 
