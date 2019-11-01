@@ -38,6 +38,7 @@ import org.elasticsearch.rest.RestStatus;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.SearchHits;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
+import org.elasticsearch.search.sort.SortBuilders;
 import org.elasticsearch.search.sort.SortOrder;
 import org.springframework.stereotype.Component;
 
@@ -257,7 +258,7 @@ public class BaseSearchSupportImpl<T> implements BaseSearchSupport<T> {
 
         searchRequest.source(sourceBuilder);
 
-        searchRequest.scroll(TimeValue.timeValueMillis(5L));
+        searchRequest.scroll(TimeValue.timeValueMinutes(3L));
 
         SearchResponse searchResponse = restClient.search(searchRequest, RequestOptions.DEFAULT);
         pagination.setScrollId(searchResponse.getScrollId());
@@ -278,7 +279,7 @@ public class BaseSearchSupportImpl<T> implements BaseSearchSupport<T> {
 
     private SearchPager<T> getScrollPager(SearchPagination pagination) throws Exception {
         SearchScrollRequest scrollRequest = new SearchScrollRequest(pagination.getScrollId());
-        scrollRequest.scroll(TimeValue.timeValueMillis(5L));
+        scrollRequest.scroll(TimeValue.timeValueMinutes(5L));
         SearchResponse searchScrollResponse = restClient.scroll(scrollRequest, RequestOptions.DEFAULT);
 
         clearScrollId(pagination.getScrollId());
