@@ -30,18 +30,18 @@
 
 ```
 > 添加pom
-[![](https://jitpack.io/v/xiezhyan/X_Util.svg)](https://jitpack.io/#xiezhyan/X_Util)
+
 ```xml
 <parent>
     <groupId>com.github.xiezhyan.X_Util</groupId>
     <artifactId>x_utils</artifactId>
-    <version>1.1</version>
+    <version>找到最新的Latest release对应的版本号</version>
 </parent>
 
 <dependency>
     <groupId>com.github.xiezhyan</groupId>
     <artifactId>X_Util</artifactId>
-    <version>1.1</version>
+    <version>找到最新的Latest release对应的版本号</version>
 </dependency>
 ```
 
