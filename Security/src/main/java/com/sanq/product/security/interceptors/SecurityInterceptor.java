@@ -14,6 +14,7 @@ import javax.servlet.http.HttpServletResponse;
 /**
  * com.sanq.product.security.interceptors.SecurityInterceptor
  *
+ * 前端调用接口验证
  * @author sanq.Yan
  * @date 2019/8/3
  */

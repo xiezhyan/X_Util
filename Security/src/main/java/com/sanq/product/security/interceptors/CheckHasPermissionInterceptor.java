@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 /**
  * com.sanq.product.security.interceptors.CheckHasPermissionInterceptor
  *
+ * 后台权限验证等
  * @author sanq.Yan
  * @date 2019/8/19
  */
@@ -35,7 +36,7 @@ public abstract class CheckHasPermissionInterceptor extends BaseInterceptor {
             String uri = request.getRequestURI().replace(request.getContextPath(), "");
 
             if (!checkHasThisUrl(request, uri, (String) objectMap.get(SecurityFieldEnum.TOKEN.getName()))) {
-                throw new AuthException("无权限");
+                throw new AuthException("无当前接口权限");
             }
             return true;
         }

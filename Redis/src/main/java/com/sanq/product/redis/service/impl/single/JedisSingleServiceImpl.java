@@ -2,6 +2,7 @@ package com.sanq.product.redis.service.impl.single;
 
 import com.sanq.product.config.utils.string.StringUtil;
 import com.sanq.product.redis.service.JedisPoolService;
+import org.apache.commons.lang3.RandomUtils;
 import org.springframework.stereotype.Service;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
@@ -18,10 +19,6 @@ import java.util.*;
 @Service("jedisPoolService")
 public class JedisSingleServiceImpl implements JedisPoolService {
 
-    private static final String SET_IF_NOT_EXIST = "NX";
-    private static final String SET_WITH_EXPIRE_TIME = "PX";
-    private static final int LOCK_EXPIRE_TIME = 200;
-
     @Resource
     private JedisPool jedisPool;
 
@@ -31,7 +28,8 @@ public class JedisSingleServiceImpl implements JedisPoolService {
 
     private boolean _lock(Jedis jedis, String key, String lockValue) {
         StringBuffer sb = new StringBuffer("lock:").append(key).append(":").append(lockValue);
-        return jedis.set(sb.toString(), lockValue, SET_IF_NOT_EXIST, SET_WITH_EXPIRE_TIME, LOCK_EXPIRE_TIME) != null;
+
+        return jedis.set(sb.toString(), lockValue) != null;
     }
 
     private boolean _unLock(Jedis jedis, String key, String lockValue) {
@@ -64,7 +62,7 @@ public class JedisSingleServiceImpl implements JedisPoolService {
         try (Jedis jedis = jedisPool.getResource()) {
             boolean isLocked = _lock(jedis, key, lockValue);
             if (isLocked) {
-                boolean result = jedis.setex(key, seconds, val) != null;
+                boolean result = jedis.setex(key, seconds + RandomUtils.nextInt(0, 300), val) != null;
                 _unLock(jedis, key, lockValue);
 
                 return result;
@@ -90,14 +88,14 @@ public class JedisSingleServiceImpl implements JedisPoolService {
     }
 
     @Override
-    public boolean delete(String... key) {
+    public boolean delete(String key) {
         String lockValue = _lockValue();
 
         try (Jedis jedis = jedisPool.getResource()) {
-            boolean isLocked = _lock(jedis, key[0], lockValue);
+            boolean isLocked = _lock(jedis, key, lockValue);
             if (isLocked) {
                 boolean result = jedis.del(key) != null;
-                _unLock(jedis, key[0], lockValue);
+                _unLock(jedis, key, lockValue);
 
                 return result;
             }
@@ -147,6 +145,38 @@ public class JedisSingleServiceImpl implements JedisPoolService {
     }
 
     @Override
+    public long decr(String key) {
+        String lockValue = _lockValue();
+
+        try (Jedis jedis = jedisPool.getResource()) {
+            boolean isLocked = _lock(jedis, key, lockValue);
+            if (isLocked) {
+                Long decr = jedis.decr(key);
+                _unLock(jedis, key, lockValue);
+
+                return decr;
+            }
+        }
+        return 0;
+    }
+
+    @Override
+    public long decrBy(String key, long minus) {
+        String lockValue = _lockValue();
+
+        try (Jedis jedis = jedisPool.getResource()) {
+            boolean isLocked = _lock(jedis, key, lockValue);
+            if (isLocked) {
+                Long decr = jedis.decrBy(key, minus);
+                _unLock(jedis, key, lockValue);
+
+                return decr;
+            }
+        }
+        return 0;
+    }
+
+    @Override
     public boolean exists(String key) {
         try (Jedis jedis = jedisPool.getResource()) {
             return jedis.exists(key);
@@ -178,13 +208,13 @@ public class JedisSingleServiceImpl implements JedisPoolService {
 
 
     @Override
-    public boolean rmList(String key, long count) {
+    public boolean rmList(String key, long start, long end) {
         String lockValue = _lockValue();
 
         try (Jedis jedis = jedisPool.getResource()) {
             boolean isLocked = _lock(jedis, key, lockValue);
             if (isLocked) {
-                boolean ltrim = jedis.ltrim(key, count, -1) != null;
+                boolean ltrim = jedis.ltrim(key, start, end) != null;
                 _unLock(jedis, key, lockValue);
 
                 return ltrim;
@@ -231,15 +261,15 @@ public class JedisSingleServiceImpl implements JedisPoolService {
         do {
             ScanResult<String> scan = jedis.scan(cursor, params);
 
-            cursor = scan.getStringCursor();
+            cursor = scan.getCursor();
 
             List<String> result = scan.getResult();
-            if(result != null && result.size() > 0) {
+            if (result != null && result.size() > 0) {
                 keys.addAll(result);
             }
 
-            if("0".equals(cursor))
-            	continue;
+            if ("0".equals(cursor))
+                continue;
 
         } while (!"0".equals(cursor));
 
@@ -249,7 +279,7 @@ public class JedisSingleServiceImpl implements JedisPoolService {
     @Override
     public boolean expire(String key, int seconds) {
         try (Jedis jedis = jedisPool.getResource()) {
-            return jedis.expire(key, seconds) != null;
+            return jedis.expire(key, seconds + RandomUtils.nextInt(0, 300)) != null;
         }
     }
 
@@ -267,7 +297,7 @@ public class JedisSingleServiceImpl implements JedisPoolService {
         try (Jedis jedis = jedisPool.getResource()) {
             boolean isLocked = _lock(jedis, key, lockValue);
             if (isLocked) {
-                boolean result = jedis.zadd(key,score,  value) != 0;
+                boolean result = jedis.zadd(key, score, value) != 0;
                 _unLock(jedis, key, lockValue);
 
                 return result;
@@ -280,16 +310,16 @@ public class JedisSingleServiceImpl implements JedisPoolService {
     public Set<String> getSet(String key, long start, long end, String order) {
         String lockValue = _lockValue();
 
-        if(StringUtil.isEmpty(order))
+        if (StringUtil.isEmpty(order))
             order = "ASC";
 
         try (Jedis jedis = jedisPool.getResource()) {
             boolean isLocked = _lock(jedis, key, lockValue);
             if (isLocked) {
                 Set<String> set = null;
-                if("ASC".equals(order)) {
+                if ("ASC".equals(order)) {
                     set = jedis.zrange(key, start, end);
-                } else if("DESC".equals(order)) {
+                } else if ("DESC".equals(order)) {
                     set = jedis.zrevrange(key, start, end);
                 }
                 _unLock(jedis, key, lockValue);
@@ -329,6 +359,21 @@ public class JedisSingleServiceImpl implements JedisPoolService {
             boolean isLocked = _lock(jedis, key, lockValue);
             if (isLocked) {
                 long result = jedis.zremrangeByRank(key, start, end);
+                _unLock(jedis, key, lockValue);
+                return result;
+            }
+        }
+        return 0;
+    }
+
+    @Override
+    public double incrByScope(String key, double score, String member) {
+        String lockValue = _lockValue();
+
+        try (Jedis jedis = jedisPool.getResource()) {
+            boolean isLocked = _lock(jedis, key, lockValue);
+            if (isLocked) {
+                double result = jedis.zincrby(key, score, member);
                 _unLock(jedis, key, lockValue);
                 return result;
             }
@@ -408,11 +453,8 @@ public class JedisSingleServiceImpl implements JedisPoolService {
     @Override
     public boolean deletes(String pattern) {
         List<String> keys = keys(pattern);
-        if(keys != null && keys.size() > 0) {
-            for(String key: keys)
-                delete(key);
-
-            return true;
+        if (keys != null && keys.size() > 0) {
+            keys.stream().forEach(key -> delete(key));
         }
         return false;
     }

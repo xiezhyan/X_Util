@@ -2,6 +2,7 @@ package com.sanq.product.redis.service.impl.cluster;
 
 import com.sanq.product.config.utils.string.StringUtil;
 import com.sanq.product.redis.service.JedisPoolService;
+import org.apache.commons.lang3.RandomUtils;
 import org.springframework.stereotype.Service;
 import redis.clients.jedis.*;
 
@@ -22,12 +23,13 @@ public class JedisClusterServiceImpl implements JedisPoolService {
 
     @Override
     public boolean set(String key, String val) {
+
         return jedisCluster.set(key, val) != null;
     }
 
     @Override
     public boolean set(String key, String val, int seconds) {
-        return jedisCluster.setex(key, seconds, val) != null;
+        return jedisCluster.setex(key, seconds + RandomUtils.nextInt(0, 300), val) != null;
     }
 
     @Override
@@ -36,7 +38,7 @@ public class JedisClusterServiceImpl implements JedisPoolService {
     }
 
     @Override
-    public boolean delete(String... key) {
+    public boolean delete(String key) {
         return jedisCluster.del(key) != null;
     }
 
@@ -54,7 +56,7 @@ public class JedisClusterServiceImpl implements JedisPoolService {
 
     @Override
     public long incr(String key, int max) {
-        if(!exists(key)) {
+        if (!exists(key)) {
             set(key, max + "");
         }
         return incr(key);
@@ -71,8 +73,8 @@ public class JedisClusterServiceImpl implements JedisPoolService {
     }
 
     @Override
-    public boolean rmList(String key, long count) {
-        return jedisCluster.ltrim(key, count, -1) != null;
+    public boolean rmList(String key, long start, long end) {
+        return jedisCluster.ltrim(key, start, end) != null;
     }
 
     @Override
@@ -98,6 +100,21 @@ public class JedisClusterServiceImpl implements JedisPoolService {
         return keys;
     }
 
+    @Override
+    public long decr(String key) {
+        return jedisCluster.decr(key);
+    }
+
+    @Override
+    public long decrBy(String key, long minus) {
+        return jedisCluster.decrBy(key, minus);
+    }
+
+    @Override
+    public double incrByScope(String key, double score, String member) {
+        return jedisCluster.zincrby(key, score, member);
+    }
+
     private List<String> getJedisByScan(JedisPool jedisPool, String pattern) {
 
         List<String> keys = new ArrayList<>();
@@ -112,7 +129,7 @@ public class JedisClusterServiceImpl implements JedisPoolService {
             do {
                 ScanResult<String> scan = jedis.scan(cursor, params);
 
-                cursor = scan.getStringCursor();
+                cursor = scan.getCursor();
 
                 List<String> result = scan.getResult();
                 if (result != null && result.size() > 0) {
@@ -129,7 +146,7 @@ public class JedisClusterServiceImpl implements JedisPoolService {
 
     @Override
     public boolean expire(String key, int seconds) {
-        return jedisCluster.expire(key, seconds) != null;
+        return jedisCluster.expire(key, seconds + RandomUtils.nextInt(0, 300)) != null;
     }
 
     @Override
@@ -144,12 +161,12 @@ public class JedisClusterServiceImpl implements JedisPoolService {
 
     @Override
     public Set<String> getSet(String key, long start, long end, String order) {
-        if(StringUtil.isEmpty(order))
+        if (StringUtil.isEmpty(order))
             order = "ASC";
 
-        if("ASC".equals(order))
+        if ("ASC".equals(order))
             return jedisCluster.zrange(key, start, end);
-        else if("DESC".equals(order))
+        else if ("DESC".equals(order))
             return jedisCluster.zrevrange(key, start, end);
 
         return null;
@@ -203,10 +220,8 @@ public class JedisClusterServiceImpl implements JedisPoolService {
     @Override
     public boolean deletes(String pattern) {
         List<String> keys = keys(pattern);
-        if(keys != null && keys.size() > 0) {
-            for(String key : keys)
-                delete(key);
-            return true;
+        if (keys != null && keys.size() > 0) {
+            keys.stream().forEach(key -> delete(key));
         }
         return false;
     }

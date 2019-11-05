@@ -89,7 +89,7 @@ public class ExceptionAspect {
     @ExceptionHandler(AuthException.class)
     public Response handleAuthException(AuthException e) {
         e.printStackTrace();
-        return new Response().failure(e.getMessage(), ResultCode.PARAM_ERROR);
+        return new Response().failure(e.getMessage(), ResultCode.NO_ACCESS);
     }
 
 

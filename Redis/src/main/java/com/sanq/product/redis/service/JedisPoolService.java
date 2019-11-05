@@ -6,14 +6,16 @@ import java.util.Set;
 /**
  * version: redis
  * ---------------------
+ *
+ * @param
  * @author sanq.Yan
  * @date 2019/6/29
- * @param
  */
 public interface JedisPoolService {
 
     /**
      * 保存字符串
+     *
      * @param key
      * @param val
      * @return
@@ -22,15 +24,17 @@ public interface JedisPoolService {
 
     /**
      * 保存字符串
+     *
      * @param key
      * @param val
-     * @param seconds   有效时间
+     * @param seconds 有效时间
      * @return
      */
     boolean set(String key, String val, int seconds);
 
     /**
      * 获取字符串
+     *
      * @param key
      * @return
      */
@@ -38,38 +42,67 @@ public interface JedisPoolService {
 
     /**
      * 删除
+     *
      * @param key
      * @return
      */
-    boolean delete(String...key);
+    boolean delete(String key);
 
     /**
      * 自增
+     *
      * @param key
      * @return
      */
     long incr(String key);
 
+    /**
+     * 自增 存在有效期
+     *
+     * @param key
+     * @param second
+     * @return
+     */
     long incrAtTime(String key, int second);
 
     /**
      * 自增
+     *
      * @param key
-     * @param max   从max开始
+     * @param max 从max开始
      * @return
      */
     long incr(String key, int max);
 
+
+    /**
+     * 自减
+     *
+     * @param key
+     * @return
+     */
+    long decr(String key);
+
+    /**
+     * 自减
+     *
+     * @param key
+     * @param minus 步长
+     * @return
+     */
+    long decrBy(String key, long minus);
+
     /**
      * 判断redis中是否存在
+     *
      * @param key
      * @return
      */
     boolean exists(String key);
 
-
     /**
      * 根据条件查询出key
+     *
      * @param pattern
      * @return
      */
@@ -77,6 +110,7 @@ public interface JedisPoolService {
 
     /**
      * 设置过期时间
+     *
      * @param key
      * @param seconds
      * @return
@@ -87,11 +121,11 @@ public interface JedisPoolService {
 
     /**
      * rpush
-     *  将元素push在list的尾部  ==> rpop 删除尾部元素
-     *
+     * 将元素push在list的尾部  ==> rpop 删除尾部元素
+     * <p>
      * lpush
-     *  类似于压栈操作，将元素放入头部 ==> lpop 删除头部元素
-     *
+     * 类似于压栈操作，将元素放入头部 ==> lpop 删除头部元素
+     * <p>
      * 这里使用到rpush
      *
      * @param key
@@ -102,14 +136,15 @@ public interface JedisPoolService {
 
     /**
      * 移除List
+     *
      * @param key
-     * @param count
      * @return
      */
-    boolean rmList(String key, long count);
+    boolean rmList(String key, long start, long end);
 
     /**
      * 获取List
+     *
      * @param key
      * @param start
      * @param end
@@ -119,6 +154,7 @@ public interface JedisPoolService {
 
     /**
      * 获取List长度
+     *
      * @param key
      * @return
      */
@@ -128,6 +164,7 @@ public interface JedisPoolService {
 
     /**
      * 保存到有序set
+     *
      * @param key
      * @param score
      * @param value
@@ -137,17 +174,18 @@ public interface JedisPoolService {
 
     /**
      * 获取set
+     *
      * @param key
      * @param start
      * @param end
-     * @param order   ASC DESC
-     *
+     * @param order ASC DESC
      * @return
      */
     Set<String> getSet(String key, long start, long end, String order);
 
     /**
      * 获取set长度
+     *
      * @param key
      * @return
      */
@@ -155,6 +193,7 @@ public interface JedisPoolService {
 
     /**
      * 判断value是否存在于set中
+     *
      * @param key
      * @param val
      * @return
@@ -163,25 +202,38 @@ public interface JedisPoolService {
 
     /**
      * 移除元素
+     *
      * @param key
      * @param start
      * @param end
      * @return
      */
-    long rmSet(String key,long start, long end);
+    long rmSet(String key, long start, long end);
+
+    /**
+     * 添加指定分数
+     *
+     * @param key
+     * @param score
+     * @param member
+     * @return
+     */
+    double incrByScope(String key, double score, String member);
 
     /**************************华丽丽的分割线**************************************/
 
     /**
      * 添加到统计
+     *
      * @param key
      * @param value
      * @return
      */
-    boolean pfAdd(String key, String...value);
+    boolean pfAdd(String key, String... value);
 
     /**
      * 获取统计数量
+     *
      * @param key
      * @return
      */
@@ -189,6 +241,7 @@ public interface JedisPoolService {
 
     /**
      * 位图
+     *
      * @param key
      * @param offset
      * @param value
@@ -198,6 +251,7 @@ public interface JedisPoolService {
 
     /**
      * 获取位图
+     *
      * @param key
      * @param offset
      * @return
@@ -208,6 +262,7 @@ public interface JedisPoolService {
 
     /**
      * 执行lua脚本
+     *
      * @param script
      * @param keys
      * @param args
@@ -217,11 +272,9 @@ public interface JedisPoolService {
 
     /**
      * 批量删除key
+     *
      * @param pattern
      * @return
      */
     boolean deletes(String pattern);
-
-
-
 }

@@ -162,13 +162,6 @@ public class LocalDateUtils {
         return Date.from(instant);
     }
 
-    public static int get2ZeroHour() {
-        long nowTime = nowTime().getTime();
-        long endTime = dayEndTime().getTime();
-        long currentTime = endTime - nowTime;
-        return StringUtil.toInteger(currentTime / 1000);
-    }
-
     public static void main(String[] args) {
         System.out.println("获取当前时间:" + nowTimeStr());
         System.out.println("获取当前时间:" + nowTime().getTime());

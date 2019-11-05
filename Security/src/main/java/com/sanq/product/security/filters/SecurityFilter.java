@@ -28,7 +28,6 @@ public class SecurityFilter implements Filter {
         if (request instanceof HttpServletRequest) {
             HttpServletRequest httpServletRequest = (HttpServletRequest) request;
             if (!"get".equalsIgnoreCase(httpServletRequest.getMethod().toUpperCase())
-//                    && httpServletRequest.getHeader("Accept").contains("application/json")
             ) {
                 wrap = new SecurityHttpServletRequestWrapper(httpServletRequest);
                 ParamUtils.getInstance().set(wrap.getJson());
