@@ -91,8 +91,8 @@
         <commons-lang3.version>3.4</commons-lang3.version>
 
         <!--校验-->
-        <validatorVersion>4.3.1.Final</validatorVersion>
-        <validatorApi.version>1.0.0.GA</validatorApi.version>
+        <validatorVersion>6.1.0.Final</validatorVersion>
+        <validatorApi.version>2.0.1.Final</validatorApi.version>
 
         <!-- httpclient -->
         <httpclient.version>4.5.2</httpclient.version>
