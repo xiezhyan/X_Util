@@ -102,23 +102,4 @@ public class ExceptionAspect {
         e.printStackTrace();
         return new Response().failure(e.getMessage());
     }
-
-    /**
-     * 500 - 验证出现错误
-     */
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    public Response handleValidationException(MethodArgumentNotValidException e) {
-        BindingResult result = e.getBindingResult();
-        List<String> resultList = new ArrayList<String>();
-        for (ObjectError error : result.getAllErrors()) {
-
-            String code = error.getCodes()[1];
-            String message = error.getDefaultMessage();
-            String description = String.format("%s:%s", code, message);
-            resultList.add(description);
-        }
-
-        return new Response().failure(JsonUtil.obj2Json(resultList), ResultCode.NOT_VALIDATION);
-    }
 }
