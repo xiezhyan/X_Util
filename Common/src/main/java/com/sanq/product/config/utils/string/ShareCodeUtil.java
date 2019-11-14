@@ -45,12 +45,10 @@ public class ShareCodeUtil {
 
         while ((id / binLen) > 0) {
             int ind = (int) (id % binLen);
-            // System.out.println(num + "-->" + ind);
             buf[--charPos] = r[ind];
             id /= binLen;
         }
         buf[--charPos] = r[(int) (id % binLen)];
-        // System.out.println(num + "-->" + num % binLen);
         String str = new String(buf, charPos, (32 - charPos));
         // 不够长度的自动随机补全
         if (str.length() < s) {
