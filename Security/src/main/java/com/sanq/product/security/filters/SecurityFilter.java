@@ -1,5 +1,8 @@
 package com.sanq.product.security.filters;
 
+import com.google.common.collect.Lists;
+import com.sanq.product.config.utils.string.StringUtil;
+import com.sanq.product.config.utils.web.LogUtil;
 import com.sanq.product.security.utils.ParamUtils;
 import org.apache.commons.io.IOUtils;
 
@@ -9,6 +12,8 @@ import javax.servlet.http.HttpServletRequestWrapper;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * com.sanq.product.security.filters.SecurityFilter
@@ -17,9 +22,18 @@ import java.io.UnsupportedEncodingException;
  * @date 2019/8/3
  */
 public class SecurityFilter implements Filter {
+
+    private String exclusion;
+    private List<String> exclusions;
+
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
+        this.exclusion = filterConfig.getInitParameter("exclusion");
 
+        if (StringUtil.isEmpty(this.exclusion))
+            exclusions = Lists.newArrayList();
+        else
+            exclusions = Arrays.asList(this.exclusion.split(","));
     }
 
     @Override
@@ -27,8 +41,9 @@ public class SecurityFilter implements Filter {
         SecurityHttpServletRequestWrapper wrap = null;
         if (request instanceof HttpServletRequest) {
             HttpServletRequest httpServletRequest = (HttpServletRequest) request;
+
             if (!"get".equalsIgnoreCase(httpServletRequest.getMethod().toUpperCase())
-            ) {
+                    && !exclusions.contains(httpServletRequest.getServletPath())) {
                 wrap = new SecurityHttpServletRequestWrapper(httpServletRequest);
                 ParamUtils.getInstance().set(wrap.getJson());
             }
