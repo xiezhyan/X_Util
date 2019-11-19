@@ -44,7 +44,7 @@ public class SearchPagination implements Serializable {
         this.scrollId = scrollId;
     }
 
-    public static class Build {
+    public static class Build implements Serializable{
         //当前显示的条数,默认显示20条
         private int pageSize = 20;
 
