@@ -1,6 +1,11 @@
 package com.sanq.product.utils.es.entity;
 
+import com.sanq.product.config.utils.web.GlobalUtil;
+
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 /**
  * com.sanq.product.utils.es.entity.RangeSearch
@@ -92,5 +97,20 @@ public class Search implements Serializable {
         public Search builder() {
             return new Search(searchTitle, searchValue, start, end);
         }
+    }
+
+    public static List<Search> bean2Search(Object entity) {
+        Map<String, Object> map = GlobalUtil.bean2Map(entity);
+
+        List<Search> params = new ArrayList<>(map.size());
+
+        map.entrySet().stream().filter(entry -> entry.getValue() != null).forEach(entry -> {
+            params.add(
+                    new Search.Build()
+                            .setSearchTitle(entry.getKey())
+                            .setSearchValue(entry.getValue())
+                            .builder());
+        });
+        return params;
     }
 }

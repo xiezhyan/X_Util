@@ -256,19 +256,7 @@ public class BaseSearchSupportImpl<T, K> implements BaseSearchSupport<T, K> {
     @Override
     public SearchPager<K> findListByPager(String index, String type, K entity, SearchPagination pagination) throws Exception {
 
-        Map<String, Object> map = bean2Map(entity);
-
-        List<Search> params = new ArrayList<>(map.size());
-
-        map.entrySet().stream().filter(entry -> entry.getValue() != null).forEach(entry -> {
-            params.add(
-                    new Search.Build()
-                            .setSearchTitle(entry.getKey())
-                            .setSearchValue(entry.getValue())
-                            .builder());
-        });
-
-        return findListByPager(index, type, params, null, null, pagination);
+        return findListByPager(index, type, Search.bean2Search(entity), null, null, pagination);
     }
 
     @Override
