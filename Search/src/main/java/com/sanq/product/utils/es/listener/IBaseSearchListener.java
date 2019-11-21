@@ -1,5 +1,6 @@
 package com.sanq.product.utils.es.listener;
 
+import com.sanq.product.utils.es.entity.Search;
 import org.elasticsearch.search.sort.SortOrder;
 
 import java.util.List;
@@ -14,16 +15,16 @@ import java.util.Map;
 public interface IBaseSearchListener {
 
     /**
-     * 参数
+     * 查询参数
+     *
      * @return
      */
-    Map<String, Object> paramMap();
+    List<Search> params();
 
     /**
-     * 排序
+     * 设置排序规则
+     *
      * @return
      */
-    Map<String, String> sortMap();
-
-
+    Map<String, SortOrder> sortMap();
 }

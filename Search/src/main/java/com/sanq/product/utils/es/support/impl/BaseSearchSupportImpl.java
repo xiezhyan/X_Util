@@ -3,7 +3,7 @@ package com.sanq.product.utils.es.support.impl;
 import com.sanq.product.config.utils.string.StringUtil;
 import com.sanq.product.config.utils.web.GlobalUtil;
 import com.sanq.product.config.utils.web.JsonUtil;
-import com.sanq.product.config.utils.web.LogUtil;
+import com.sanq.product.utils.es.entity.Search;
 import com.sanq.product.utils.es.entity.SearchPager;
 import com.sanq.product.utils.es.entity.SearchPagination;
 import com.sanq.product.utils.es.listener.IBaseSearchListener;
@@ -42,14 +42,16 @@ import org.elasticsearch.search.SearchHits;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.elasticsearch.search.fetch.subphase.highlight.HighlightBuilder;
 import org.elasticsearch.search.fetch.subphase.highlight.HighlightField;
-import org.elasticsearch.search.sort.SortBuilders;
 import org.elasticsearch.search.sort.SortOrder;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 
 @Component
 public class BaseSearchSupportImpl<T, K> implements BaseSearchSupport<T, K> {
@@ -94,8 +96,8 @@ public class BaseSearchSupportImpl<T, K> implements BaseSearchSupport<T, K> {
     /**
      * 创建索引
      *
-     * @param index
-     * @param type
+     * @param index 索引
+     * @param type  类型
      * @return
      */
     @Override
@@ -113,8 +115,8 @@ public class BaseSearchSupportImpl<T, K> implements BaseSearchSupport<T, K> {
     /**
      * 通过ID获取详情
      *
-     * @param index
-     * @param type
+     * @param index 索引
+     * @param type  类型
      * @param id
      * @return
      */
@@ -128,8 +130,8 @@ public class BaseSearchSupportImpl<T, K> implements BaseSearchSupport<T, K> {
     /**
      * 保存
      *
-     * @param index
-     * @param type
+     * @param index  索引
+     * @param type   类型
      * @param entity
      */
     @Override
@@ -150,8 +152,8 @@ public class BaseSearchSupportImpl<T, K> implements BaseSearchSupport<T, K> {
     /**
      * 批量保存
      *
-     * @param index
-     * @param type
+     * @param index      索引
+     * @param type       类型
      * @param entityList
      */
     @Override
@@ -177,8 +179,8 @@ public class BaseSearchSupportImpl<T, K> implements BaseSearchSupport<T, K> {
     /**
      * 修改
      *
-     * @param index
-     * @param type
+     * @param index  索引
+     * @param type   类型
      * @param entity
      * @return
      */
@@ -196,8 +198,8 @@ public class BaseSearchSupportImpl<T, K> implements BaseSearchSupport<T, K> {
     /**
      * 删除
      *
-     * @param index
-     * @param type
+     * @param index 索引
+     * @param type  类型
      * @param id
      * @return
      */
@@ -212,8 +214,8 @@ public class BaseSearchSupportImpl<T, K> implements BaseSearchSupport<T, K> {
     /**
      * 批量删除
      *
-     * @param index
-     * @param type
+     * @param index 索引
+     * @param type  类型
      * @param ids
      * @return
      */
@@ -232,7 +234,7 @@ public class BaseSearchSupportImpl<T, K> implements BaseSearchSupport<T, K> {
     /**
      * 删除 索引
      *
-     * @param index
+     * @param index 索引
      * @return
      */
     @Override
@@ -245,8 +247,8 @@ public class BaseSearchSupportImpl<T, K> implements BaseSearchSupport<T, K> {
     /**
      * 查询数据 分页
      *
-     * @param index
-     * @param type
+     * @param index      索引
+     * @param type       类型
      * @param entity
      * @param pagination
      * @return
@@ -254,22 +256,34 @@ public class BaseSearchSupportImpl<T, K> implements BaseSearchSupport<T, K> {
     @Override
     public SearchPager<K> findListByPager(String index, String type, K entity, SearchPagination pagination) throws Exception {
 
-        return findListByPager(index, type, bean2Map(entity), null, null, pagination);
+        Map<String, Object> map = bean2Map(entity);
+
+        List<Search> params = new ArrayList<>(map.size());
+
+        map.entrySet().stream().filter(entry -> entry.getValue() != null).forEach(entry -> {
+            params.add(
+                    new Search.Build()
+                            .setSearchTitle(entry.getKey())
+                            .setSearchValue(entry.getValue())
+                            .builder());
+        });
+
+        return findListByPager(index, type, params, null, null, pagination);
     }
 
     @Override
     public SearchPager<K> findListByPager(String index, String type, IBaseSearchListener listener, SearchPagination pagination) throws Exception {
-        return findListByPager(index, type, listener.paramMap(), listener.sortMap(), null, pagination);
+        return findListByPager(index, type, listener.params(), listener.sortMap(), null, pagination);
     }
 
     @Override
     public SearchPager<K> findListByPager(String index, String type, ISearchListener listener, SearchPagination pagination) throws Exception {
-        return findListByPager(index, type, listener.paramMap(), listener.sortMap(), listener.highlightField(), pagination);
+        return findListByPager(index, type, listener.params(), listener.sortMap(), listener.highlightField(), pagination);
     }
 
     public SearchPager<K> findListByPager(String index, String type,
-                                          Map<String, Object> map,
-                                          Map<String, String> sortMap,
+                                          List<Search> params,  //简单查询
+                                          Map<String, SortOrder> sortMap,
                                           List<String> highFields,
                                           SearchPagination pagination) throws Exception {
         if (!StringUtil.isEmpty(pagination.getScrollId())) {
@@ -278,7 +292,7 @@ public class BaseSearchSupportImpl<T, K> implements BaseSearchSupport<T, K> {
 
         SearchRequest searchRequest = new SearchRequest(index).types(type);
 
-        SearchSourceBuilder sourceBuilder = getSearchRequest(map);
+        SearchSourceBuilder sourceBuilder = getSearchRequest(params);
 
         sourceBuilder.size(pagination.getPageSize());
         /**
@@ -286,7 +300,7 @@ public class BaseSearchSupportImpl<T, K> implements BaseSearchSupport<T, K> {
          */
         if (sortMap != null && !sortMap.isEmpty()) {
             sortMap.entrySet().forEach(entry -> {
-                sourceBuilder.sort(entry.getKey(), SortOrder.fromString(entry.getValue()));
+                sourceBuilder.sort(entry.getKey(), entry.getValue());
             });
 
         } else sourceBuilder.sort("id", SortOrder.ASC);
@@ -325,20 +339,30 @@ public class BaseSearchSupportImpl<T, K> implements BaseSearchSupport<T, K> {
         for (SearchHit hit : hits.getHits()) {
             K obj = JsonUtil.json2Obj(hit.getSourceAsString(), getQueryClass());
 
-            //通过反射对高亮进行获取
-            for (Field field : obj.getClass().getSuperclass().getDeclaredFields()) {
-                field.setAccessible(true);
-                String fieldName = field.getName();
-                HighlightField highlightField = hit.getHighlightFields().get(fieldName);
+            //验证是否出现高亮字段
+            if (hit.getHighlightFields() != null && !hit.getHighlightFields().isEmpty()) {
 
-                if (highlightField != null) {
-                    try {
-                        field.set(obj, highlightField.fragments()[0].toString());
-                    } catch (IllegalAccessException e) {
-                        e.printStackTrace();
+                // 1. 出现高亮字段才会反射获取高亮值
+                Field[] fields = obj.getClass().getDeclaredFields();
+
+                if (fields == null || fields.length <= 0)
+                    fields = obj.getClass().getSuperclass().getDeclaredFields();
+
+                //通过反射对高亮进行获取
+                for (Field field : fields) {
+                    field.setAccessible(true);
+                    String fieldName = field.getName();
+                    HighlightField highlightField = hit.getHighlightFields().get(fieldName);
+
+                    if (highlightField != null) {
+                        try {
+                            field.set(obj, highlightField.fragments()[0].toString());
+                        } catch (IllegalAccessException e) {
+                            e.printStackTrace();
+                        }
                     }
+                    field.setAccessible(false);
                 }
-                field.setAccessible(false);
             }
             data.add(obj);
 
@@ -370,61 +394,34 @@ public class BaseSearchSupportImpl<T, K> implements BaseSearchSupport<T, K> {
         restClient.clearScroll(request, RequestOptions.DEFAULT);
     }
 
-    /**
-     * 查询总条数
-     *
-     * @param index
-     * @param type
-     * @param entity
-     * @return
-     */
-    @Override
-    public int findListCount(String index, String type, K entity) throws Exception {
-        Map<String, Object> map = bean2Map(entity);
-        return findListCount(index, type, map);
-    }
-
-    /**
-     * 获取到总条数
-     *
-     * @param index
-     * @param type
-     * @param map
-     * @return
-     */
-    private int findListCount(String index, String type, Map<String, Object> map) throws Exception {
-
-        SearchRequest searchRequest = new SearchRequest(index).types(type);
-
-        SearchSourceBuilder sourceBuilder = getSearchRequest(map);
-        searchRequest.source(sourceBuilder);
-
-        SearchResponse searchResponse = restClient.search(searchRequest, RequestOptions.DEFAULT);
-
-        return StringUtil.toInteger(searchResponse.getHits().getTotalHits());
-    }
-
-    private SearchSourceBuilder getSearchRequest(Map<String, Object> map) {
+    private SearchSourceBuilder getSearchRequest(List<Search> params) {
         SearchSourceBuilder sourceBuilder = new SearchSourceBuilder();
 
         BoolQueryBuilder boolQueryBuilder = new BoolQueryBuilder();
 
-        if (map == null || map.isEmpty()) {
+        if (params == null || params.isEmpty())
             boolQueryBuilder.must().add(QueryBuilders.matchAllQuery());
-        } else {
-            map.entrySet().stream().forEach(entry -> {
-                Object value = entry.getValue();
-                if (value != null) {
+        else {
+            params.forEach(param -> {
+                //普通查询
+                if (param.getStart() == null && param.getEnd() == null) {
+                    Object value = param.getSearchValue();
                     if (value instanceof Integer ||
                             value instanceof Long ||
                             value instanceof Float ||
                             value instanceof Double ||
                             value instanceof Boolean
                     ) {
-                        boolQueryBuilder.must().add(QueryBuilders.termQuery(entry.getKey(), value));
+                        boolQueryBuilder.must().add(QueryBuilders.termQuery(param.getSearchTitle(), value));
                     } else
-                        boolQueryBuilder.must().add(QueryBuilders.matchQuery(entry.getKey(), value));
+                        boolQueryBuilder.must().add(QueryBuilders.matchQuery(param.getSearchTitle(), value));
+                } else {
+                    // 区间查询
+                    boolQueryBuilder.filter(QueryBuilders.rangeQuery(param.getSearchTitle())
+                            .from(param.getStart())
+                            .to(param.getEnd(), true));
                 }
+
             });
         }
 

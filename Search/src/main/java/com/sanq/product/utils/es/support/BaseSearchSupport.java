@@ -139,13 +139,4 @@ public interface BaseSearchSupport<T, K> {
      */
     SearchPager<K> findListByPager(String index, String type, ISearchListener listener, SearchPagination pagination) throws Exception;
 
-    /**
-     * 查询总条数
-     *
-     * @param index  索引
-     * @param type   类型
-     * @param entity
-     * @return
-     */
-    int findListCount(String index, String type, K entity) throws Exception;
 }
