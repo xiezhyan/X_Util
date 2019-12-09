@@ -33,8 +33,8 @@
     <properties>
         <junit.version>4.12</junit.version>
         <!-- 日志 -->
-        <logback.version>1.2.3</logback.version>
-        <slf4j.version>1.7.21</slf4j.version>
+        <logback.version>1.3.0-alpha5</logback.version>
+        <slf4j.version>2.0.0-alpha1</slf4j.version>
 
         <!-- 数据库 -->
         <mysql.version>5.1.37</mysql.version>
@@ -47,7 +47,7 @@
 
         <!-- Servlet web -->
         <taglibs.version>1.1.2</taglibs.version>
-        <!--<jackson-databind.version>2.9.10</jackson-databind.version>-->
+        <jackson.version>2.10.1</jackson.version>
         <jstl.version>1.2</jstl.version>
         <servlet-api.version>3.1.0</servlet-api.version>
         <jsp-api.version>2.0</jsp-api.version>
@@ -90,8 +90,8 @@
         <commons-lang3.version>3.4</commons-lang3.version>
 
         <!--校验-->
-        <validatorVersion>4.3.1.Final</validatorVersion>
-        <validatorApi.version>1.0.0.GA</validatorApi.version>
+        <validatorVersion>6.1.0.Final</validatorVersion>
+        <validatorApi.version>2.0.1.Final</validatorApi.version>
 
         <!-- httpclient -->
         <httpclient.version>4.5.2</httpclient.version>
@@ -206,11 +206,26 @@
                 <artifactId>standard</artifactId>
                 <version>${taglibs.version}</version>
             </dependency>
-            <!--<dependency>-->
-                <!--<groupId>com.fasterxml.jackson.core</groupId>-->
-                <!--<artifactId>jackson-databind</artifactId>-->
-                <!--<version>${jackson-databind.version}</version>-->
-            <!--</dependency>-->
+            <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-core</artifactId>
+                <version>${jackson.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-databind</artifactId>
+                <version>${jackson.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-annotations</artifactId>
+                <version>${jackson.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson.module</groupId>
+                <artifactId>jackson-module-jaxb-annotations</artifactId>
+                <version>${jackson.version}</version>
+            </dependency>
             <!-- SpringMVC上传文件 -->
             <dependency>
                 <groupId>commons-fileupload</groupId>
@@ -237,13 +252,11 @@
                 <groupId>javax.servlet</groupId>
                 <artifactId>javax.servlet-api</artifactId>
                 <version>${servlet-api.version}</version>
-                <scope>provided</scope>
             </dependency>
             <dependency>
                 <groupId>javax.servlet</groupId>
                 <artifactId>jsp-api</artifactId>
                 <version>${jsp-api.version}</version>
-                <scope>provided</scope>
             </dependency>
 
             <!-- 4.Spring -->
