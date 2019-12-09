@@ -10,11 +10,15 @@ import java.util.Date;
  * @date 2019/7/16
  */
 public class Base implements Serializable {
+
+    public static final Character IS_DELETE_Y = 'Y';
+    public static final Character IS_DELETE_N = 'N';
+
     private String token;
     private Long timestamp;
     private String sign;
 
-    private Character isDelete;
+    private Character isDelete = IS_DELETE_N;
 
     private Date createTime;
     private Date updateTime;

@@ -22,16 +22,15 @@ public abstract class CheckHasPermissionInterceptor extends BaseInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         if (handler instanceof HandlerMethod) {
-            if (!super.preHandle(request, response, handler)) {
-                return false;
-            }
 
-            HandlerMethod hm = (HandlerMethod) handler;
-            Security security = hm.getMethodAnnotation(Security.class);
+            super.preHandle(request, response, handler);
 
-            if (security != null) {
-                return true;
-            }
+//            HandlerMethod hm = (HandlerMethod) handler;
+//            Security security = hm.getMethodAnnotation(Security.class);
+//
+//            if (security != null) {
+//                return true;
+//            }
 
             String uri = request.getRequestURI().replace(request.getContextPath(), "");
 
@@ -40,7 +39,7 @@ public abstract class CheckHasPermissionInterceptor extends BaseInterceptor {
             }
             return true;
         }
-        return false;
+        throw new Exception("访问被限制");
     }
 
 

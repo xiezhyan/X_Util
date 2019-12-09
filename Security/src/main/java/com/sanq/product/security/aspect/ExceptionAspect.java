@@ -1,6 +1,7 @@
 package com.sanq.product.security.aspect;
 
 import com.sanq.product.config.utils.auth.exception.AuthException;
+import com.sanq.product.config.utils.auth.exception.IpAllowedException;
 import com.sanq.product.config.utils.auth.exception.NoParamsException;
 import com.sanq.product.config.utils.auth.exception.TokenException;
 import com.sanq.product.config.utils.entity.Response;
@@ -83,6 +84,19 @@ public class ExceptionAspect {
     public Response handleAuthException(AuthException e) {
         e.printStackTrace();
         return new Response().failure(e.getMessage(), ResultCode.NO_ACCESS);
+    }
+
+    /**
+     * ip被限制
+     *
+     * @param e
+     * @return
+     */
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    @ExceptionHandler(IpAllowedException.class)
+    public Response handleIpAllowException(IpAllowedException e) {
+        e.printStackTrace();
+        return new Response().failure(e.getMsg(), ResultCode.IP_ALLOWED);
     }
 
 

@@ -11,5 +11,6 @@ public class ResultCode {
     public static final Integer MESSAGE_NOT_READ = 403;    //不能读取该json
     public static final Integer NOT_FIND_METHOD = 405;    //没有发现该方法
     public static final Integer NOT_VALIDATION = 406;   //参数校验失败
+    public static final Integer IP_ALLOWED = 407;       //ip被限制
 
 }
