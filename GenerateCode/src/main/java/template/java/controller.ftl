@@ -19,6 +19,12 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
+/**
+ *	version: ${table.comment!""}
+ * ----------------------
+ * 	author: Mr.sanq
+ * 	date: ${nowDate?string("yyyy-MM-dd")}
+ */
 @RestController
 @RequestMapping("/api/${table.name}")
 public class ${table.javaName?cap_first}Controller {

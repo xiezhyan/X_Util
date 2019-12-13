@@ -35,7 +35,6 @@ public class Pagination implements Serializable{
 	}
 	
 	public int getTotalPage() {
-//		this.totalPage = (int) Math.ceil((this.totalCount / this.pageSize));
 		this.totalPage = this.totalCount % this.pageSize != 0 ? 	//
 				this.totalCount / this.pageSize + 1 : 			//
 				this.totalCount / this.pageSize; 

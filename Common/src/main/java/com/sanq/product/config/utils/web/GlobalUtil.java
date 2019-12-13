@@ -1,10 +1,6 @@
 package com.sanq.product.config.utils.web;
 
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.serializer.SerializeConfig;
-import com.alibaba.fastjson.serializer.SerializeFilter;
-import com.alibaba.fastjson.serializer.SerializerFeature;
-import com.sanq.product.config.utils.entity.Base;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
@@ -41,23 +37,6 @@ public class GlobalUtil {
     }
 
     public static Map<String, Object> bean2Map(Object entity) {
-//        Map<String, Object> map = new HashMap<>();
-//        if (entity == null) {
-//            return map;
-//        }
-//        Class clazz = entity.getClass();
-//        Field[] fields = clazz.getDeclaredFields();
-//        try {
-//            for (Field field : fields) {
-//                field.setAccessible(true);
-//                if (field.get(entity) != null) {
-//                    map.put(field.getName(), field.get(entity));
-//                }
-//            }
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//        return map;
         return (Map<String, Object>) JSON.toJSON(entity);
     }
 }

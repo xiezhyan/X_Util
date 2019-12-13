@@ -11,7 +11,12 @@ import java.math.BigDecimal;
 import javax.annotation.Resource;
 import org.springframework.stereotype.Service;
 
-
+/**
+ *	version: ${table.comment!""}
+ *----------------------
+ * 	author: Mr.sanq
+ * 	date: ${nowDate?string("yyyy-MM-dd")}
+ */
 @Service("${table.javaName}Service")
 public class ${table.javaName?cap_first}ServiceImpl implements ${table.javaName?cap_first}Service {
 
