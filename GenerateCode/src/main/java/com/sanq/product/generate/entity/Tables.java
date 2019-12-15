@@ -1,5 +1,6 @@
 package com.sanq.product.generate.entity;
 
+import com.sanq.product.config.utils.web.PropUtil;
 import com.sanq.product.generate.utils.StringUtil;
 
 import java.io.Serializable;
@@ -25,10 +26,16 @@ public class Tables implements Serializable {
 	private StringUtil mStringInstance = StringUtil.getInstance();
 	
 	public String getJavaName() {
-		int i = this.name.indexOf("_");
-		this.javaName = i > 0 ? mStringInstance.replaceChar(this.name , "_") : this.name; 
+		String javaName = this.name;
+		String prefix = PropUtil.getProperty("prefix");
+
+		if (prefix != null && !"".equals(prefix))
+			javaName = javaName.replace(prefix, "");
+
+		int i = javaName.indexOf("_");
+		javaName = i > 0 ? mStringInstance.replaceChar(javaName , "_") : javaName;
 	
-		return this.javaName;
+		return javaName;
 	}
 	public void setJavaName(String javaName) {
 		this.javaName = javaName;
