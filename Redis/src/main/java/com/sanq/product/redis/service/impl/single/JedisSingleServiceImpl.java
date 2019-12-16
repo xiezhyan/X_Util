@@ -26,13 +26,13 @@ public class JedisSingleServiceImpl implements JedisPoolService {
         return UUID.randomUUID().toString();
     }
 
-    private boolean _lock(Jedis jedis, String key, String lockValue) {
+    protected boolean _lock(Jedis jedis, String key, String lockValue) {
         StringBuffer sb = new StringBuffer("lock:").append(key).append(":").append(lockValue);
 
         return jedis.set(sb.toString(), lockValue) != null;
     }
 
-    private boolean _unLock(Jedis jedis, String key, String lockValue) {
+    protected boolean _unLock(Jedis jedis, String key, String lockValue) {
         String script = "if redis.call('get', KEYS[1]) == ARGV[1] then return redis.call('del', KEYS[1]) else return 0 end";
         StringBuffer sb = new StringBuffer("lock:").append(key).append(":").append(lockValue);
         return jedis.eval(script, Collections.singletonList(sb.toString()), Collections.singletonList(lockValue)) != null;
