@@ -1,39 +1,26 @@
 package com.sanq.product.utils.es.entity;
 
+import com.sanq.product.config.utils.entity.Pagination;
+
 import java.io.Serializable;
 
-public class SearchPagination implements Serializable {
-    //当前显示的条数,默认显示20条
-    private int pageSize = 20;
-
-    //总条数
-    private long totalCount;
-
+public class SearchPagination extends Pagination implements Serializable {
     //当前查询的滚动点
     private String scrollId;
 
     public SearchPagination() {
     }
 
-    public SearchPagination(int pageSize, String scrollId) {
-        this.pageSize = pageSize;
+    public SearchPagination(int pageSize, String scrollId, int currentIndex) {
+        super(pageSize, currentIndex);
         this.scrollId = scrollId;
     }
 
-    public long getTotalCount() {
-        return totalCount;
-    }
-
-    public void setTotalCount(long totalCount) {
-        this.totalCount = totalCount;
-    }
-
-    public int getPageSize() {
-        return pageSize;
-    }
-
-    public void setPageSize(int pageSize) {
-        this.pageSize = pageSize;
+    public int getSearchStartPage() {
+        if (getCurrentIndex() <= 0)
+            setCurrentIndex(1);
+        int startPage = (getCurrentIndex()- 1) * getPageSize();
+        return startPage < 0 ? 0 : startPage;
     }
 
     public String getScrollId() {
@@ -44,12 +31,15 @@ public class SearchPagination implements Serializable {
         this.scrollId = scrollId;
     }
 
-    public static class Build implements Serializable{
+    public static class Build implements Serializable {
         //当前显示的条数,默认显示20条
         private int pageSize = 20;
 
         //当前查询的滚动点
         private String scrollId;
+
+        //页码
+        private int currentIndex;
 
         public Build setPageSize(int pageSize) {
             this.pageSize = pageSize;
@@ -61,8 +51,13 @@ public class SearchPagination implements Serializable {
             return this;
         }
 
+        public Build setCurrentIndex(int currentIndex) {
+            this.currentIndex = currentIndex;
+            return this;
+        }
+
         public SearchPagination builder() {
-            return new SearchPagination(pageSize, scrollId);
+            return new SearchPagination(pageSize, scrollId, currentIndex);
         }
     }
 }

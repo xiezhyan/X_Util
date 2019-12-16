@@ -32,12 +32,8 @@ public interface BaseSearchSupport<T, K> {
 
     /**
      * 创建索引
-     *
-     * @param index 索引
-     * @param type  类型
-     * @return
      */
-    boolean createIndex(String index, String type) throws Exception;
+    boolean createIndex(String index, String mapping) throws Exception;
 
     /**
      * 通过ID获取详情
@@ -114,7 +110,7 @@ public interface BaseSearchSupport<T, K> {
      * @param pagination
      * @return
      */
-    SearchPager<K> findListByPager(String index, String type, K entity, SearchPagination pagination) throws Exception;
+    SearchPager<K> findListByPage(String index, String type, K entity, SearchPagination pagination) throws Exception;
 
     /**
      * 查询数据 排序
@@ -125,7 +121,7 @@ public interface BaseSearchSupport<T, K> {
      * @return
      * @throws Exception
      */
-    SearchPager<K> findListByPager(String index, String type, IBaseSearchListener listener, SearchPagination pagination) throws Exception;
+    SearchPager<K> findListByPage(String index, String type, IBaseSearchListener listener, SearchPagination pagination) throws Exception;
 
 
     /**
@@ -137,6 +133,6 @@ public interface BaseSearchSupport<T, K> {
      * @return
      * @throws Exception
      */
-    SearchPager<K> findListByPager(String index, String type, ISearchListener listener, SearchPagination pagination) throws Exception;
+    SearchPager<K> findListByPage(String index, String type, ISearchListener listener, SearchPagination pagination) throws Exception;
 
 }

@@ -74,7 +74,7 @@ public class BaseSearchSupportImpl<T, K> implements BaseSearchSupport<T, K> {
             ParameterizedType parameterizedType = (ParameterizedType) getClass().getGenericSuperclass();
             return (Class<T>) parameterizedType.getActualTypeArguments()[0];
         } catch (Exception e) {
-            return null;
+            throw e;
         }
     }
 
@@ -83,10 +83,16 @@ public class BaseSearchSupportImpl<T, K> implements BaseSearchSupport<T, K> {
             ParameterizedType parameterizedType = (ParameterizedType) getClass().getGenericSuperclass();
             return (Class<K>) parameterizedType.getActualTypeArguments()[1];
         } catch (Exception e) {
-            return null;
+            throw e;
         }
     }
 
+    /**
+     * 验证该索引是否存在
+     * @param index 索引
+     * @return  boolean
+     * @throws Exception    抛出异常
+     */
     @Override
     public boolean check(String index) throws Exception {
         GetIndexRequest getIndexRequest = new GetIndexRequest(index);
@@ -97,16 +103,17 @@ public class BaseSearchSupportImpl<T, K> implements BaseSearchSupport<T, K> {
      * 创建索引
      *
      * @param index 索引
-     * @param type  类型
-     * @return
+     * @param mapping 文档
+     * @return  boolean
+     * @throws Exception    抛出异常
      */
     @Override
-    public boolean createIndex(String index, String type) throws Exception {
+    public boolean createIndex(String index, String mapping) throws Exception {
         CreateIndexRequest createIndexRequest = new CreateIndexRequest(index)
                 .settings(Settings.builder()
                         .put("index.number_of_shards", 3)
                         .put("index.number_of_replicas", 2))
-                .mapping(type, XContentType.JSON);
+                .mapping(mapping, XContentType.JSON);
 
         CreateIndexResponse createIndexResponse = restClient.indices().create(createIndexRequest, RequestOptions.DEFAULT);
         return createIndexResponse.isAcknowledged() && createIndexResponse.isShardsAcknowledged();
@@ -117,8 +124,8 @@ public class BaseSearchSupportImpl<T, K> implements BaseSearchSupport<T, K> {
      *
      * @param index 索引
      * @param type  类型
-     * @param id
-     * @return
+     * @param id    ID
+     * @return      K
      */
     @Override
     public K findById(String index, String type, String id) throws Exception {
@@ -132,7 +139,7 @@ public class BaseSearchSupportImpl<T, K> implements BaseSearchSupport<T, K> {
      *
      * @param index  索引
      * @param type   类型
-     * @param entity
+     * @param entity    内容实体
      */
     @Override
     public String save(String index, String type, T entity) throws Exception {
@@ -145,6 +152,11 @@ public class BaseSearchSupportImpl<T, K> implements BaseSearchSupport<T, K> {
         return indexResponse.getId();
     }
 
+    /**
+     * 将实体转化成map
+     * @param entity
+     * @return
+     */
     private Map<String, Object> bean2Map(Object entity) {
         return entity == null ? Collections.EMPTY_MAP : entity instanceof Map ? (Map<String, Object>) entity : GlobalUtil.bean2Map(entity);
     }
@@ -154,13 +166,13 @@ public class BaseSearchSupportImpl<T, K> implements BaseSearchSupport<T, K> {
      *
      * @param index      索引
      * @param type       类型
-     * @param entityList
+     * @param entityList    内容实体
      */
     @Override
     public boolean saveList(String index, String type, List<T> entityList) throws Exception {
         BulkRequest bulkRequest = new BulkRequest();
 
-        entityList.stream().forEach(entity -> {
+        entityList.forEach(entity -> {
             try {
                 Map<String, Object> map = bean2Map(entity);
 
@@ -181,8 +193,8 @@ public class BaseSearchSupportImpl<T, K> implements BaseSearchSupport<T, K> {
      *
      * @param index  索引
      * @param type   类型
-     * @param entity
-     * @return
+     * @param entity    内容实体
+     * @return  boolean
      */
     @Override
     public boolean update(String index, String type, T entity) throws Exception {
@@ -200,8 +212,8 @@ public class BaseSearchSupportImpl<T, K> implements BaseSearchSupport<T, K> {
      *
      * @param index 索引
      * @param type  类型
-     * @param id
-     * @return
+     * @param id    id
+     * @return  boolean
      */
     @Override
     public boolean delete(String index, String type, String id) throws Exception {
@@ -216,8 +228,8 @@ public class BaseSearchSupportImpl<T, K> implements BaseSearchSupport<T, K> {
      *
      * @param index 索引
      * @param type  类型
-     * @param ids
-     * @return
+     * @param ids   ids
+     * @return  boolean
      */
     @Override
     public boolean deleteList(String index, String type, List<String> ids) throws Exception {
@@ -235,7 +247,7 @@ public class BaseSearchSupportImpl<T, K> implements BaseSearchSupport<T, K> {
      * 删除 索引
      *
      * @param index 索引
-     * @return
+     * @return  boolean
      */
     @Override
     public boolean deleteIndex(String index) throws Exception {
@@ -249,32 +261,45 @@ public class BaseSearchSupportImpl<T, K> implements BaseSearchSupport<T, K> {
      *
      * @param index      索引
      * @param type       类型
-     * @param entity
-     * @param pagination
-     * @return
+     * @param entity    实体
+     * @param pagination    分页
+     * @return  SearchPager<K>
      */
     @Override
-    public SearchPager<K> findListByPager(String index, String type, K entity, SearchPagination pagination) throws Exception {
+    public SearchPager<K> findListByPage(String index, String type, K entity, SearchPagination pagination) throws Exception {
 
-        return findListByPager(index, type, Search.bean2Search(entity), null, null, pagination);
+        return findListByPage(index, type, Search.bean2Search(entity), null, null, pagination);
     }
+
+    /**
+     *
+     * 查询数据 分页
+     *
+     * @param index      索引
+     * @param type       类型
+     * @param listener  自定义参数
+     * @param pagination    分页
+     * @return  SearchPager<K>
+     * @throws Exception    抛出异常
+     */
+    @Override
+    public SearchPager<K> findListByPage(String index, String type, IBaseSearchListener listener, SearchPagination pagination) throws Exception {
+        return findListByPage(index, type, listener.params(), listener.sortMap(), null, pagination);
+    }
+
 
     @Override
-    public SearchPager<K> findListByPager(String index, String type, IBaseSearchListener listener, SearchPagination pagination) throws Exception {
-        return findListByPager(index, type, listener.params(), listener.sortMap(), null, pagination);
+    public SearchPager<K> findListByPage(String index, String type, ISearchListener listener, SearchPagination pagination) throws Exception {
+        return findListByPage(index, type, listener.params(), listener.sortMap(), listener.highlightField(), pagination);
     }
 
-    @Override
-    public SearchPager<K> findListByPager(String index, String type, ISearchListener listener, SearchPagination pagination) throws Exception {
-        return findListByPager(index, type, listener.params(), listener.sortMap(), listener.highlightField(), pagination);
-    }
-
-    public SearchPager<K> findListByPager(String index, String type,
+    private SearchPager<K> findListByPage(String index, String type,
                                           List<Search> params,  //简单查询
                                           Map<String, SortOrder> sortMap,
                                           List<String> highFields,
                                           SearchPagination pagination) throws Exception {
-        if (!StringUtil.isEmpty(pagination.getScrollId())) {
+        //这里是通过scrollId分页
+        if (!StringUtil.isEmpty(pagination.getScrollId()) && pagination.getCurrentIndex() <= 0) {
             return getScrollPager(pagination);
         }
 
@@ -282,14 +307,16 @@ public class BaseSearchSupportImpl<T, K> implements BaseSearchSupport<T, K> {
 
         SearchSourceBuilder sourceBuilder = getSearchRequest(params);
 
+        //通过页码分页
+        if (pagination.getCurrentIndex() > 0) {
+            sourceBuilder.from(pagination.getSearchStartPage());
+        }
         sourceBuilder.size(pagination.getPageSize());
         /**
          * 设置排序
          */
         if (sortMap != null && !sortMap.isEmpty()) {
-            sortMap.entrySet().forEach(entry -> {
-                sourceBuilder.sort(entry.getKey(), entry.getValue());
-            });
+            sortMap.forEach((key, value) -> sourceBuilder.sort(key, value));
 
         } else sourceBuilder.sort("id", SortOrder.ASC);
         searchRequest.source(sourceBuilder);
@@ -308,14 +335,18 @@ public class BaseSearchSupportImpl<T, K> implements BaseSearchSupport<T, K> {
         }
 
 
-        searchRequest.scroll(TimeValue.timeValueMinutes(1L));
+        if (pagination.getCurrentIndex() <= 0) {
+            searchRequest.scroll(TimeValue.timeValueMinutes(1L));
+        }
 
         SearchResponse searchResponse = restClient.search(searchRequest, RequestOptions.DEFAULT);
 
-        //滚动标志
-        pagination.setScrollId(searchResponse.getScrollId());
+        if (pagination.getCurrentIndex() <= 0) {
+            //滚动标志
+            pagination.setScrollId(searchResponse.getScrollId());
+        }
         //总条数
-        pagination.setTotalCount(searchResponse.getHits().getTotalHits());
+        pagination.setTotalCount(StringUtil.toInteger(searchResponse.getHits().getTotalHits()));
 
         List<K> data = getListData(searchResponse.getHits());
 
