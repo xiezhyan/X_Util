@@ -12,7 +12,9 @@ public enum SecurityFieldEnum {
     TIMESTAMP("timestamp"),
     SIGN("sign"),
     CLIENT("client"),
-    APP("APP");
+    APP("APP"),
+    ID("id"),
+    PAGE_SIZE("pageSize");
 
     private String mName;
 

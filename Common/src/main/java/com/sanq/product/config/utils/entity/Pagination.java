@@ -47,6 +47,8 @@ public class Pagination implements Serializable {
     }
 
     public int getPageSize() {
+        if (pageSize > 200)
+            return 200;
         return pageSize;
     }
 

@@ -25,13 +25,6 @@ public abstract class CheckHasPermissionInterceptor extends BaseInterceptor {
 
             super.preHandle(request, response, handler);
 
-//            HandlerMethod hm = (HandlerMethod) handler;
-//            Security security = hm.getMethodAnnotation(Security.class);
-//
-//            if (security != null) {
-//                return true;
-//            }
-
             String uri = request.getRequestURI().replace(request.getContextPath(), "");
 
             if (!checkHasThisUrl(request, uri, (String) objectMap.get(SecurityFieldEnum.TOKEN.getName()))) {

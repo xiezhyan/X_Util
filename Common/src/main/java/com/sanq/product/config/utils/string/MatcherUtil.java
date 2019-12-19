@@ -1,5 +1,7 @@
 package com.sanq.product.config.utils.string;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -216,16 +218,16 @@ public class MatcherUtil {
      *
      * @param regex
      * @param str
-     * @param group
      * @return
      */
-    public static String group(String regex, String str, int group) {
+    public static List<String> group(String regex, String str) {
+        List<String> groups = new ArrayList<String>();
         Pattern pattern = Pattern.compile(regex);
         Matcher matcher = pattern.matcher(str);
 
-        if (matcher.find()) {
-            return matcher.group(group);
+        while (matcher.find()) {
+            groups.add(matcher.group());
         }
-        return "";
+        return  groups;
     }
 }

@@ -12,9 +12,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-/**
- * Created by Xiezhyan on 2019/1/18.
- */
+
 @Service("jedisPoolService")
 public class JedisClusterServiceImpl implements JedisPoolService {
 
@@ -22,14 +20,13 @@ public class JedisClusterServiceImpl implements JedisPoolService {
     private JedisCluster jedisCluster;
 
     @Override
-    public boolean set(String key, String val) {
-
-        return jedisCluster.set(key, val) != null;
+    public void set(String key, String val) {
+        jedisCluster.set(key, val);
     }
 
     @Override
-    public boolean set(String key, String val, int seconds) {
-        return jedisCluster.setex(key, seconds + RandomUtils.nextInt(0, 300), val) != null;
+    public void set(String key, String val, int seconds) {
+        jedisCluster.setex(key, seconds + RandomUtils.nextInt(0, 300), val);
     }
 
     @Override
@@ -38,8 +35,8 @@ public class JedisClusterServiceImpl implements JedisPoolService {
     }
 
     @Override
-    public boolean delete(String key) {
-        return jedisCluster.del(key) != null;
+    public void deleteKey(String key) {
+        jedisCluster.del(key);
     }
 
     @Override
@@ -56,25 +53,29 @@ public class JedisClusterServiceImpl implements JedisPoolService {
 
     @Override
     public long incr(String key, int max) {
-        if (!exists(key)) {
-            set(key, max + "");
-        }
-        return incr(key);
+        return StringUtil.toLong(eval(
+                "if redis.call('EXISTS', KEYS[1]) == 1 then return redis.call('INCR', KEYS[1]) else redis.call('SET', KEYS[1], ARGV[1]) return redis.call('INCR', KEYS[1]) end",
+                new ArrayList<String>(1) {{
+                    add(key);
+                }},
+                new ArrayList<String>(1) {{
+                    add(String.valueOf(max));
+                }}));
     }
 
     @Override
-    public boolean exists(String key) {
+    public boolean existsKeys(String key) {
         return jedisCluster.exists(key);
     }
 
     @Override
-    public long putList(String key, String value) {
-        return jedisCluster.lpush(key, value);
+    public void putListR(String key, String... values) {
+        jedisCluster.lpush(key, values);
     }
 
     @Override
-    public boolean rmList(String key, long start, long end) {
-        return jedisCluster.ltrim(key, start, end) != null;
+    public void deleteList(String key, long start, long end) {
+        jedisCluster.ltrim(key, start, end);
     }
 
     @Override
@@ -84,9 +85,7 @@ public class JedisClusterServiceImpl implements JedisPoolService {
 
     @Override
     public List<String> keys(String pattern) {
-        List<String> keys = getKeysByScan(jedisCluster, pattern);
-
-        return keys;
+        return getKeysByScan(jedisCluster, pattern);
     }
 
     private List<String> getKeysByScan(JedisCluster jedisCluster, String pattern) {
@@ -111,7 +110,7 @@ public class JedisClusterServiceImpl implements JedisPoolService {
     }
 
     @Override
-    public double incrByScope(String key, double score, String member) {
+    public double updateScopeByItem(String key, double score, String member) {
         return jedisCluster.zincrby(key, score, member);
     }
 
@@ -145,22 +144,22 @@ public class JedisClusterServiceImpl implements JedisPoolService {
     }
 
     @Override
-    public boolean expire(String key, int seconds) {
-        return jedisCluster.expire(key, seconds + RandomUtils.nextInt(0, 300)) != null;
+    public void expire(String key, int seconds) {
+        jedisCluster.expire(key, seconds + RandomUtils.nextInt(0, 300));
     }
 
     @Override
-    public long llen(String key) {
+    public long getListSize(String key) {
         return jedisCluster.llen(key);
     }
 
     @Override
-    public boolean putSet(String key, double score, String value) {
-        return jedisCluster.zadd(key, score, value) != 0;
+    public void putSortedSet(String key, double score, String value) {
+        jedisCluster.zadd(key, score, value);
     }
 
     @Override
-    public Set<String> getSet(String key, long start, long end, String order) {
+    public Set<String> getSortedSet(String key, long start, long end, String order) {
         if (StringUtil.isEmpty(order))
             order = "ASC";
 
@@ -173,23 +172,23 @@ public class JedisClusterServiceImpl implements JedisPoolService {
     }
 
     @Override
-    public long zcard(String key) {
+    public long getSortedSetSize(String key) {
         return jedisCluster.zcard(key);
     }
 
     @Override
-    public boolean zrank(String key, String val) {
+    public boolean itemExistsSortedSet(String key, String val) {
         return jedisCluster.zrank(key, val) != null;
     }
 
     @Override
-    public long rmSet(String key, long start, long end) {
-        return jedisCluster.zremrangeByRank(key, start, end);
+    public void deleteSortedSet(String key, long start, long end) {
+        jedisCluster.zremrangeByRank(key, start, end);
     }
 
     @Override
-    public boolean pfAdd(String key, String... value) {
-        return jedisCluster.pfadd(key, value) != 0;
+    public void pfAdd(String key, String... value) {
+        jedisCluster.pfadd(key, value);
     }
 
     @Override
@@ -198,8 +197,8 @@ public class JedisClusterServiceImpl implements JedisPoolService {
     }
 
     @Override
-    public boolean setBit(String key, long offset, boolean value) {
-        return jedisCluster.setbit(key, offset, value);
+    public void setBit(String key, long offset, boolean value) {
+        jedisCluster.setbit(key, offset, value);
     }
 
     @Override
@@ -208,21 +207,115 @@ public class JedisClusterServiceImpl implements JedisPoolService {
     }
 
     @Override
-    public Long bitCount(String key) {
+    public double getScopeByItem(String key, String member) {
+        return jedisCluster.zscore(key, member);
+    }
+
+    @Override
+    public Long getBitCount(String key) {
         return jedisCluster.bitcount(key);
     }
 
     @Override
-    public boolean eval(String script, List<String> keys, List<String> args) {
-        return jedisCluster.eval(script, keys, args) != null;
+    public Object eval(String script, List<String> keys, List<String> args) {
+        return jedisCluster.eval(script, keys, args);
     }
 
     @Override
-    public boolean deletes(String pattern) {
+    public void deleteKeys(String pattern) {
         List<String> keys = keys(pattern);
         if (keys != null && keys.size() > 0) {
-            keys.stream().forEach(key -> delete(key));
+            keys.stream().filter(key -> !StringUtil.isEmpty(key)).forEach(this::deleteKey);
         }
-        return false;
+    }
+
+    @Override
+    public void putListL(String key, String... values) {
+        jedisCluster.lpush(key, values);
+    }
+
+    @Override
+    public void deleteListItem(String key, String value) {
+        jedisCluster.lrem(key, 0, value);
+    }
+
+    @Override
+    public void putHash(String key, Map<String, String> map) {
+        jedisCluster.hmset(key, map);
+    }
+
+    @Override
+    public void putHash(String key, String field, String value) {
+        jedisCluster.hset(key, field, value);
+    }
+
+    @Override
+    public Map<String, String> getHash(String key) {
+        return jedisCluster.hgetAll(key);
+    }
+
+    @Override
+    public String getHash(String key, String field) {
+        return jedisCluster.hget(key, field);
+    }
+
+    @Override
+    public List<String> getHash(String key, String... fields) {
+        return jedisCluster.hmget(key, fields);
+    }
+
+    @Override
+    public void deleteHash(String key, String... fields) {
+        jedisCluster.hdel(key, fields);
+    }
+
+    @Override
+    public void deleteSortedSet(String key, double start, double end) {
+        jedisCluster.zremrangeByScore(key, start, end);
+    }
+
+    @Override
+    public void deleteSortedSetItem(String key, String... members) {
+        jedisCluster.zrem(key, members);
+    }
+
+    @Override
+    public void select(int dbIndex) throws Exception {
+        throw new Exception("SELECT is not allowed in cluster mode");
+    }
+
+    @Override
+    public void move(String key, int dbIndex) throws Exception {
+        throw new Exception("MOVE is not allowed in cluster mode");
+    }
+
+    @Override
+    public void putGeo(String key, Map<String, GeoCoordinate> map) {
+        jedisCluster.geoadd(key, map);
+    }
+
+    @Override
+    public void putGeo(String key, double longitude, double latitude, String member) {
+        jedisCluster.geoadd(key, longitude, latitude, member);
+    }
+
+    @Override
+    public List<GeoCoordinate> getGeo(String key, String... member) {
+        return jedisCluster.geopos(key, member);
+    }
+
+    @Override
+    public List<GeoRadiusResponse> getGeo(String key, String member, double radius) {
+        return jedisCluster.georadiusByMember(key, member, radius, GeoUnit.KM);
+    }
+
+    @Override
+    public List<GeoRadiusResponse> getGeo(String key, double longitude, double latitude, double radius) {
+        return jedisCluster.georadius(key, longitude, latitude, radius, GeoUnit.KM);
+    }
+
+    @Override
+    public double getDist(String key, String member1, String member2) {
+        return jedisCluster.geodist(key, member1, member2);
     }
 }
