@@ -31,11 +31,12 @@ public class Base<T> implements Serializable {
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date deleteTime;
 
-    private Long creater;
-    private Long updater;
-    private Long deleter;
+    private T creater;
+    private T updater;
+    private T deleter;
 
-    private Long appertainId;
+    //所属成员
+    private T appertainId;
 
     public T getId() {
         return id;
@@ -101,35 +102,35 @@ public class Base<T> implements Serializable {
         this.deleteTime = deleteTime;
     }
 
-    public Long getCreater() {
+    public T getCreater() {
         return creater;
     }
 
-    public void setCreater(Long creater) {
+    public void setCreater(T creater) {
         this.creater = creater;
     }
 
-    public Long getUpdater() {
+    public T getUpdater() {
         return updater;
     }
 
-    public void setUpdater(Long updater) {
+    public void setUpdater(T updater) {
         this.updater = updater;
     }
 
-    public Long getDeleter() {
+    public T getDeleter() {
         return deleter;
     }
 
-    public void setDeleter(Long deleter) {
+    public void setDeleter(T deleter) {
         this.deleter = deleter;
     }
 
-    public Long getAppertainId() {
+    public T getAppertainId() {
         return appertainId;
     }
 
-    public void setAppertainId(Long appertainId) {
+    public void setAppertainId(T appertainId) {
         this.appertainId = appertainId;
     }
 }

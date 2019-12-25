@@ -24,7 +24,7 @@ public class IPSeeker {
     private static final byte REDIRECT_MODE_2 = 0x02;
     private static IPSeeker instance;
     //保存的文件夹
-    private String INSTALL_DIR = "f:/qqwry";
+    private String INSTALL_DIR = "/www/server/plugins/ip";
     // 用来做为cache，查询一个ip时首先查看cache，以减少不必要的重复查找
     private Map<String, IPLocation> ipCache;
     // 随机文件访问类
@@ -39,7 +39,7 @@ public class IPSeeker {
     private byte[] b4;
     private byte[] b3;
 
-    private IPSeeker(String fileName, String dir) {
+    private IPSeeker(String fileName) {
         ipCache = new ConcurrentHashMap<>();
         loc = new IPLocation();
         buf = new byte[100];
@@ -84,7 +84,7 @@ public class IPSeeker {
         if (instance == null) {
             synchronized (IPSeeker.class) {
                 if (instance == null) {
-                    instance = new IPSeeker(fileName, "");
+                    instance = new IPSeeker(fileName);
                 }
             }
         }

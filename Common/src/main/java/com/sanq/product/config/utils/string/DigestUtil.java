@@ -13,7 +13,7 @@ public class DigestUtil {
 
 	private DigestUtil() {}
 	
-	private static DigestUtil instance;
+	private static volatile DigestUtil instance;
 	
 	public static DigestUtil getInstance() {
 		if(instance == null) {
@@ -35,7 +35,7 @@ public class DigestUtil {
 	 * 	author:xiezhyan
 	 *	date:2017-6-5
 	 */
-	public String md5(String msg) {
+	public String md5(String msg) throws Exception {
 		try {
 			MessageDigest digest = MessageDigest.getInstance("MD5");
 			byte[] bs = digest.digest(msg.getBytes("UTF-8"));
@@ -52,49 +52,40 @@ public class DigestUtil {
 				}
 				return sb.toString();
 			}
-		} catch (NoSuchAlgorithmException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
-		} catch (UnsupportedEncodingException e) {
-			e.printStackTrace();
+			throw  e;
 		}
 		return "";
 	}
-	
+
 	/**
-	 * 
-	 *		version:加密方法
-	 *		@param encodeStr 需要加密的数据
-	 *		@return 加密后的数据
-	 *-------------------------------------
-	 *		author:xiezhyan
-	 *		date:2017-4-28
+	 *  base64加密
 	 */
-	public String encode(String encodeStr) {
-		if(encodeStr != null && !"".equals(encodeStr)) {
+	public String base64Encode(String msg) throws UnsupportedEncodingException {
+		if(!StringUtil.isEmpty(msg)) {
 			BASE64Encoder encoder = new BASE64Encoder();
 			try {
-				return encoder.encode(encodeStr.getBytes("UTF-8"));
+				return encoder.encode(msg.getBytes("UTF-8"));
 			} catch (UnsupportedEncodingException e) {
 				e.printStackTrace();
+				throw e;
 			}
 		}
 		return "";
 	}
-	
+
 	/**
-	 * 解密
-	 * @param decodeStr   需要解密的数据
-	 * @return	原始数据
+	 *  base64解密
 	 */
-	public String decode(String decodeStr){
-		if(decodeStr != null && !"".equals(decodeStr)) {
+	public String base64Decode(String msg) throws IOException {
+		if(!StringUtil.isEmpty(msg)) {
 			BASE64Decoder decoder = new BASE64Decoder();
 			try {
-				return new String(decoder.decodeBuffer(decodeStr),"UTF-8");
-			} catch (UnsupportedEncodingException e) {
+				return new String(decoder.decodeBuffer(msg),"UTF-8");
+			} catch (Exception e) {
 				e.printStackTrace();
-			} catch (IOException e) {
-				e.printStackTrace();
+				throw e;
 			}
 		}
 		return "";

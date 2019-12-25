@@ -9,7 +9,7 @@ import java.io.FileReader;
 
 public class XmlUtil {
 
-	private static XmlUtil instance = null;
+	private static volatile XmlUtil instance = null;
 	
 	private XmlUtil() {}
 	

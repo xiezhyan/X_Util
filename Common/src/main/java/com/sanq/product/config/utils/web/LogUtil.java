@@ -16,7 +16,7 @@ public class LogUtil{
 
 	private static Logger logger = null;
 
-	private static LogUtil instance = null;
+	private static volatile LogUtil instance = null;
 
 	private Class clazz;
 	private LogUtil(Class clazz) {

@@ -56,11 +56,11 @@ public class ParamUtils {
      * @param map
      * @return
      */
-    public String getSign(Map<String, Object> map) {
+    public String getSign(Map<String, Object> map) throws Exception {
         return getSign2Map(map);
     }
 
-    private String getSign2Map(Map<String, Object> map) {
+    private String getSign2Map(Map<String, Object> map) throws Exception {
         StringBuffer sb = new StringBuffer();
         ArrayList<String> list = new ArrayList<String>(map.keySet());
         Collections.sort(list);
@@ -74,7 +74,7 @@ public class ParamUtils {
         return DigestUtil.getInstance().md5(sb.toString());
     }
 
-    public String getSign(String json){
+    public String getSign(String json) throws Exception {
         Map<String, Object> map = json2Map(json);
         return getSign2Map(map);
     }

@@ -90,18 +90,6 @@ public class StringUtil extends StringUtils {
     }
 
     /**
-     * 替换为手机识别的HTML，去掉样式及属性，保留回车。
-     *
-     * @param txt
-     * @return
-     */
-    /*
-	 * public static String toHtml(String txt){ if (txt == null){ return ""; }
-	 * return replace(replace(Encodes.escapeHtml(txt), "\n", "<br/>"), "\t",
-	 * "&nbsp; &nbsp; "); }
-	 */
-
-    /**
      * 缩略字符串（不区分中英文字符）
      *
      * @param str    目标字符串
@@ -173,10 +161,6 @@ public class StringUtil extends StringUtils {
 
     /**
      * 驼峰命名法工具
-     *
-     * @return toCamelCase("hello_world") == "helloWorld"
-     * toCapitalizeCamelCase("hello_world") == "HelloWorld"
-     * toUnderScoreCase("helloWorld") = "hello_world"
      */
     public static String toCamelCase(String s) {
         if (s == null) {
@@ -205,10 +189,6 @@ public class StringUtil extends StringUtils {
 
     /**
      * 驼峰命名法工具
-     *
-     * @return toCamelCase("hello_world") == "helloWorld"
-     * toCapitalizeCamelCase("hello_world") == "HelloWorld"
-     * toUnderScoreCase("helloWorld") = "hello_world"
      */
     public static String toCapitalizeCamelCase(String s) {
         if (s == null) {
@@ -220,10 +200,6 @@ public class StringUtil extends StringUtils {
 
     /**
      * 驼峰命名法工具
-     *
-     * @return toCamelCase("hello_world") == "helloWorld"
-     * toCapitalizeCamelCase("hello_world") == "HelloWorld"
-     * toUnderScoreCase("helloWorld") = "hello_world"
      */
     public static String toUnderScoreCase(String s) {
         if (s == null) {
@@ -258,9 +234,6 @@ public class StringUtil extends StringUtils {
 
     /**
      * 驼峰转下划线 (暂不建议使用toUnderScoreCase)
-     *
-     * @param camelCaseName
-     * @return
      */
     public static String toUnderscoreName(String camelCaseName) {
         StringBuilder result = new StringBuilder();
@@ -300,36 +273,6 @@ public class StringUtil extends StringUtils {
     }
 
     /**
-     * 如果不为空，则设置值
-     *
-     * @param target
-     * @param source
-     */
-    public static void setValueIfNotBlank(String target, String source) {
-        if (isNotBlank(source)) {
-            target = source;
-        }
-    }
-
-    /**
-     * 转换为JS获取对象值，生成三目运算返回结果
-     *
-     * @param objectString 对象串 例如：row.user.id
-     *                     返回：!row?'':!row.user?'':!row.user.id?'':row.user.id
-     */
-    public static String jsGetVal(String objectString) {
-        StringBuilder result = new StringBuilder();
-        StringBuilder val = new StringBuilder();
-        String[] vals = split(objectString, ".");
-        for (int i = 0; i < vals.length; i++) {
-            val.append("." + vals[i]);
-            result.append("!" + (val.substring(1)) + "?'':");
-        }
-        result.append(val.substring(1));
-        return result.toString();
-    }
-
-    /**
      * 转换为utf-8字符串
      *
      * @param s
@@ -361,9 +304,6 @@ public class StringUtil extends StringUtils {
 
     /**
      * version:得到UUID
-     *
-     * @return ------------------------------------- author:xiezhyan
-     * date:2017-6-14
      */
     public static String uuid() {
         return UUID.randomUUID().toString().toUpperCase().replace("-", "");
@@ -371,10 +311,7 @@ public class StringUtil extends StringUtils {
 
 
     public static boolean isEmpty(String token) {
-        if (token == null || "" .equals(token))
-            return true;
-
-        return false;
+        return isNotBlank(token);
     }
 
     public static int getHash(String str) {
