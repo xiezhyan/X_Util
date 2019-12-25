@@ -79,7 +79,7 @@
         <zookeeper.version>3.5.6</zookeeper.version>
         <zkclient.version>0.1</zkclient.version>
         <javassist.version>3.18.1-GA</javassist.version>
-
+        <curatorVersion>4.2.0</curatorVersion>
 
         <!-- aspectjweaver -->
         <aspectjweaver.version>1.7.4</aspectjweaver.version>
@@ -125,7 +125,7 @@
             </dependency>
 
             <dependency>
-                <groupId>org.hibernate</groupId>
+                <groupId>org.hibernate.validator</groupId>
                 <artifactId>hibernate-validator</artifactId>
                 <version>${validatorVersion}</version>
             </dependency>
@@ -403,6 +403,18 @@
                     <exclusion>
                         <artifactId>netty</artifactId>
                         <groupId>io.netty</groupId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.curator</groupId>
+                <artifactId>curator-framework</artifactId>
+                <version>${curatorVersion}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.apache.zookeeper</groupId>
+                        <artifactId>zookeeper</artifactId>
                     </exclusion>
                 </exclusions>
             </dependency>

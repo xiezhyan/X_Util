@@ -2,9 +2,7 @@ package com.sanq.product.security.filters;
 
 import com.google.common.collect.Lists;
 import com.sanq.product.config.utils.string.StringUtil;
-import com.sanq.product.config.utils.web.LogUtil;
 import com.sanq.product.security.utils.ParamUtils;
-import org.apache.commons.io.IOUtils;
 
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
