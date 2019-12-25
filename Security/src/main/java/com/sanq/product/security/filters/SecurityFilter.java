@@ -3,6 +3,7 @@ package com.sanq.product.security.filters;
 import com.google.common.collect.Lists;
 import com.sanq.product.config.utils.string.StringUtil;
 import com.sanq.product.security.utils.ParamUtils;
+import org.apache.commons.io.IOUtils;
 
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
@@ -28,7 +29,7 @@ public class SecurityFilter implements Filter {
     public void init(FilterConfig filterConfig) throws ServletException {
         this.exclusion = filterConfig.getInitParameter("exclusion");
 
-        if (StringUtil.isEmpty(this.exclusion))
+        if (!StringUtil.isEmpty(this.exclusion))
             exclusions = Lists.newArrayList();
         else
             exclusions = Arrays.asList(this.exclusion.split(","));

@@ -4,8 +4,7 @@ import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
-import java.util.*;
+import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -310,6 +309,9 @@ public class StringUtil extends StringUtils {
     }
 
 
+    /**
+     * 判断是否不为空
+     */
     public static boolean isEmpty(String token) {
         return isNotBlank(token);
     }
