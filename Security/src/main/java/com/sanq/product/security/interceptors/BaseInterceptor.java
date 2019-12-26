@@ -4,6 +4,7 @@ import com.sanq.product.config.utils.auth.exception.IpAllowedException;
 import com.sanq.product.config.utils.auth.exception.NoParamsException;
 import com.sanq.product.config.utils.auth.exception.TokenException;
 import com.sanq.product.config.utils.web.GlobalUtil;
+import com.sanq.product.config.utils.web.LogUtil;
 import com.sanq.product.security.annotation.IgnoreSecurity;
 import com.sanq.product.security.annotation.Security;
 import com.sanq.product.security.enums.SecurityFieldEnum;
@@ -29,7 +30,14 @@ public abstract class BaseInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
 
+        LogUtil.getInstance(getClass()).d(request.getMethod());
+
+        if (checkAlwaysRelease(request)) {
+            return true;
+        }
+
         if (handler instanceof HandlerMethod) {
+
             //验证ip是否在黑名单中
             String ip = GlobalUtil.getIpAddr(request);
 
@@ -66,17 +74,20 @@ public abstract class BaseInterceptor implements HandlerInterceptor {
         throw new Exception("访问被限制");
     }
 
+
     protected Map<String, Object> getParamMap(HttpServletRequest request) {
+
         if (request.getMethod().equalsIgnoreCase("get"))
             return ParamUtils.getInstance().getParam2Get(request);
         else
             return ParamUtils.getInstance().json2Map(ParamUtils.getInstance().get());
     }
 
-    public abstract boolean checkToken(HttpServletRequest request, String token);
+    protected abstract boolean checkToken(HttpServletRequest request, String token);
 
-    public abstract boolean checkIp(HttpServletRequest request, String ip);
+    protected abstract boolean checkIp(HttpServletRequest request, String ip);
 
+    protected abstract boolean checkAlwaysRelease(HttpServletRequest request);
 
     @Override
     public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView) throws Exception {
