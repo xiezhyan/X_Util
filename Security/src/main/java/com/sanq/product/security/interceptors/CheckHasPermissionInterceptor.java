@@ -33,7 +33,7 @@ public abstract class CheckHasPermissionInterceptor extends BaseInterceptor {
             }
             return true;
         }
-        throw new Exception("Api 异常");
+        return false;
     }
 
 

@@ -57,7 +57,7 @@ public abstract class SecurityInterceptor extends BaseInterceptor {
             }
             throw new NoParamsException("缺少必要验证参数");
         }
-        throw new Exception("Api 异常");
+        return false;
     }
 
 }
