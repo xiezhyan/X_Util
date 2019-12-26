@@ -22,28 +22,30 @@ import java.util.Map;
  * @author sanq.Yan
  * @date 2019/8/8
  */
-public abstract class BaseInterceptor  implements HandlerInterceptor {
+public abstract class BaseInterceptor implements HandlerInterceptor {
 
-    protected  Map<String, Object> objectMap;
+    protected Map<String, Object> objectMap;
+    protected Security security;
+    protected IgnoreSecurity ignoreSecurity;
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
 
-        if(handler instanceof HandlerMethod) {
+        if (handler instanceof HandlerMethod) {
             //验证ip是否在黑名单中
             String ip = GlobalUtil.getIpAddr(request);
-            if(checkIp(request, ip)) {
+            if (checkIp(request, ip)) {
                 throw new IpAllowedException(String.format("ip：%s 被禁止访问", ip));
             }
 
             HandlerMethod hm = (HandlerMethod) handler;
-            Security security = hm.getMethodAnnotation(Security.class);
+            security = hm.getMethodAnnotation(Security.class);
 
             if (security != null) {
                 return true;
             }
 
-            IgnoreSecurity s = hm.getMethodAnnotation(IgnoreSecurity.class);
+            ignoreSecurity = hm.getMethodAnnotation(IgnoreSecurity.class);
 
             if (request.getMethod().equalsIgnoreCase("get"))
                 objectMap = ParamUtils.getInstance().getParam2Get(request);
@@ -54,7 +56,7 @@ public abstract class BaseInterceptor  implements HandlerInterceptor {
             if (objectMap != null && !objectMap.isEmpty()) {
                 Object o = null;
 
-                if (s == null) {
+                if (ignoreSecurity == null) {
                     o = objectMap.get(SecurityFieldEnum.TOKEN.getName());
                     if (o == null)
                         throw new NoParamsException(String.format("参数%s不存在", SecurityFieldEnum.TOKEN.getName()));
@@ -71,6 +73,7 @@ public abstract class BaseInterceptor  implements HandlerInterceptor {
     }
 
     public abstract boolean checkToken(HttpServletRequest request, String token);
+
     public abstract boolean checkIp(HttpServletRequest request, String ip);
 
 

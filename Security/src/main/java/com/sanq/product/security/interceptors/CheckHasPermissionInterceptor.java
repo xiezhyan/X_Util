@@ -1,10 +1,6 @@
 package com.sanq.product.security.interceptors;
 
 import com.sanq.product.config.utils.auth.exception.AuthException;
-import com.sanq.product.config.utils.auth.exception.TokenException;
-import com.sanq.product.security.annotation.Security;
-import com.sanq.product.security.enums.SecurityFieldEnum;
-import org.apache.zookeeper.KeeperException;
 import org.springframework.web.method.HandlerMethod;
 
 import javax.servlet.http.HttpServletRequest;
@@ -12,8 +8,9 @@ import javax.servlet.http.HttpServletResponse;
 
 /**
  * com.sanq.product.security.interceptors.CheckHasPermissionInterceptor
- *
+ * <p>
  * 后台权限验证等
+ *
  * @author sanq.Yan
  * @date 2019/8/19
  */
@@ -24,6 +21,10 @@ public abstract class CheckHasPermissionInterceptor extends BaseInterceptor {
         if (handler instanceof HandlerMethod) {
             if (!super.preHandle(request, response, handler)) {
                 return false;
+            }
+
+            if (security != null) {
+                return true;
             }
 
             String uri = request.getRequestURI().replace(request.getContextPath(), "");

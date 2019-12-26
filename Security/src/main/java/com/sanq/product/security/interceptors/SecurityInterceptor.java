@@ -3,7 +3,6 @@ package com.sanq.product.security.interceptors;
 import com.sanq.product.config.utils.auth.exception.NoParamsException;
 import com.sanq.product.config.utils.date.LocalDateUtils;
 import com.sanq.product.config.utils.string.StringUtil;
-import com.sanq.product.security.annotation.Security;
 import com.sanq.product.security.enums.SecurityFieldEnum;
 import com.sanq.product.security.utils.ParamUtils;
 import org.springframework.web.method.HandlerMethod;
@@ -13,8 +12,9 @@ import javax.servlet.http.HttpServletResponse;
 
 /**
  * com.sanq.product.security.interceptors.SecurityInterceptor
- *
+ * <p>
  * 前端调用接口验证
+ *
  * @author sanq.Yan
  * @date 2019/8/3
  */
@@ -28,6 +28,10 @@ public abstract class SecurityInterceptor extends BaseInterceptor {
 
             if (!super.preHandle(request, response, handler)) {
                 return false;
+            }
+
+            if (security != null) {
+                return true;
             }
 
 
