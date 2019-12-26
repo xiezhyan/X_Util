@@ -37,22 +37,18 @@ public abstract class BaseInterceptor implements HandlerInterceptor {
                 throw new IpAllowedException(String.format("ip:%s异常访问， 已屏蔽", ip));
             }
 
-            // 先获取参数
-            if (request.getMethod().equalsIgnoreCase("get"))
-                objectMap = ParamUtils.getInstance().getParam2Get(request);
-            else
-                objectMap = ParamUtils.getInstance().json2Map(ParamUtils.getInstance().get());
-
-            if (objectMap == null || objectMap.isEmpty())
-                throw new NoParamsException("缺少必要参数");
-
-            //在判断
             HandlerMethod hm = (HandlerMethod) handler;
             Security security = hm.getMethodAnnotation(Security.class);
 
             if (security != null) {
                 return true;
             }
+
+            // 先获取参数
+            objectMap = getParamMap(request);
+
+            if (objectMap == null || objectMap.isEmpty())
+                throw new NoParamsException("缺少必要参数");
 
             //是否忽略token验证
             IgnoreSecurity s = hm.getMethodAnnotation(IgnoreSecurity.class);
@@ -68,6 +64,13 @@ public abstract class BaseInterceptor implements HandlerInterceptor {
             return true;
         }
         throw new Exception("访问被限制");
+    }
+
+    protected Map<String, Object> getParamMap(HttpServletRequest request) {
+        if (request.getMethod().equalsIgnoreCase("get"))
+            return ParamUtils.getInstance().getParam2Get(request);
+        else
+            return ParamUtils.getInstance().json2Map(ParamUtils.getInstance().get());
     }
 
     public abstract boolean checkToken(HttpServletRequest request, String token);

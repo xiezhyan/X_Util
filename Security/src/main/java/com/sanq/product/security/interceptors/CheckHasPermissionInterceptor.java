@@ -23,7 +23,9 @@ public abstract class CheckHasPermissionInterceptor extends BaseInterceptor {
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         if (handler instanceof HandlerMethod) {
 
-            super.preHandle(request, response, handler);
+            if (super.preHandle(request, response, handler)) {
+                return true;
+            }
 
             String uri = request.getRequestURI().replace(request.getContextPath(), "");
 

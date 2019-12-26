@@ -26,11 +26,9 @@ public abstract class SecurityInterceptor extends BaseInterceptor {
 
         if (handler instanceof HandlerMethod) {
 
-            super.preHandle(request, response, handler);
-
-            if (objectMap == null || objectMap.isEmpty())
-                throw new NoParamsException("缺少必要参数");
-
+            if (super.preHandle(request, response, handler)) {
+                return true;
+            }
 
             Object o = objectMap.get(SecurityFieldEnum.TIMESTAMP.getName());
             if (o == null)
