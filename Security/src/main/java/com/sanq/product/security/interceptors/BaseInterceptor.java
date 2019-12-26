@@ -32,17 +32,12 @@ public abstract class BaseInterceptor implements HandlerInterceptor {
         if (handler instanceof HandlerMethod) {
             //验证ip是否在黑名单中
             String ip = GlobalUtil.getIpAddr(request);
+
             if (checkIp(request, ip)) {
                 throw new IpAllowedException(String.format("ip:%s异常访问， 已屏蔽", ip));
             }
 
-            HandlerMethod hm = (HandlerMethod) handler;
-            Security security = hm.getMethodAnnotation(Security.class);
-
-            if (security != null) {
-                return true;
-            }
-
+            // 先获取参数
             if (request.getMethod().equalsIgnoreCase("get"))
                 objectMap = ParamUtils.getInstance().getParam2Get(request);
             else
@@ -50,6 +45,14 @@ public abstract class BaseInterceptor implements HandlerInterceptor {
 
             if (objectMap == null || objectMap.isEmpty())
                 throw new NoParamsException("缺少必要参数");
+
+            //在判断
+            HandlerMethod hm = (HandlerMethod) handler;
+            Security security = hm.getMethodAnnotation(Security.class);
+
+            if (security != null) {
+                return true;
+            }
 
             //是否忽略token验证
             IgnoreSecurity s = hm.getMethodAnnotation(IgnoreSecurity.class);

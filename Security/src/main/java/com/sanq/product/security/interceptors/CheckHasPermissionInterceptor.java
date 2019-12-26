@@ -27,7 +27,7 @@ public abstract class CheckHasPermissionInterceptor extends BaseInterceptor {
 
             String uri = request.getRequestURI().replace(request.getContextPath(), "");
 
-            if (!checkHasThisUrl(request, uri, (String) objectMap.get(SecurityFieldEnum.TOKEN.getName()))) {
+            if (!checkHasThisUrl(request, uri)) {
                 throw new AuthException("无当前接口权限");
             }
             return true;
@@ -36,5 +36,5 @@ public abstract class CheckHasPermissionInterceptor extends BaseInterceptor {
     }
 
 
-    protected abstract boolean checkHasThisUrl(HttpServletRequest request, String uri, String token);
+    protected abstract boolean checkHasThisUrl(HttpServletRequest request, String uri);
 }

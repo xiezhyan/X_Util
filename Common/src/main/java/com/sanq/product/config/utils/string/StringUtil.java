@@ -313,7 +313,7 @@ public class StringUtil extends StringUtils {
      * 判断是否不为空
      */
     public static boolean isEmpty(String token) {
-        return isNotBlank(token);
+        return isBlank(token);
     }
 
     public static int getHash(String str) {
