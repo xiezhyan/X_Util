@@ -22,9 +22,8 @@ public abstract class CheckHasPermissionInterceptor extends BaseInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         if (handler instanceof HandlerMethod) {
-
-            if (super.preHandle(request, response, handler)) {
-                return true;
+            if (!super.preHandle(request, response, handler)) {
+                return false;
             }
 
             String uri = request.getRequestURI().replace(request.getContextPath(), "");
@@ -34,7 +33,7 @@ public abstract class CheckHasPermissionInterceptor extends BaseInterceptor {
             }
             return true;
         }
-        throw new Exception("访问被限制");
+        throw new Exception("Api 异常");
     }
 
 
