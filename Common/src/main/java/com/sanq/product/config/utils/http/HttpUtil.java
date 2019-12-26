@@ -1,5 +1,6 @@
 package com.sanq.product.config.utils.http;
 
+import com.sanq.product.config.utils.web.JsonUtil;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.NameValuePair;
@@ -31,6 +32,11 @@ import java.util.Map;
 
 public class HttpUtil {
 
+    public static final String ENCODING = "utf-8";
+
+    private static final String JSON = "JSON";
+    private static final String FORM = "FORM";
+
     private static volatile HttpUtil instance;
 
     public static HttpUtil getInstance() {
@@ -55,12 +61,7 @@ public class HttpUtil {
     }
 
     /**
-     * httpClient 发送get请求
-     *
-     * @param url
-     * @param head
-     * @param params
-     * @return
+     * get请求
      */
     public String get(String url, Map<String, String> head, Map<String, String> params, String encoding) {
         try {
@@ -74,9 +75,7 @@ public class HttpUtil {
             HttpGet httpGet = new HttpGet(uriBuilder.build());
 
             if (head != null && !head.isEmpty()) {
-                head.forEach((key, value) -> {
-                    httpGet.addHeader(key, value);
-                });
+                head.forEach(httpGet::addHeader);
             }
 
             CloseableHttpResponse response = mHttpClient.execute(httpGet);
@@ -91,30 +90,46 @@ public class HttpUtil {
     }
 
     /**
-     * post
-     *
-     * @param url
-     * @param head
-     * @param params
-     * @return
+     * json
      */
-    public String post(String url, Map<String, String> head, Map<String, String> params, String encoding) {
+    public String postJson(String url, Map<String, String> head, Map<String, Object> params, String encoding) {
+        return post(url, head, params, encoding, JSON);
+    }
+
+    /**
+     * form
+     */
+    public String postForm(String url, Map<String, String> head, Map<String, Object> params, String encoding) {
+        return post(url, head, params, encoding, FORM);
+    }
+
+    /**
+     * post
+     */
+    private String post(String url, Map<String, String> head, Map<String, Object> params, String encoding, String type) {
         try {
             HttpPost httpPost = new HttpPost(url);
 
-            List<NameValuePair> nameValuePairs = new ArrayList<>();
-            if (params != null && !params.isEmpty()) {
-                params.forEach((key, value) -> nameValuePairs.add(new BasicNameValuePair(key, value)));
+            if (head != null && !head.isEmpty()) {
+                head.forEach(httpPost::addHeader);
+            }
 
-                StringEntity entity = new UrlEncodedFormEntity(nameValuePairs, encoding);
+            if (params != null && !params.isEmpty()) {
+                StringEntity entity = null;
+                switch (type) {
+                    case JSON:
+                        entity = new StringEntity(JsonUtil.obj2Json(params), ENCODING);
+                        entity.setContentType("application/json");
+                        break;
+                    case FORM:
+                        List<NameValuePair> nameValuePairs = new ArrayList<>(params.size());
+                        params.forEach((key, value) -> nameValuePairs.add(new BasicNameValuePair(key, value.toString())));
+                        entity = new UrlEncodedFormEntity(nameValuePairs, encoding);
+                        break;
+                }
                 httpPost.setEntity(entity);
             }
 
-            if (head != null && !head.isEmpty()) {
-                head.forEach((key, value) -> {
-                    httpPost.addHeader(key, value);
-                });
-            }
 
             CloseableHttpResponse response = mHttpClient.execute(httpPost);
             if (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
@@ -133,9 +148,7 @@ public class HttpUtil {
     public InputStream getInputStream(String url, Map<String, String> head) {
         HttpGet get = new HttpGet(url);
         if (head != null && !head.isEmpty()) {
-            head.forEach((key, value) -> {
-                get.addHeader(key, value);
-            });
+            head.forEach(get::addHeader);
         }
 
         try {
