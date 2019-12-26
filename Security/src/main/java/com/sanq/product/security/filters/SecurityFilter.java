@@ -29,7 +29,7 @@ public class SecurityFilter implements Filter {
     public void init(FilterConfig filterConfig) throws ServletException {
         this.exclusion = filterConfig.getInitParameter("exclusion");
 
-        if (!StringUtil.isEmpty(this.exclusion))
+        if (StringUtil.isEmpty(this.exclusion))
             exclusions = Lists.newArrayList();
         else
             exclusions = Arrays.asList(this.exclusion.split(","));
