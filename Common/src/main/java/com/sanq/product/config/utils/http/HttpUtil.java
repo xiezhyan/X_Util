@@ -231,7 +231,6 @@ public class HttpUtil {
             //文件参数
             MultipartEntityBuilder builder = MultipartEntityBuilder
                     .create()
-                    .setCharset(Consts.UTF_8)
                     .setMode(HttpMultipartMode.BROWSER_COMPATIBLE);//加上此行代码解决返回中文乱码问题
 
             if (fileMap != null && !fileMap.isEmpty()) {
