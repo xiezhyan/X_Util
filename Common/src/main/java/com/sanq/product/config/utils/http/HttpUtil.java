@@ -27,6 +27,7 @@ import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.entity.mime.HttpMultipartMode;
 import org.apache.http.entity.mime.MultipartEntityBuilder;
+import org.apache.http.entity.mime.content.FileBody;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.client.HttpClients;
@@ -38,6 +39,7 @@ import org.omg.PortableInterceptor.INACTIVE;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.security.cert.CertificateException;
@@ -213,7 +215,7 @@ public class HttpUtil {
     public synchronized String uploadFile(String url,
                                           Map<String, String> headMap,
                                           Map<String, Object> paramMap,     //额外参数
-                                          Map<String, InputStream> fileMap, //文件传输
+                                          Map<String, File> fileMap, //文件传输
                                           String encoding) {
         CloseableHttpResponse response = null;
         HttpPost httpPost = null;
@@ -234,7 +236,8 @@ public class HttpUtil {
 
             if (fileMap != null && !fileMap.isEmpty()) {
                 fileMap.forEach((key, value) -> {
-                    builder.addBinaryBody(key, value, ContentType.create("multipart/form-data", Consts.UTF_8), key);// 文件流
+                    builder.addPart(key,
+                            new FileBody(value, ContentType.create("multipart/form-data", Consts.UTF_8), value.getName()));
                 });
             }
 
