@@ -71,8 +71,6 @@
         <nettyVersion>5.0.0.Alpha2</nettyVersion>
         <hessionVersion>4.0.63</hessionVersion>
 
-        <jettyVersion>9.4.25.v20191220</jettyVersion>
-
         <!-- aspectjweaver -->
         <aspectjweaver.version>1.7.4</aspectjweaver.version>
         <commons-net.version>3.6</commons-net.version>
@@ -409,11 +407,6 @@
                 <groupId>com.caucho</groupId>
                 <artifactId>hessian</artifactId>
                 <version>${hessionVersion}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.eclipse.jetty</groupId>
-                <artifactId>jetty-server</artifactId>
-                <version>${jettyVersion}</version>
             </dependency>
 
             <!-- xstream -->
