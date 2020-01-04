@@ -1,6 +1,6 @@
 import $axios from 'utils/Request.js'
 
-//列表分页
+// 列表分页
 export const get${table.javaName?cap_first}List = data => {
     return $axios({
         url: '/api/${table.name}/list',
@@ -9,7 +9,7 @@ export const get${table.javaName?cap_first}List = data => {
     });
 }
 
-//获取所有数据
+// 获取所有数据
 export const get${table.javaName?cap_first}AllList = data => {
     return $axios({
         url: '/api/${table.name}/all',
@@ -18,7 +18,7 @@ export const get${table.javaName?cap_first}AllList = data => {
     });
 }
 
-//保存
+// 保存数据
 export const save${table.javaName?cap_first} = data => {
     return $axios({
         url: '/api/${table.name}/save',
@@ -27,7 +27,7 @@ export const save${table.javaName?cap_first} = data => {
     });
 }
 
-//删除数据
+// 删除数据
 export const delete${table.javaName?cap_first} = data => {
     return $axios({
         url: '/api/${table.name}/delete',
@@ -36,11 +36,20 @@ export const delete${table.javaName?cap_first} = data => {
     });
 }
 
-//修改数据
+// 修改数据
 export const update${table.javaName?cap_first}ById = data => {
     return $axios({
         url: '/api/${table.name}/update/' + data.id,
         method: 'put',
+        data
+    });
+}
+
+// 通过ID查询
+export const get${table.javaName?cap_first}ById = data => {
+    return $axios({
+        url: '/api/${table.name}/get/' + data.id,
+        method: 'get',
         data
     });
 }

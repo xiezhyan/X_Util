@@ -37,7 +37,7 @@ public class CorsFilter implements Filter {
             } else {
                 List<String> allowOriginList = Arrays
                         .asList(allowOrigin.split(","));
-                if (allowOriginList != null && allowOriginList.size() > 0) {
+                if (allowOriginList.size() > 0) {
                     if (allowOriginList.contains(currentOrigin)) {
                         response.setHeader("Access-Control-Allow-Origin",
                                 currentOrigin);
