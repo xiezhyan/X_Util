@@ -7,6 +7,7 @@ import ${servicePackage}.${table.javaName?cap_first}Service;
 import ${mapperPackage}.${table.javaName?cap_first}Mapper;
 import java.util.List;
 import java.math.BigDecimal;
+import org.springframework.beans.BeanUtils;
 
 import javax.annotation.Resource;
 import org.springframework.stereotype.Service;
@@ -38,11 +39,12 @@ public class ${table.javaName?cap_first}ServiceImpl implements ${table.javaName?
 		${table.javaName?cap_first}Vo old${table.javaName?cap_first}Vo = findById(<#list table.fields as field><#if field.columnKey == "PRI">${field.javaField}</#if></#list>);
 		
 		if(null != old${table.javaName?cap_first}Vo && null != ${table.javaName}Vo) {
-			<#list table.fields as field>
-			if(null != ${table.javaName}Vo.get${field.javaField?cap_first!""}()) {
-				old${table.javaName?cap_first}Vo.set${field.javaField?cap_first!""}(${table.javaName}Vo.get${field.javaField?cap_first!""}());
-			}
-			</#list>
+			BeanUtils.copyProperties(${table.javaName}Vo, old${table.javaName?cap_first}Vo);
+			<#--<#list table.fields as field>-->
+			<#--if(null != ${table.javaName}Vo.get${field.javaField?cap_first!""}()) {-->
+				<#--old${table.javaName?cap_first}Vo.set${field.javaField?cap_first!""}(${table.javaName}Vo.get${field.javaField?cap_first!""}());-->
+			<#--}-->
+			<#--</#list>-->
 			return ${table.javaName}Mapper.update(old${table.javaName?cap_first}Vo);
 		}
 		return 0;

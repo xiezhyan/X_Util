@@ -59,6 +59,8 @@ public class BaseSearchSupportImpl<T, K> implements BaseSearchSupport<T, K> {
     @Resource
     private RestHighLevelClient restClient;
 
+    public static final String ID = "id";
+
     /**
      * 返回当前客户端
      *
@@ -89,9 +91,10 @@ public class BaseSearchSupportImpl<T, K> implements BaseSearchSupport<T, K> {
 
     /**
      * 验证该索引是否存在
+     *
      * @param index 索引
-     * @return  boolean
-     * @throws Exception    抛出异常
+     * @return boolean
+     * @throws Exception 抛出异常
      */
     @Override
     public boolean check(String index) throws Exception {
@@ -102,10 +105,10 @@ public class BaseSearchSupportImpl<T, K> implements BaseSearchSupport<T, K> {
     /**
      * 创建索引
      *
-     * @param index 索引
+     * @param index   索引
      * @param mapping 文档
-     * @return  boolean
-     * @throws Exception    抛出异常
+     * @return boolean
+     * @throws Exception 抛出异常
      */
     @Override
     public boolean createIndex(String index, String mapping) throws Exception {
@@ -123,13 +126,12 @@ public class BaseSearchSupportImpl<T, K> implements BaseSearchSupport<T, K> {
      * 通过ID获取详情
      *
      * @param index 索引
-     * @param type  类型
      * @param id    ID
-     * @return      K
+     * @return K
      */
     @Override
-    public K findById(String index, String type, String id) throws Exception {
-        GetRequest getRequest = new GetRequest(index, type, id);
+    public K findById(String index, String id) throws Exception {
+        GetRequest getRequest = new GetRequest(index, id);
         GetResponse getResponse = restClient.get(getRequest, RequestOptions.DEFAULT);
         return JsonUtil.json2Obj(getResponse.getSourceAsString(), getQueryClass());
     }
@@ -138,22 +140,32 @@ public class BaseSearchSupportImpl<T, K> implements BaseSearchSupport<T, K> {
      * 保存
      *
      * @param index  索引
-     * @param type   类型
-     * @param entity    内容实体
+     * @param entity 内容实体
      */
     @Override
-    public String save(String index, String type, T entity) throws Exception {
+    public String save(String index, T entity) throws Exception {
 
         Map<String, Object> map = bean2Map(entity);
 
-        IndexRequest indexRequest = new IndexRequest(index, type, map.get("id").toString()).source(map).opType(DocWriteRequest.OpType.CREATE);
+        String id = getId(map);
+
+        IndexRequest indexRequest = new IndexRequest(index).id(id).source(map).opType(DocWriteRequest.OpType.CREATE);
         IndexResponse indexResponse = restClient.index(indexRequest, RequestOptions.DEFAULT);
 
         return indexResponse.getId();
     }
 
+    private String getId(Map<String, Object> map) {
+        Object o = map.get(ID);
+        if (o == null)
+            return String.valueOf(System.nanoTime());
+        else
+            return o.toString();
+    }
+
     /**
      * 将实体转化成map
+     *
      * @param entity
      * @return
      */
@@ -165,20 +177,19 @@ public class BaseSearchSupportImpl<T, K> implements BaseSearchSupport<T, K> {
      * 批量保存
      *
      * @param index      索引
-     * @param type       类型
-     * @param entityList    内容实体
+     * @param entityList 内容实体
      */
     @Override
-    public boolean saveList(String index, String type, List<T> entityList) throws Exception {
+    public boolean saveList(String index, List<T> entityList) throws Exception {
         BulkRequest bulkRequest = new BulkRequest();
 
         entityList.forEach(entity -> {
             try {
                 Map<String, Object> map = bean2Map(entity);
 
-                String id = String.valueOf(map.get("id"));
+                String id = getId(map);
 
-                bulkRequest.add(new IndexRequest(index, type, id).source(JsonUtil.obj2Json(map), XContentType.JSON));
+                bulkRequest.add(new IndexRequest(index).id(id).source(JsonUtil.obj2Json(map), XContentType.JSON));
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -192,15 +203,14 @@ public class BaseSearchSupportImpl<T, K> implements BaseSearchSupport<T, K> {
      * 修改
      *
      * @param index  索引
-     * @param type   类型
-     * @param entity    内容实体
-     * @return  boolean
+     * @param entity 内容实体
+     * @return boolean
      */
     @Override
-    public boolean update(String index, String type, T entity) throws Exception {
+    public boolean update(String index, T entity) throws Exception {
         Map<String, Object> map = bean2Map(entity);
 
-        UpdateRequest request = new UpdateRequest(index, type, map.get("id").toString());
+        UpdateRequest request = new UpdateRequest(index,  getId(map));
         request.doc(map);
 
         UpdateResponse update = restClient.update(request, RequestOptions.DEFAULT);
@@ -211,13 +221,12 @@ public class BaseSearchSupportImpl<T, K> implements BaseSearchSupport<T, K> {
      * 删除
      *
      * @param index 索引
-     * @param type  类型
      * @param id    id
-     * @return  boolean
+     * @return boolean
      */
     @Override
-    public boolean delete(String index, String type, String id) throws Exception {
-        DeleteRequest deleteRequest = new DeleteRequest(index, type, id);
+    public boolean delete(String index, String id) throws Exception {
+        DeleteRequest deleteRequest = new DeleteRequest(index, id);
 
         DeleteResponse delete = restClient.delete(deleteRequest, RequestOptions.DEFAULT);
         return delete.status().getStatus() == RestStatus.OK.getStatus();
@@ -227,16 +236,15 @@ public class BaseSearchSupportImpl<T, K> implements BaseSearchSupport<T, K> {
      * 批量删除
      *
      * @param index 索引
-     * @param type  类型
      * @param ids   ids
-     * @return  boolean
+     * @return boolean
      */
     @Override
-    public boolean deleteList(String index, String type, List<String> ids) throws Exception {
+    public boolean deleteList(String index,  List<String> ids) throws Exception {
         BulkRequest bulkRequest = new BulkRequest();
 
         ids.stream().forEach(id -> {
-            bulkRequest.add(new DeleteRequest(index, type, id));
+            bulkRequest.add(new DeleteRequest(index, id));
         });
 
         BulkResponse bulk = restClient.bulk(bulkRequest, RequestOptions.DEFAULT);
@@ -247,7 +255,7 @@ public class BaseSearchSupportImpl<T, K> implements BaseSearchSupport<T, K> {
      * 删除 索引
      *
      * @param index 索引
-     * @return  boolean
+     * @return boolean
      */
     @Override
     public boolean deleteIndex(String index) throws Exception {
@@ -260,40 +268,37 @@ public class BaseSearchSupportImpl<T, K> implements BaseSearchSupport<T, K> {
      * 查询数据 分页
      *
      * @param index      索引
-     * @param type       类型
-     * @param entity    实体
-     * @param pagination    分页
-     * @return  SearchPager<K>
+     * @param entity     实体
+     * @param pagination 分页
+     * @return SearchPager<K>
      */
     @Override
-    public SearchPager<K> findListByPage(String index, String type, K entity, SearchPagination pagination) throws Exception {
+    public SearchPager<K> findListByPage(String index, K entity, SearchPagination pagination) throws Exception {
 
-        return findListByPage(index, type, Search.bean2Search(entity), null, null, pagination);
+        return findListByPage(index, Search.bean2Search(entity), null, null, pagination);
     }
 
     /**
-     *
      * 查询数据 分页
      *
      * @param index      索引
-     * @param type       类型
-     * @param listener  自定义参数
-     * @param pagination    分页
-     * @return  SearchPager<K>
-     * @throws Exception    抛出异常
+     * @param listener   自定义参数
+     * @param pagination 分页
+     * @return SearchPager<K>
+     * @throws Exception 抛出异常
      */
     @Override
-    public SearchPager<K> findListByPage(String index, String type, IBaseSearchListener listener, SearchPagination pagination) throws Exception {
-        return findListByPage(index, type, listener.params(), listener.sortMap(), null, pagination);
+    public SearchPager<K> findListByPage(String index,  IBaseSearchListener listener, SearchPagination pagination) throws Exception {
+        return findListByPage(index, listener.params(), listener.sortMap(), null, pagination);
     }
 
 
     @Override
-    public SearchPager<K> findListByPage(String index, String type, ISearchListener listener, SearchPagination pagination) throws Exception {
-        return findListByPage(index, type, listener.params(), listener.sortMap(), listener.highlightField(), pagination);
+    public SearchPager<K> findListByPage(String index,  ISearchListener listener, SearchPagination pagination) throws Exception {
+        return findListByPage(index,  listener.params(), listener.sortMap(), listener.highlightField(), pagination);
     }
 
-    private SearchPager<K> findListByPage(String index, String type,
+    private SearchPager<K> findListByPage(String index,
                                           List<Search> params,  //简单查询
                                           Map<String, SortOrder> sortMap,
                                           List<String> highFields,
@@ -303,7 +308,7 @@ public class BaseSearchSupportImpl<T, K> implements BaseSearchSupport<T, K> {
             return getScrollPager(pagination);
         }
 
-        SearchRequest searchRequest = new SearchRequest(index).types(type);
+        SearchRequest searchRequest = new SearchRequest(index);
 
         SearchSourceBuilder sourceBuilder = getSearchRequest(params);
 
@@ -316,7 +321,7 @@ public class BaseSearchSupportImpl<T, K> implements BaseSearchSupport<T, K> {
          * 设置排序
          */
         if (sortMap != null && !sortMap.isEmpty()) {
-            sortMap.forEach((key, value) -> sourceBuilder.sort(key, value));
+            sortMap.forEach(sourceBuilder::sort);
 
         } else sourceBuilder.sort("id", SortOrder.ASC);
         searchRequest.source(sourceBuilder);

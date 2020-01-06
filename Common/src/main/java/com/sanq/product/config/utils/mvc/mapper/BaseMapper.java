@@ -11,6 +11,7 @@ import java.util.List;
  * @date 2019/12/13
  */
 public interface BaseMapper<T, K> {
+
     int save(T save);
 
     int delete(T delete);

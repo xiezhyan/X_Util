@@ -10,8 +10,9 @@ import java.util.List;
 
 /**
  * 检索基类
- * @param <T>   增改类
- * @param <K>   查询类
+ *
+ * @param <T> 增改类
+ * @param <K> 查询类
  */
 public interface BaseSearchSupport<T, K> {
 
@@ -39,59 +40,53 @@ public interface BaseSearchSupport<T, K> {
      * 通过ID获取详情
      *
      * @param index 索引
-     * @param type  类型
      * @param id
      * @return
      */
-    K findById(String index, String type, String id) throws Exception;
+    K findById(String index, String id) throws Exception;
 
     /**
      * 保存
      *
      * @param index  索引
-     * @param type   类型
      * @param entity
      */
-    String save(String index, String type, T entity) throws Exception;
+    String save(String index, T entity) throws Exception;
 
     /**
      * 批量保存
      *
      * @param index      索引
-     * @param type       类型
      * @param entityList
      */
-    boolean saveList(String index, String type, List<T> entityList) throws Exception;
+    boolean saveList(String index, List<T> entityList) throws Exception;
 
     /**
      * 修改
      *
      * @param index  索引
-     * @param type   类型
      * @param entity
      * @return
      */
-    boolean update(String index, String type, T entity) throws Exception;
+    boolean update(String index, T entity) throws Exception;
 
     /**
      * 删除
      *
      * @param index 索引
-     * @param type  类型
      * @param id
      * @return
      */
-    boolean delete(String index, String type, String id) throws Exception;
+    boolean delete(String index, String id) throws Exception;
 
     /**
      * 批量删除
      *
      * @param index 索引
-     * @param type  类型
      * @param ids
      * @return
      */
-    boolean deleteList(String index, String type, List<String> ids) throws Exception;
+    boolean deleteList(String index, List<String> ids) throws Exception;
 
     /**
      * 删除 索引
@@ -105,34 +100,33 @@ public interface BaseSearchSupport<T, K> {
      * 查询数据 分页
      *
      * @param index      索引
-     * @param type       类型
      * @param entity
      * @param pagination
      * @return
      */
-    SearchPager<K> findListByPage(String index, String type, K entity, SearchPagination pagination) throws Exception;
+    SearchPager<K> findListByPage(String index, K entity, SearchPagination pagination) throws Exception;
 
     /**
      * 查询数据 排序
+     *
      * @param index
-     * @param type
      * @param listener
      * @param pagination
      * @return
      * @throws Exception
      */
-    SearchPager<K> findListByPage(String index, String type, IBaseSearchListener listener, SearchPagination pagination) throws Exception;
+    SearchPager<K> findListByPage(String index, IBaseSearchListener listener, SearchPagination pagination) throws Exception;
 
 
     /**
-     *  查询数据 排序 设置高亮
+     * 查询数据 排序 设置高亮
+     *
      * @param index      索引
-     * @param type       类型
      * @param listener
      * @param pagination
      * @return
      * @throws Exception
      */
-    SearchPager<K> findListByPage(String index, String type, ISearchListener listener, SearchPagination pagination) throws Exception;
+    SearchPager<K> findListByPage(String index, ISearchListener listener, SearchPagination pagination) throws Exception;
 
 }

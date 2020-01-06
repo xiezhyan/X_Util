@@ -8,7 +8,6 @@ import com.sanq.product.config.utils.entity.Response;
 import com.sanq.product.config.utils.entity.ResultCode;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
-import org.springframework.validation.BindException;
 import org.springframework.web.HttpMediaTypeNotSupportedException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -16,6 +15,8 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
+
+import javax.validation.ConstraintViolationException;
 
 @ControllerAdvice   // 控制器增强
 @ResponseBody
@@ -56,12 +57,11 @@ public class ExceptionAspect {
     }
 
     /**
-     * 500 - Token is invaild
+     * Token is invaild
      */
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(TokenException.class)
     public Response handleTokenException(TokenException e) {
-        e.printStackTrace();
         return new Response().failure(e.getMsg(), ResultCode.NO_TOKEN);
     }
 
@@ -103,12 +103,38 @@ public class ExceptionAspect {
 
 
     /**
-     * 500 - 出现异常
+     * 出现异常
      */
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(Exception.class)
     public Response handleException(Exception e) {
         e.printStackTrace();
         return new Response().failure(e.getMessage());
+    }
+
+    /**
+     * VO中验证出现错误
+     *
+     * @param e
+     * @return
+     */
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public Response handleValidationException(MethodArgumentNotValidException e) {
+
+        return new Response().failure(e.getBindingResult().getAllErrors().get(0).getDefaultMessage(), ResultCode.NOT_VALIDATION);
+    }
+
+    /**
+     * 单一参数验证
+     *
+     * @param e
+     * @return
+     */
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    @ExceptionHandler(ConstraintViolationException.class)
+    public Response handleValidationException(ConstraintViolationException e) {
+
+        return new Response().failure(e.getConstraintViolations().iterator().next().getMessage(), ResultCode.NOT_VALIDATION);
     }
 }

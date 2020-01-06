@@ -64,9 +64,10 @@ Java常用工具类
 > 自动生成代码工具， 包括entity, mapper, service, controller, resources， 通过简单修改， 生成项目
 4. Security
 > 接口安全限制
+5. Search
+> 集成ElasticSearch常用方法
 
 #### 安装教程
-
 
 1. Common
 
@@ -94,52 +95,74 @@ Java常用工具类
 
 
 4. pom 配置
-    1. 过滤resources文件， 配置tomcat
+    1. 过滤resources文件， 配置jetty(maven中暂不支持tomcat8, 可使用外部引入的tomcat)
     ```
-    <resources>
-        <resource>
-            <directory>src/main/java</directory>
-            <includes>
-                <include>**/*.properties</include>
-                <include>**/*.xml</include>
-            </includes>
-            <filtering>false</filtering>
-        </resource>
-        <resource>
-            <directory>src/main/resources</directory>
-            <includes>
-                <include>**/*.properties</include>
-                <include>**/*.xml</include>
-                <include>**/*.dat</include>
-            </includes>
-            <filtering>false</filtering>
-        </resource>
-    </resources>
+    <build>
+        <finalName>${project.artifactId}</finalName>
+        <resources>
+            <resource>
+                <directory>src/main/java</directory>
+                <includes>
+                    <include>**/*.properties</include>
+                    <include>**/*.xml</include>
+                </includes>
+                <filtering>false</filtering>
+            </resource>
+            <resource>
+                <directory>src/main/resources</directory>
+                <includes>
+                    <include>**/*.properties</include>
+                    <include>**/*.xml</include>
+                </includes>
+                <filtering>false</filtering>
+            </resource>
+        </resources>
 
-    <plugins>
-        <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-compiler-plugin</artifactId>
-            <configuration>
-                <source>1.7</source>
-                <target>1.7</target>
-                <encoding>UTF8</encoding>
-            </configuration>
-        </plugin>
-        <plugin>
-            <groupId>org.apache.tomcat.maven</groupId>
-            <artifactId>tomcat7-maven-plugin</artifactId>
-            <configuration>
-                <url>http://localhost:8080/manager/text</url>
-                <username>admin</username>
-                <password>admin</password>
-                <path>/ad-web</path>
-                <port>9990</port>
-                <update>true</update>
-                <server>tomcat7</server>
-            </configuration>
-        </plugin>
-    </plugins>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>1.8</source>
+                    <target>1.8</target>
+                    <encoding>UTF8</encoding>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.eclipse.jetty</groupId>
+                <artifactId>jetty-maven-plugin</artifactId>
+                <version>9.4.24.v20191120</version>
+                <configuration>
+                    <scanIntervalSeconds>10</scanIntervalSeconds>
+                    <webApp>
+                        <contextPath>/${project.artifactId}</contextPath>
+                    </webApp>
+                    <httpConnector>
+                        <port>8080</port>
+                    </httpConnector>
+                </configuration>
+            </plugin>
+            <!--通过profile打包-->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-war-plugin</artifactId>
+                <configuration>
+                    <warName>${project.artifactId}</warName>
+                    <webResources>
+                        <resource>
+                            <filtering>true</filtering>
+                            <directory>src/main/webapp</directory>
+                            <includes>
+                                <include>**/web.xml</include>
+                            </includes>
+                        </resource>
+                    </webResources>
+                    <warSourceDirectory>src/main/webapp</warSourceDirectory>
+                    <webXml>src/main/webapp/WEB-INF/web.xml</webXml>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
     ```
     2. 基于server打包
     ```
@@ -162,7 +185,6 @@ Java常用工具类
         </profile>
     </profiles>
     
-    <packaging>jar</packaging>
     <build>
         <resources>
             <resource>
@@ -257,7 +279,6 @@ Java常用工具类
                         <configuration>
                             <type>jar</type>
                             <includeTypes>jar</includeTypes>
-                            <useUniqueVersions>false</useUniqueVersions>
                             <outputDirectory>
                                 ${project.build.directory}/lib
                             </outputDirectory>
@@ -307,15 +328,16 @@ Disallow: /
 
 ### 验证签名安全
 
+1. maven 配置
 ```
-//maven
 <dependency>
     <groupId>com.sanq.product.x_utils</groupId>
     <artifactId>util_security</artifactId>
     <version>1.0-SNAPSHOT</version>
 </dependency>
-
-//web.xml
+```
+2. web.xml 配置
+```
 <filter>
     <filter-name>securityFilter</filter-name>
     <filter-class>com.sanq.product.security.filters.SecurityFilter</filter-class>
@@ -324,5 +346,37 @@ Disallow: /
     <filter-name>securityFilter</filter-name>
     <url-pattern>/*</url-pattern>
 </filter-mapping>
+```
+
+#### 如何使用
+
+**BaseInterceptor**
+
+在该类中包含以下判断：
+
+1. 非正常访问验证
+2. 验证参数中是否存在**token**参数, 并且判断**token**是否过期
+
+**CheckHasPermissionInterceptor**
+
+该类是**BaseInterceptor**的子类, 包含以下判断
+
+1. 判断当前用户是否有当前接口的权限
+
+**SecurityInterceptor**
+
+该类是**BaseInterceptor**的子类, 该类在使用的时候会进行一系列验证, 包括:
+
+1. token
+2. timestamp
+3. sign
+
+
+### 系统中参数验证
+
+采用 Hibernate Validator 的方式进行验证
 
 ```
+<context:component-scan base-package="com.sanq.product.security.aspect"/>
+```
+

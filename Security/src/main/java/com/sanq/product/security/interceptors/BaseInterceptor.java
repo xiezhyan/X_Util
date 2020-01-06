@@ -1,17 +1,18 @@
 package com.sanq.product.security.interceptors;
 
+import com.google.common.collect.Maps;
 import com.sanq.product.config.utils.auth.exception.IpAllowedException;
 import com.sanq.product.config.utils.auth.exception.NoParamsException;
 import com.sanq.product.config.utils.auth.exception.TokenException;
 import com.sanq.product.config.utils.web.GlobalUtil;
-import com.sanq.product.config.utils.web.LogUtil;
 import com.sanq.product.security.annotation.IgnoreSecurity;
 import com.sanq.product.security.annotation.Security;
 import com.sanq.product.security.enums.SecurityFieldEnum;
 import com.sanq.product.security.utils.ParamUtils;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
-import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -30,10 +31,9 @@ public abstract class BaseInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
 
-        LogUtil.getInstance(getClass()).d(request.getMethod());
-
-        if (checkAlwaysRelease(request)) {
-            return true;
+        if (request.getMethod().equals(RequestMethod.OPTIONS.name())) {
+            response.setStatus(HttpStatus.OK.value());
+            return false;
         }
 
         if (handler instanceof HandlerMethod) {
@@ -77,25 +77,19 @@ public abstract class BaseInterceptor implements HandlerInterceptor {
 
     protected Map<String, Object> getParamMap(HttpServletRequest request) {
 
-        if (request.getMethod().equalsIgnoreCase("get"))
-            return ParamUtils.getInstance().getParam2Get(request);
-        else
-            return ParamUtils.getInstance().json2Map(ParamUtils.getInstance().get());
+        switch (request.getMethod()) {
+            case "GET":
+                return ParamUtils.getInstance().getParam2Get(request);
+            case "POST":
+            case "PUT":
+            case "DELETE":
+                return ParamUtils.getInstance().json2Map(ParamUtils.getInstance().get());
+        }
+
+        return Maps.newHashMap();
     }
 
     protected abstract boolean checkToken(HttpServletRequest request, String token);
 
     protected abstract boolean checkIp(HttpServletRequest request, String ip);
-
-    protected abstract boolean checkAlwaysRelease(HttpServletRequest request);
-
-    @Override
-    public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView) throws Exception {
-
-    }
-
-    @Override
-    public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) throws Exception {
-
-    }
 }
