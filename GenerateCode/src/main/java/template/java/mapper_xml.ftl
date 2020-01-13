@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="${mapperPackage}.${table.javaName?cap_first}Mapper">
 
-    <resultMap type="${table.javaName?cap_first}Vo" id="${table.javaName}Map">
+    <resultMap type="${table.javaName?cap_first}" id="${table.javaName}Map">
 <#list table.fields as field>
     <#if field.columnKey == "PRI">
         <id column="${field.columnName}" property="${field.javaField}"/>
@@ -63,7 +63,7 @@
         LIMIT 1
     </select>
 
-    <select id="findList" resultMap="${table.javaName}Map" parameterType="${table.javaName?cap_first}Vo">
+    <select id="findList" resultMap="${table.javaName}Map" parameterType="${table.javaName?cap_first}">
         SELECT
         <include refid="${table.name}_columns"/>
         FROM ${table.name} ${table.name?substring(0,1)}
@@ -82,7 +82,7 @@
         LIMIT ${r"#{startPage}"},${r"#{pageSize}"}
     </select>
 
-    <select id="findCount" parameterType="${table.javaName?cap_first}Vo" resultType="java.lang.Integer">
+    <select id="findCount" parameterType="${table.javaName?cap_first}" resultType="java.lang.Integer">
         SELECT
         COUNT(*)
         FROM ${table.name} ${table.name?substring(0,1)}
@@ -91,14 +91,14 @@
         </where>
     </select>
 
-    <delete id="delete" parameterType="${table.javaName?cap_first}Vo">
+    <delete id="delete" parameterType="${table.javaName?cap_first}">
         DELETE FROM ${table.name}
         <where>
             <include refid="${table.name}_del_where"/>
         </where>
     </delete>
 
-    <update id="update" parameterType="${table.javaName?cap_first}Vo">
+    <update id="update" parameterType="${table.javaName?cap_first}">
         UPDATE ${table.name}
         <set>
         <#list table.fields as field>
@@ -115,7 +115,7 @@
     </#list>
     </update>
 
-    <insert id="save" parameterType="${table.javaName?cap_first}Vo">
+    <insert id="save" parameterType="${table.javaName?cap_first}">
         INSERT INTO ${table.name}
         <trim prefix="(" suffix=")" suffixOverrides=",">
         <#list table.fields as field>

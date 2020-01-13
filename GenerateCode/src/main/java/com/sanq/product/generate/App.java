@@ -150,7 +150,7 @@ public class App
 		//不同包名的文件类型
 		String controllerPackage = packageName + File.separator + "controller";
 		String entityPackage = packageName + File.separator + "entity";
-		String entityVoPackage = entityPackage + File.separator + "vo";
+		String entityVoPackage = packageName + File.separator + "vo";
 		String servicePackage = packageName + File.separator + "service";
 		String serviceImplPackage = packageName + File.separator + "service" + File.separator + "impl";
 		String mapperPackage = packageName + File.separator + "mapper";

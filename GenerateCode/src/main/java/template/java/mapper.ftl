@@ -9,7 +9,7 @@ import com.sanq.product.config.utils.mvc.mapper.BaseMapper;
  * 	author: Mr.sanq
  * 	date: ${nowDate?string("yyyy-MM-dd")}
  */
-public interface ${table.javaName?cap_first}Mapper extends BaseMapper<${table.javaName?cap_first}Vo, <#list table.fields as field><#if field.columnKey == "PRI">${field.javaType}</#if></#list>> {
+public interface ${table.javaName?cap_first}Mapper extends BaseMapper<${table.javaName?cap_first}, <#list table.fields as field><#if field.columnKey == "PRI">${field.javaType}</#if></#list>> {
 	
 	<#--int save(${table.javaName?cap_first}Vo ${table.javaName}Vo);-->
 	<#---->

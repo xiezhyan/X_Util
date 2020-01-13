@@ -45,7 +45,7 @@
         <!-- 配置mybatis全局配置文件：mybatis-config.xml-->
         <property name="configLocation" value="classpath:mybatis/mybatis-config.xml"/>
         <!-- 扫描entity包，使用别名，多个用;隔开-->
-        <property name="typeAliasesPackage" value="${entityVoPackage}"/>
+        <property name="typeAliasesPackage" value="${entityPackage}"/>
         <!-- 扫描sql配置文件:mapper需要的xml文件-->
         <property name="mapperLocations" value="classpath:${fileMapperPackage}/*.xml"/>
     </bean>
