@@ -1,9 +1,9 @@
 package com.sanq.product.config.utils.date;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Date;
 
 public class DateUtil {
 
@@ -14,19 +14,19 @@ public class DateUtil {
     /**
      * date 转 字符串
      */
-    public static String date2Str(LocalDate date, String format) {
+    public static String date2Str(Date date, String format) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern(format);
         if (date != null)
-            return formatter.format(date);
+            return formatter.format(date.toInstant());
         return "";
     }
 
     /**
      * version: String转换成Date
      */
-    public static LocalDate str2Date(String dateStr, String format) {
+    public static Date str2Date(String dateStr, String format) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern(format);
-        return LocalDate.from(LocalDateTime.parse(dateStr, formatter));
+        return LocalDateUtils.localDateTimeToDate(LocalDateTime.parse(dateStr, formatter));
     }
 
 
