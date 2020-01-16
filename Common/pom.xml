@@ -49,7 +49,6 @@
         <dependency>
             <groupId>org.aspectj</groupId>
             <artifactId>aspectjweaver</artifactId>
-            <scope>runtime</scope>
         </dependency>
         <!--spring end-->
 
