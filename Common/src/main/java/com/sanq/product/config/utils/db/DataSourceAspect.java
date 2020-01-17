@@ -1,4 +1,4 @@
-package com.sanq.product.config.utils.datasource;
+package com.sanq.product.config.utils.db;
 
 import com.sanq.product.config.utils.annotation.DataSource;
 import org.aspectj.lang.JoinPoint;
@@ -7,7 +7,7 @@ import org.aspectj.lang.reflect.MethodSignature;
 import java.lang.reflect.Method;
 
 /**
- * com.sanq.product.config.utils.datasource.DataSourceAspect
+ * com.sanq.product.config.utils.db.DataSourceAspect
  *
  * @author sanq.Yan
  * @date 2020/1/16

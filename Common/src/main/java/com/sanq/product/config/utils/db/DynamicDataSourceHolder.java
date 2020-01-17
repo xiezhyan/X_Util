@@ -1,7 +1,7 @@
-package com.sanq.product.config.utils.datasource;
+package com.sanq.product.config.utils.db;
 
 /**
- * com.sanq.product.config.utils.datasource.DynamicDataSourceHolder
+ * com.sanq.product.config.utils.db.DynamicDataSourceHolder
  *
  * @author sanq.Yan
  * @date 2020/1/16

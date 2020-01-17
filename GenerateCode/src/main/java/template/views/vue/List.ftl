@@ -3,6 +3,9 @@
         <div slot="body">
             <el-form :inline="true" :model="search" size="mini">
                 <el-form-item>
+                    <el-button type="info" @click="get${table.javaName?cap_first}List()">搜索</el-button>
+                </el-form-item>
+                <el-form-item>
                     <el-button type="primary" @click="dialogFormVisible = true;">新增</el-button>
                 </el-form-item>
             </el-form>
