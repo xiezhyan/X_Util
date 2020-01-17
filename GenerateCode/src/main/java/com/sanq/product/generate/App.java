@@ -106,7 +106,7 @@ public class App
 		String configPackage = base;
 
 		String controllerPackage = packageName + File.separator + "controller";
-		String entityVoPackage = packageName + File.separator + "entity" + File.separator + "vo";
+		String entityVoPackage = packageName + File.separator + "entity";
 		String mapperPackage = packageName + File.separator + "mapper";
 		String serviceImplPackage = packageName + File.separator + "service" + File.separator + "impl";
 		String servicePackage = packageName + File.separator + "service";
@@ -116,7 +116,7 @@ public class App
 		mRoot.put("tables", tables);
 		mRoot.put("basePackage", packageName.replace(File.separator,"."));
 		mRoot.put("controllerPackage", controllerPackage.replace(File.separator,"."));
-		mRoot.put("entityVoPackage", entityVoPackage.replace(File.separator,"."));
+		mRoot.put("entityPackage", entityVoPackage.replace(File.separator,"."));
 		mRoot.put("fileMapperPackage", mapperPackage.replace(File.separator,"/"));
 		mRoot.put("mapperPackage", mapperPackage.replace(File.separator,"."));
 		mRoot.put("servicePackage", servicePackage.replace(File.separator,"."));

@@ -16,7 +16,7 @@ public interface BaseMapper<T, K> {
 
     int delete(T delete);
 
-    int update(T update);
+    int update(@Param("entity") T update, @Param("id") K id);
 
     T findById(K id);
 

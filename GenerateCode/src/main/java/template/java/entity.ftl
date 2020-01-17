@@ -8,13 +8,13 @@ import com.sanq.product.config.utils.mvc.entity.Base;
 
 public class ${table.javaName?cap_first!""} extends Base<<#list table.fields as field><#if field.columnKey == "PRI">${field.javaType}</#if></#list>> implements Serializable {
 
-/**
- *    version: ${table.comment!""}
- *----------------------
- *    author: Mr.sanq
- *    date: ${nowDate?string("yyyy-MM-dd")}
- */
-private static final long serialVersionUID = 1L;
+    /**
+     *    version: ${table.comment!""}
+     *----------------------
+     *    author: Mr.sanq
+     *    date: ${nowDate?string("yyyy-MM-dd")}
+     */
+    private static final long serialVersionUID = 1L;
 
 <#if table.fields?? && table.fields?size gt 0>
     <#list table.fields as field>

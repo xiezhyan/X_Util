@@ -102,8 +102,8 @@
         UPDATE ${table.name}
         <set>
         <#list table.fields as field>
-            <if test="${field.javaField} !=null ">
-                ${field.columnName} = ${r"#{" + field.javaField + "}"},
+            <if test="entity.${field.javaField} !=null ">
+                ${field.columnName} = ${r"#{" + "entity." + field.javaField + "}"},
             </if>
         </#list>
         </set>

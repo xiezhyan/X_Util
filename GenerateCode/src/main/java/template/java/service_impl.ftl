@@ -44,7 +44,7 @@ public class ${table.javaName?cap_first}ServiceImpl implements ${table.javaName?
 		if(null != old${table.javaName?cap_first}Vo && null != ${table.javaName}Vo) {
             convertDO(${table.javaName}Vo, old${table.javaName?cap_first});
 
-			return ${table.javaName}Mapper.update(old${table.javaName?cap_first});
+			return ${table.javaName}Mapper.update(old${table.javaName?cap_first}, <#list table.fields as field><#if field.columnKey == "PRI">${field.javaField}</#if></#list>);
 		}
 		return 0;
 	}
