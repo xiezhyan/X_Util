@@ -1,10 +1,7 @@
 package com.sanq.product.security.interceptors;
 
-import com.sanq.product.config.utils.auth.exception.AuthException;
-import com.sanq.product.config.utils.auth.exception.TokenException;
-import com.sanq.product.security.annotation.Security;
-import com.sanq.product.security.enums.SecurityFieldEnum;
-import org.apache.zookeeper.KeeperException;
+import com.sanq.product.config.utils.auth.exception.BusException;
+import com.sanq.product.config.utils.entity.Codes;
 import org.springframework.web.method.HandlerMethod;
 
 import javax.servlet.http.HttpServletRequest;
@@ -30,11 +27,11 @@ public abstract class CheckHasPermissionInterceptor extends BaseInterceptor {
             String uri = request.getRequestURI().replace(request.getContextPath(), "");
 
             if (!checkHasThisUrl(request, uri)) {
-                throw new AuthException("无当前接口权限");
+                throw new BusException("无当前接口权限", Codes.AUTH_CODE);
             }
             return true;
         }
-        throw new Exception("访问被限制");
+        return false;
     }
 
 

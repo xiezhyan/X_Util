@@ -11,7 +11,7 @@ import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
 
 /**
- * com.sanq.product.test.mvc.controller.ValidatorConfig
+ * com.sanq.product.security.validator.ValidatorConfig
  *
  * @author sanq.Yan
  * @date 2020/1/6

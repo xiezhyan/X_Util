@@ -1,9 +1,8 @@
 package com.sanq.product.security.interceptors;
 
 import com.google.common.collect.Maps;
-import com.sanq.product.config.utils.auth.exception.IpAllowedException;
-import com.sanq.product.config.utils.auth.exception.NoParamsException;
-import com.sanq.product.config.utils.auth.exception.TokenException;
+import com.sanq.product.config.utils.auth.exception.BusException;
+import com.sanq.product.config.utils.entity.Codes;
 import com.sanq.product.config.utils.web.GlobalUtil;
 import com.sanq.product.security.annotation.IgnoreSecurity;
 import com.sanq.product.security.annotation.Security;
@@ -42,7 +41,7 @@ public abstract class BaseInterceptor implements HandlerInterceptor {
             String ip = GlobalUtil.getIpAddr(request);
 
             if (checkIp(request, ip)) {
-                throw new IpAllowedException(String.format("ip:%s异常访问， 已屏蔽", ip));
+                throw new BusException(String.format("ip:%s异常访问， 已屏蔽", ip), Codes.IP_CODE);
             }
 
             HandlerMethod hm = (HandlerMethod) handler;
@@ -56,7 +55,7 @@ public abstract class BaseInterceptor implements HandlerInterceptor {
             objectMap = getParamMap(request);
 
             if (objectMap == null || objectMap.isEmpty())
-                throw new NoParamsException("缺少必要参数");
+                throw new BusException("缺少必要参数", Codes.PARAM_CODE);
 
             //是否忽略token验证
             IgnoreSecurity s = hm.getMethodAnnotation(IgnoreSecurity.class);
@@ -64,10 +63,10 @@ public abstract class BaseInterceptor implements HandlerInterceptor {
             if (s == null) {
                 Object o = objectMap.get(SecurityFieldEnum.TOKEN.getName());
                 if (o == null)
-                    throw new NoParamsException(String.format("参数%s不存在", SecurityFieldEnum.TOKEN.getName()));
+                    throw new BusException(String.format("参数%s不存在", SecurityFieldEnum.TOKEN.getName()), Codes.PARAM_CODE);
 
                 if (!checkToken(request, (String) o))
-                    throw new TokenException(String.format("%s已过期，请重新登录", SecurityFieldEnum.TOKEN.getName()));
+                    throw new BusException(String.format("%s已过期，请重新登录", SecurityFieldEnum.TOKEN.getName()), Codes.TOKEN_CODE);
             }
             return true;
         }

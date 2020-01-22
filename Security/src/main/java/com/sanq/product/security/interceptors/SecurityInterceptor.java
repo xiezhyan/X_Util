@@ -1,7 +1,8 @@
 package com.sanq.product.security.interceptors;
 
-import com.sanq.product.config.utils.auth.exception.NoParamsException;
+import com.sanq.product.config.utils.auth.exception.BusException;
 import com.sanq.product.config.utils.date.LocalDateUtils;
+import com.sanq.product.config.utils.entity.Codes;
 import com.sanq.product.config.utils.string.StringUtil;
 import com.sanq.product.security.enums.SecurityFieldEnum;
 import com.sanq.product.security.utils.ParamUtils;
@@ -32,26 +33,26 @@ public abstract class SecurityInterceptor extends BaseInterceptor {
 
             Object o = objectMap.get(SecurityFieldEnum.TIMESTAMP.getName());
             if (o == null)
-                throw new NoParamsException(String.format("参数%s不存在", SecurityFieldEnum.TIMESTAMP.getName()));
+                throw new BusException(String.format("参数%s不存在", SecurityFieldEnum.TIMESTAMP.getName()), Codes.PARAM_CODE);
 
             Long timestamp = StringUtil.toLong(o);
 
             if (LocalDateUtils.nowTime().getTime() - timestamp >= 60 * 1000)
-                throw new NoParamsException(String.format("参数%s已过期", SecurityFieldEnum.TIMESTAMP.getName()));
+                throw new BusException(String.format("参数%s已过期", SecurityFieldEnum.TIMESTAMP.getName()), Codes.PARAM_CODE);
 
             o = objectMap.get(SecurityFieldEnum.SIGN.getName());
             if (o == null)
-                throw new NoParamsException(String.format("参数%s不存在", SecurityFieldEnum.SIGN.getName()));
+                throw new BusException(String.format("参数%s不存在", SecurityFieldEnum.SIGN.getName()), Codes.PARAM_CODE);
 
             String sign = (String) o;
 
             String paramsSign = ParamUtils.getInstance().getSign(objectMap);
             if (!sign.equals(paramsSign)) {
-                throw new NoParamsException(String.format("参数%s验证不正确", SecurityFieldEnum.SIGN.getName()));
+                throw new BusException(String.format("参数%s验证不正确", SecurityFieldEnum.SIGN.getName()), Codes.PARAM_CODE);
             }
             return true;
         }
-        throw new Exception("访问被限制");
+        return false;
     }
 
 }

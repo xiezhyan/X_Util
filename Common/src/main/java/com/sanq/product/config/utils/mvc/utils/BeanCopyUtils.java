@@ -52,7 +52,7 @@ public class BeanCopyUtils extends BeanUtils {
      * @return 转换完的list
      */
     private static <T, S> List<T> copyListProperties(List<S> sources, Supplier<T> target, BeanCopyCallback<S, T> callback) {
-        if (sources != null && !sources.isEmpty())
+        if (sources == null || sources.isEmpty())
             return Lists.newArrayList();
 
         List<T> list = new ArrayList<>(sources.size());

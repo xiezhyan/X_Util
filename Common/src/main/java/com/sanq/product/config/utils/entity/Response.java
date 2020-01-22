@@ -16,24 +16,24 @@ public class Response implements Serializable {
     private Object data;
 
     public Response success() {
-        this.meta = new Meta(true, OK, ResultCode.RESULT_OK);
+        this.meta = new Meta(true, OK, Codes.RESULT_OK);
         this.data = true;
         return this;
     }
 
     public Response success(Object data) {
-        this.meta = new Meta(true, OK, ResultCode.RESULT_OK);
+        this.meta = new Meta(true, OK, Codes.RESULT_OK);
         this.data = data;
         return this;
     }
 
     public Response failure() {
-        this.meta = new Meta(false, ERROR, ResultCode.RESULT_ERROR);
+        this.meta = new Meta(false, ERROR, Codes.RESULT_ERROR);
         return this;
     }
 
     public Response failure(String message) {
-        this.meta = new Meta(false, message, ResultCode.RESULT_ERROR);
+        this.meta = new Meta(false, message, Codes.RESULT_ERROR);
         return this;
     }
 

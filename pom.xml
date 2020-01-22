@@ -92,7 +92,6 @@
 
     <dependencyManagement>
         <dependencies>
-
             <!-- 1.Spring start -->
             <dependency>
                 <groupId>org.springframework</groupId>

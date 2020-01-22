@@ -170,7 +170,7 @@ public class JedisSingleServiceImpl implements JedisPoolService {
     }
 
     @Override
-    public void putListR(String key, String...values) {
+    public void putListR(String key, String... values) {
         String lockValue = _lockValue();
 
         try (Jedis jedis = jedisPool.getResource()) {
@@ -427,7 +427,7 @@ public class JedisSingleServiceImpl implements JedisPoolService {
     }
 
     @Override
-    public void putListL(String key, String...values) {
+    public void putListL(String key, String... values) {
         String lockValue = _lockValue();
 
         try (Jedis jedis = jedisPool.getResource()) {

@@ -1,11 +1,8 @@
 package com.sanq.product.security.aspect;
 
-import com.sanq.product.config.utils.auth.exception.AuthException;
-import com.sanq.product.config.utils.auth.exception.IpAllowedException;
-import com.sanq.product.config.utils.auth.exception.NoParamsException;
-import com.sanq.product.config.utils.auth.exception.TokenException;
+import com.sanq.product.config.utils.auth.exception.BusException;
 import com.sanq.product.config.utils.entity.Response;
-import com.sanq.product.config.utils.entity.ResultCode;
+import com.sanq.product.config.utils.entity.Codes;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.HttpMediaTypeNotSupportedException;
@@ -30,7 +27,7 @@ public class ExceptionAspect {
     public Response handleHttpMessageNotReadableException(
             HttpMessageNotReadableException e) {
         e.printStackTrace();
-        return new Response().failure("could_not_read_json", ResultCode.MESSAGE_NOT_READ);
+        return new Response().failure("传递参数转换JSON格式有误");
     }
 
     /**
@@ -42,7 +39,7 @@ public class ExceptionAspect {
     public Response handleHttpRequestMethodNotSupportedException(
             HttpRequestMethodNotSupportedException e) {
         e.printStackTrace();
-        return new Response().failure("request_method_not_supported", ResultCode.NOT_FIND_METHOD);
+        return new Response().failure("提交方式不正确");
     }
 
     /**
@@ -60,47 +57,10 @@ public class ExceptionAspect {
      * Token is invaild
      */
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    @ExceptionHandler(TokenException.class)
-    public Response handleTokenException(TokenException e) {
-        return new Response().failure(e.getMsg(), ResultCode.NO_TOKEN);
+    @ExceptionHandler(BusException.class)
+    public Response handleBusException(BusException e) {
+        return new Response().failure(e.getMsg(), e.getCode());
     }
-
-    /***
-     * 参数有误
-     */
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    @ExceptionHandler(NoParamsException.class)
-    public Response handleTokenException(NoParamsException e) {
-        e.printStackTrace();
-        return new Response().failure(e.getMsg(), ResultCode.PARAM_ERROR);
-    }
-
-    /**
-     * 授权
-     *
-     * @param e
-     * @return
-     */
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    @ExceptionHandler(AuthException.class)
-    public Response handleAuthException(AuthException e) {
-        e.printStackTrace();
-        return new Response().failure(e.getMessage(), ResultCode.NO_ACCESS);
-    }
-
-    /**
-     * ip被限制
-     *
-     * @param e
-     * @return
-     */
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    @ExceptionHandler(IpAllowedException.class)
-    public Response handleIpAllowException(IpAllowedException e) {
-        e.printStackTrace();
-        return new Response().failure(e.getMsg(), ResultCode.IP_ALLOWED);
-    }
-
 
     /**
      * 出现异常
@@ -122,7 +82,7 @@ public class ExceptionAspect {
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public Response handleValidationException(MethodArgumentNotValidException e) {
 
-        return new Response().failure(e.getBindingResult().getAllErrors().get(0).getDefaultMessage(), ResultCode.NOT_VALIDATION);
+        return new Response().failure(e.getBindingResult().getAllErrors().get(0).getDefaultMessage(), Codes.NOT_VALIDATION);
     }
 
     /**
@@ -135,6 +95,6 @@ public class ExceptionAspect {
     @ExceptionHandler(ConstraintViolationException.class)
     public Response handleValidationException(ConstraintViolationException e) {
 
-        return new Response().failure(e.getConstraintViolations().iterator().next().getMessage(), ResultCode.NOT_VALIDATION);
+        return new Response().failure(e.getConstraintViolations().iterator().next().getMessage(), Codes.NOT_VALIDATION);
     }
 }
