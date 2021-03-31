@@ -95,7 +95,7 @@
 
         <es.version>6.8.2</es.version>
 
-        <guava.version>27.1-jre</guava.version>
+        <guava.version>29.0-jre</guava.version>
         <javaee.version>7.0</javaee.version>
     </properties>
 
