@@ -28,7 +28,7 @@
         <druid.version>1.0.18</druid.version>
 
         <!-- mybatis -->
-        <mybatis.version>3.3.0</mybatis.version>
+        <mybatis.version>3.5.6</mybatis.version>
         <!-- mybatis-spring -->
         <mybatis-spring.version>1.2.3</mybatis-spring.version>
 
